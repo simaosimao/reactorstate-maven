@@ -1,0 +1,42 @@
+name: CI Workflow
+
+on: [push, pull_request]
+
+jobs:
+  ci-build:
+    runs-on: ubuntu-20.04
+    steps:
+      - name: "Preparation: Checkout"
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+      - name: "Preparation: Java Setup"
+        uses: actions/setup-java@v1
+        with:
+          java-version: 11
+      - name: "Preparation: Maven Cache"
+        uses: actions/cache@v2
+        with:
+          path: ~/.m2
+          key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
+          restore-keys: ${{ runner.os }}-m2
+      - name: "Preparation: SonarCloud Cache"
+        uses: actions/cache@v2
+        with:
+          path: ~/.sonar/cache
+          key: ${{ runner.os }}-sonar
+          restore-keys: ${{ runner.os }}-sonar
+      - name: "Build: Maven"
+        run: mvn -B verify -Dartifact=de.syquel.maven.reactorstate:reactorstate-maven-extension:1.0-SNAPSHOT:jar:shaded -Dmdep.stripVersion=true dependency:copy
+      - name: "Build: Maven with Extension" # Let's eat our own poison
+        run: mvn -B -Dmaven.ext.class.path=target/dependency/reactorstate-maven-extension-shaded.jar verify
+      - name: "Documentation: Maven Site" # Implicitly tests the extension; without it the inter-module dependencies couldn't be resolved
+        run: mvn -B -Dmaven.ext.class.path=target/dependency/reactorstate-maven-extension-shaded.jar site
+      - name: "Reporting: SonarCloud"
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+        run: >
+          mvn -B -Dmaven.ext.class.path=target/dependency/reactorstate-maven-extension-shaded.jar
+          -Dsonar.host.url=https://sonarcloud.io -Dsonar.organization=syquel-github -Dsonar.projectKey=Syquel_reactorstate-maven
+          org.sonarsource.scanner.maven:sonar-maven-plugin:sonar
