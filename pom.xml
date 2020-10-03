@@ -19,6 +19,11 @@
 
         <maven-surefire.version>3.0.0-M5</maven-surefire.version>
         <takari-testing.version>3.0.0</takari-testing.version>
+
+        <!-- surefire / failsafe settings -->
+        <parallel>classesAndMethods</parallel>
+        <threadCount>1</threadCount>
+        <perCoreThreadCount>true</perCoreThreadCount>
     </properties>
 
     <dependencyManagement>
