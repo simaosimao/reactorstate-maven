@@ -335,6 +335,7 @@
     <modules>
         <module>reactorstate-maven-extension</module>
         <module>reactorstate-maven-plugin</module>
+        <module>reactorstate-maven-common</module>
     </modules>
 
 </project>
