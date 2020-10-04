@@ -10,8 +10,8 @@ import org.apache.maven.project.MavenProject;
 
 public abstract class AbstractReactorStateManager {
 
-	protected static final String STATE_PROPERTIES_FILENAME = "reactorstate-maven.properties";
-	protected static final String PROPERTY_KEY_MAIN_ARTIFACT = "main-artifact";
+	static final String STATE_PROPERTIES_FILENAME = "reactorstate-maven.properties";
+	static final String PROPERTY_KEY_MAIN_ARTIFACT = "main-artifact";
 
 	private final Map<MavenProject, MavenProjectState> projectStates = new HashMap<>();
 

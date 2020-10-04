@@ -40,12 +40,8 @@ public class SavedReactorStateManager extends AbstractReactorStateManager {
 	{
 		final Set<MavenProject> projects = new HashSet<>(session.getProjects());
 
-		final MavenProject currentProject = session.getCurrentProject();
-		final MavenProject parentProject = currentProject.getParent();
-		if (session.getCurrentProject().isExecutionRoot() && parentProject != null) {
-			LOGGER.info("Resolving Maven project tree");
-			contributeWorkspaceProjects(parentProject, projects, session.getProjectBuildingRequest(), projectBuilder);
-		}
+		LOGGER.info("Resolving Maven project tree");
+		contributeWorkspaceProjects(session.getCurrentProject(), projects, session.getProjectBuildingRequest(), projectBuilder);
 
 		final Set<MavenProjectState> projectStates = new HashSet<>();
 		for (final MavenProject project : projects) {
@@ -88,6 +84,7 @@ public class SavedReactorStateManager extends AbstractReactorStateManager {
 	{
 		final Path projectBasePath = project.getBasedir().toPath();
 
+		// Discover downstream Maven projects within workspace
 		for (final String module : project.getModules()) {
 			final Path modulePomPath = projectBasePath.resolve(module).resolve("pom.xml");
 
@@ -102,10 +99,12 @@ public class SavedReactorStateManager extends AbstractReactorStateManager {
 			contributeWorkspaceProjects(moduleProject, discoveredProjects, buildingRequest, projectBuilder);
 		}
 
+		// Discover upstream Maven projects within workspace
 		final MavenProject parentProject = project.getParent();
 		if (parentProject != null && !discoveredProjects.contains(parentProject)) {
 			LOGGER.info("Discovered Maven parent project {}", parentProject.getId());
 			discoveredProjects.add(parentProject);
+
 			contributeWorkspaceProjects(parentProject, discoveredProjects, buildingRequest, projectBuilder);
 		}
 	}
@@ -123,15 +122,17 @@ public class SavedReactorStateManager extends AbstractReactorStateManager {
 			stateProperties.load(stateReader);
 		}
 
+		final Path projectBasePath = project.getBasedir().toPath();
+
 		// Extract main artifact
-		final String mainArtifactId = stateProperties.getProperty(PROPERTY_KEY_MAIN_ARTIFACT);
-		final Path mainArtifactPath = Paths.get(stateProperties.getProperty(mainArtifactId));
+		final String mainArtifactCoordinates = stateProperties.getProperty(PROPERTY_KEY_MAIN_ARTIFACT);
+		final Path mainArtifactPath = projectBasePath.resolve(stateProperties.getProperty(mainArtifactCoordinates));
 		stateProperties.remove(PROPERTY_KEY_MAIN_ARTIFACT);
-		stateProperties.remove(mainArtifactId);
-		final Artifact mainArtifact = buildArtifact(mainArtifactId, mainArtifactPath);
+		stateProperties.remove(mainArtifactCoordinates);
+		final Artifact mainArtifact = buildArtifact(mainArtifactCoordinates, mainArtifactPath);
 
 		if (mainArtifact == null) {
-			throw new IllegalStateException("Main Artifact is missing in saved state");
+			throw new IllegalStateException("Main Artifact is missing in saved state for Maven project " + project.getId());
 		}
 
 		// Extract POM artifact
@@ -147,10 +148,10 @@ public class SavedReactorStateManager extends AbstractReactorStateManager {
 		// Extract attached artifacts
 		final Set<Artifact> attachedArtifacts = new HashSet<>();
 		for (final Map.Entry<Object, Object> artifactEntry : stateProperties.entrySet()) {
-			final String artifactId = (String) artifactEntry.getKey();
-			final Path artifactPath = Paths.get((String) artifactEntry.getValue());
+			final String artifactCoordinates = (String) artifactEntry.getKey();
+			final Path artifactPath = projectBasePath.resolve((String) artifactEntry.getValue());
 
-			final Artifact artifact = buildArtifact(artifactId, artifactPath);
+			final Artifact artifact = buildArtifact(artifactCoordinates, artifactPath);
 			attachedArtifacts.add(artifact);
 		}
 
@@ -159,15 +160,15 @@ public class SavedReactorStateManager extends AbstractReactorStateManager {
 		return projectState;
 	}
 
-	private static Artifact buildArtifact(final String artifactId, final Path artifactPath) {
+	private static Artifact buildArtifact(final String artifactCoordinates, final Path artifactPath) {
 		if (!Files.isReadable(artifactPath)) {
-			LOGGER.warn("Artifact {} does not exist anymore. Ignoring.", artifactId);
+			LOGGER.warn("Artifact {} does not exist anymore. Ignoring.", artifactCoordinates);
 			return null;
 		}
 
 		// TODO add properties (like "type")
 		final Artifact artifact =
-			new DefaultArtifact(artifactId)
+			new DefaultArtifact(artifactCoordinates)
 				.setFile(artifactPath.toFile());
 
 		return artifact;

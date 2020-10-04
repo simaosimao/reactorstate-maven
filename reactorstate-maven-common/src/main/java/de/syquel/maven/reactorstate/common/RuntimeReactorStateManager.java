@@ -16,12 +16,8 @@ import org.apache.maven.project.MavenProject;
 import org.apache.maven.repository.internal.ArtifactDescriptorUtils;
 import org.eclipse.aether.artifact.Artifact;
 import org.eclipse.aether.util.artifact.ArtifactIdUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 public class RuntimeReactorStateManager extends AbstractReactorStateManager {
-
-	private static final Logger LOGGER = LoggerFactory.getLogger(RuntimeReactorStateManager.class);
 
 	private RuntimeReactorStateManager(final Set<MavenProjectState> projectStates) {
 		super(projectStates);
@@ -82,17 +78,19 @@ public class RuntimeReactorStateManager extends AbstractReactorStateManager {
 	private static Properties buildProjectStateProperties(final MavenProjectState projectState) {
 		final Properties stateProperties = new Properties();
 
+		final Path projectBasePath = projectState.getProject().getBasedir().toPath();
+
 		final Artifact pomArtifact = projectState.getPom();
-		stateProperties.put(ArtifactIdUtils.toId(pomArtifact), pomArtifact.getFile().getAbsolutePath());
+		stateProperties.put(ArtifactIdUtils.toId(pomArtifact), projectBasePath.relativize(pomArtifact.getFile().toPath()).toString());
 
 		final Artifact mainArtifact = projectState.getMainArtifact();
 		final String mainArtifactId = ArtifactIdUtils.toId(mainArtifact);
 		final File mainArtifactFile = mainArtifact.getFile();
 		stateProperties.put(PROPERTY_KEY_MAIN_ARTIFACT, mainArtifactId);
-		stateProperties.put(mainArtifactId, (mainArtifactFile != null) ? mainArtifactFile.getAbsolutePath() : "");
+		stateProperties.put(mainArtifactId, (mainArtifactFile != null) ? projectBasePath.relativize(mainArtifactFile.toPath()).toString() : "");
 
 		for (final Artifact attachedArtifact : projectState.getAttachedArtifacts()) {
-			stateProperties.put(ArtifactIdUtils.toId(attachedArtifact), attachedArtifact.getFile().getAbsolutePath());
+			stateProperties.put(ArtifactIdUtils.toId(attachedArtifact), projectBasePath.relativize(attachedArtifact.getFile().toPath()).toString());
 		}
 
 		return stateProperties;
