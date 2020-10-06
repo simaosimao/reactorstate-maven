@@ -1,15 +1,9 @@
 package de.syquel.maven.reactorstate.common;
 
 import java.io.IOException;
-import java.io.Reader;
-import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.Collection;
 import java.util.HashSet;
-import java.util.Map;
-import java.util.Properties;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -20,12 +14,11 @@ import org.apache.maven.project.MavenProjectHelper;
 import org.apache.maven.project.ProjectBuilder;
 import org.apache.maven.project.ProjectBuildingException;
 import org.apache.maven.project.ProjectBuildingRequest;
-import org.apache.maven.repository.internal.ArtifactDescriptorUtils;
-import org.eclipse.aether.artifact.Artifact;
-import org.eclipse.aether.artifact.DefaultArtifact;
-import org.eclipse.aether.util.artifact.ArtifactIdUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import de.syquel.maven.reactorstate.common.persistence.IReactorStateRepository;
+import de.syquel.maven.reactorstate.common.persistence.PropertiesReactorStateRepository;
 
 public class SavedReactorStateManager extends AbstractReactorStateManager {
 
@@ -43,9 +36,11 @@ public class SavedReactorStateManager extends AbstractReactorStateManager {
 		LOGGER.info("Resolving Maven project tree");
 		contributeWorkspaceProjects(session.getCurrentProject(), projects, session.getProjectBuildingRequest(), projectBuilder);
 
+		final IReactorStateRepository reactorStateRepository = new PropertiesReactorStateRepository();
+
 		final Set<MavenProjectState> projectStates = new HashSet<>();
 		for (final MavenProject project : projects) {
-			final MavenProjectState projectState = loadProjectState(project);
+			final MavenProjectState projectState = reactorStateRepository.read(project);
 			if (projectState != null) {
 				projectStates.add(projectState);
 			}
@@ -107,71 +102,6 @@ public class SavedReactorStateManager extends AbstractReactorStateManager {
 
 			contributeWorkspaceProjects(parentProject, discoveredProjects, buildingRequest, projectBuilder);
 		}
-	}
-
-	private static MavenProjectState loadProjectState(final MavenProject project) throws IOException {
-		// Read project state from filesystem
-		final Path projectBuildPath = resolveProjectBuildPath(project);
-		final Path projectStatePath = projectBuildPath.resolve(STATE_PROPERTIES_FILENAME);
-		if (!Files.isDirectory(projectBuildPath) || !Files.isReadable(projectStatePath)) {
-			return null;
-		}
-
-		final Properties stateProperties = new Properties();
-		try (final Reader stateReader = Files.newBufferedReader(projectStatePath, StandardCharsets.UTF_8)) {
-			stateProperties.load(stateReader);
-		}
-
-		final Path projectBasePath = project.getBasedir().toPath();
-
-		// Extract main artifact
-		final String mainArtifactCoordinates = stateProperties.getProperty(PROPERTY_KEY_MAIN_ARTIFACT);
-		final Path mainArtifactPath = projectBasePath.resolve(stateProperties.getProperty(mainArtifactCoordinates));
-		stateProperties.remove(PROPERTY_KEY_MAIN_ARTIFACT);
-		stateProperties.remove(mainArtifactCoordinates);
-		final Artifact mainArtifact = buildArtifact(mainArtifactCoordinates, mainArtifactPath);
-
-		if (mainArtifact == null) {
-			throw new IllegalStateException("Main Artifact is missing in saved state for Maven project " + project.getId());
-		}
-
-		// Extract POM artifact
-		Artifact pom = ArtifactDescriptorUtils.toPomArtifact(mainArtifact);
-		if (pom != mainArtifact) {
-			final String pomArtifactId = ArtifactIdUtils.toId(pom);
-			final Path pomPath = Paths.get(stateProperties.getProperty(pomArtifactId));
-			stateProperties.remove(pomArtifactId);
-
-			pom = pom.setFile(pomPath.toFile());
-		}
-
-		// Extract attached artifacts
-		final Set<Artifact> attachedArtifacts = new HashSet<>();
-		for (final Map.Entry<Object, Object> artifactEntry : stateProperties.entrySet()) {
-			final String artifactCoordinates = (String) artifactEntry.getKey();
-			final Path artifactPath = projectBasePath.resolve((String) artifactEntry.getValue());
-
-			final Artifact artifact = buildArtifact(artifactCoordinates, artifactPath);
-			attachedArtifacts.add(artifact);
-		}
-
-		// Build project state
-		final MavenProjectState projectState = new MavenProjectState(project, pom, mainArtifact, attachedArtifacts);
-		return projectState;
-	}
-
-	private static Artifact buildArtifact(final String artifactCoordinates, final Path artifactPath) {
-		if (!Files.isReadable(artifactPath)) {
-			LOGGER.warn("Artifact {} does not exist anymore. Ignoring.", artifactCoordinates);
-			return null;
-		}
-
-		// TODO add properties (like "type")
-		final Artifact artifact =
-			new DefaultArtifact(artifactCoordinates)
-				.setFile(artifactPath.toFile());
-
-		return artifact;
 	}
 
 	private static boolean isWorkspaceProject(final MavenProject project) {

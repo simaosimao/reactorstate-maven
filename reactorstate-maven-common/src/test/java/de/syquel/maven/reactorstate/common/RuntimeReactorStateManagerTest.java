@@ -5,21 +5,24 @@ import static org.hamcrest.CoreMatchers.notNullValue;
 
 import java.io.File;
 import java.io.IOException;
-import java.io.Reader;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.Arrays;
-import java.util.Properties;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.apache.maven.execution.MavenSession;
 import org.apache.maven.project.MavenProject;
 import org.apache.maven.project.MavenProjectHelper;
+import org.eclipse.aether.artifact.Artifact;
+import org.eclipse.aether.util.artifact.ArtifactIdUtils;
 import org.hamcrest.MatcherAssert;
 import org.junit.Assume;
 import org.junit.Rule;
 import org.junit.Test;
 
+import de.syquel.maven.reactorstate.common.persistence.IReactorStateRepository;
+import de.syquel.maven.reactorstate.common.persistence.PropertiesReactorStateRepository;
 import io.takari.maven.testing.TestMavenRuntime;
 import io.takari.maven.testing.TestResources;
 
@@ -38,14 +41,14 @@ public class RuntimeReactorStateManagerTest {
 		final MavenProjectHelper projectHelper = testMavenRuntime.lookup(MavenProjectHelper.class);
 
 		final MavenProject topLevelProject = testMavenRuntime.readMavenProject(baseDir);
-		final Properties topLevelProperties = fetchReactorStateProperties(topLevelProject);
+		final MavenProjectState topLevelState = fetchReactorState(topLevelProject);
 		Files.delete(topLevelProject.getBasedir().toPath().resolve(topLevelProject.getBuild().getDirectory()));
 
 		final MavenProject module1Project = testMavenRuntime.readMavenProject(new File(baseDir, "module1"));
-		final Properties module1Properties = fetchReactorStateProperties(module1Project);
+		final MavenProjectState module1State = fetchReactorState(module1Project);
 
 		final MavenProject module3Project = testMavenRuntime.readMavenProject(new File(module1Project.getBasedir(), "module3"));
-		final Properties module3Properties = fetchReactorStateProperties(module3Project);
+		final MavenProjectState module3State = fetchReactorState(module3Project);
 		{
 			final Path projectBasePath = module3Project.getBasedir().toPath();
 
@@ -54,7 +57,7 @@ public class RuntimeReactorStateManagerTest {
 		}
 
 		final MavenProject module2Project = testMavenRuntime.readMavenProject(new File(baseDir, "module2"));
-		final Properties module2Properties = fetchReactorStateProperties(module2Project);
+		final MavenProjectState module2State = fetchReactorState(module2Project);
 		{
 			final Path projectBasePath = module2Project.getBasedir().toPath();
 
@@ -79,57 +82,56 @@ public class RuntimeReactorStateManagerTest {
 		reactorStateManager.saveProjectStates();
 
 		// then
-		final Properties savedTopLevelProperties = fetchReactorStateProperties(topLevelProject);
-		assertProperties("Saved top-level reactor state is correct", topLevelProperties, savedTopLevelProperties);
+		final MavenProjectState savedTopLevelState = fetchReactorState(topLevelProject);
+		assertMavenProjectState(topLevelState, savedTopLevelState);
 
-		final Properties savedModule1Properties = fetchReactorStateProperties(module1Project);
-		assertProperties("Saved module1 reactor state is correct", module1Properties, savedModule1Properties);
+		final MavenProjectState savedModule1State = fetchReactorState(module1Project);
+		assertMavenProjectState(module1State, savedModule1State);
 
-		final Properties savedModule2Properties = fetchReactorStateProperties(module2Project);
-		assertProperties("Saved module2 reactor state is correct", module2Properties, savedModule2Properties);
+		final MavenProjectState savedModule2State = fetchReactorState(module2Project);
+		assertMavenProjectState(module2State, savedModule2State);
 
-		final Properties savedModule3Properties = fetchReactorStateProperties(module3Project);
-		assertProperties("Saved module3 reactor state is correct", module3Properties, savedModule3Properties);
+		final MavenProjectState savedModule3State = fetchReactorState(module3Project);
+		assertMavenProjectState(module3State, savedModule3State);
 	}
 
-	private static void assertProperties(final String message, final Properties expected, final Properties actual) {
+	private static void assertMavenProjectState(final MavenProjectState expected, final MavenProjectState actual) {
+		assertArtifact(expected.getPom(), actual.getPom());
+		assertArtifact(expected.getMainArtifact(), actual.getMainArtifact());
+
+		final Map<String, Artifact> actualAttachedArtifacts = new HashMap<>();
+		for (final Artifact actualAttachedArtifact : actual.getAttachedArtifacts()) {
+			actualAttachedArtifacts.put(ArtifactIdUtils.toId(actualAttachedArtifact), actualAttachedArtifact);
+		}
+
+		for (final Artifact expectedAttachedArtifact : expected.getAttachedArtifacts()) {
+			final Artifact actualAttachedArtifact = actualAttachedArtifacts.get(ArtifactIdUtils.toId(expectedAttachedArtifact));
+
+			MatcherAssert.assertThat("Artifact state exists", actualAttachedArtifact, notNullValue(Artifact.class));
+			assertArtifact(expectedAttachedArtifact, actualAttachedArtifact);
+		}
+	}
+
+	private static void assertArtifact(final Artifact expected, final Artifact actual) {
 		MatcherAssert.assertThat(
-			"Main artifact is correct",
-			actual.getProperty(AbstractReactorStateManager.PROPERTY_KEY_MAIN_ARTIFACT),
-			is(expected.getProperty(AbstractReactorStateManager.PROPERTY_KEY_MAIN_ARTIFACT))
+			"Artifact coordinates are correct",
+			ArtifactIdUtils.toId(actual),
+			is(ArtifactIdUtils.toId(expected))
 		);
-
-		for (final String propertyName : expected.stringPropertyNames()) {
-			if (AbstractReactorStateManager.PROPERTY_KEY_MAIN_ARTIFACT.equals(propertyName)) {
-				continue;
-			}
-
-			final String expectedPath = expected.getProperty(propertyName);
-			final String actualPath = actual.getProperty(propertyName);
-			MatcherAssert.assertThat("Path is set for " + propertyName, actualPath, notNullValue());
-
-			MatcherAssert.assertThat(
-				message + ": '" + propertyName + "'",
-				Paths.get(actualPath),
-				is(Paths.get(expectedPath)
-				)
-			);
-		}
+		MatcherAssert.assertThat(
+			"Artifact file path is correct",
+			actual.getFile(),
+			is(expected.getFile())
+		);
 	}
 
-	private static Properties fetchReactorStateProperties(final MavenProject project) throws IOException {
-		final Path projectBasePath = project.getBasedir().toPath();
-		final Path projectBuildPath = projectBasePath.resolve(project.getBuild().getDirectory());
-		final Path reactorStatePath = projectBuildPath.resolve(AbstractReactorStateManager.STATE_PROPERTIES_FILENAME);
+	private static MavenProjectState fetchReactorState(final MavenProject project) throws IOException {
+		final IReactorStateRepository reactorStateRepository = new PropertiesReactorStateRepository();
 
-		final Properties properties = new Properties();
-		try (final Reader propertiesReader = Files.newBufferedReader(reactorStatePath)) {
-			properties.load(propertiesReader);
-		}
+		final MavenProjectState mavenProjectState = reactorStateRepository.read(project);
+		reactorStateRepository.delete(mavenProjectState.getProject());
 
-		Files.delete(reactorStatePath);
-
-		return properties;
+		return mavenProjectState;
 	}
 
 }
