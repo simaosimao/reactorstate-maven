@@ -11,7 +11,7 @@ import org.apache.maven.repository.internal.ArtifactDescriptorUtils;
 import org.eclipse.aether.artifact.Artifact;
 
 import de.syquel.maven.reactorstate.common.persistence.IReactorStateRepository;
-import de.syquel.maven.reactorstate.common.persistence.PropertiesReactorStateRepository;
+import de.syquel.maven.reactorstate.common.persistence.json.JsonReactorStateRepository;
 
 public class RuntimeReactorStateManager extends AbstractReactorStateManager {
 
@@ -29,7 +29,7 @@ public class RuntimeReactorStateManager extends AbstractReactorStateManager {
 			projectStates.add(projectState);
 		}
 
-		return new RuntimeReactorStateManager(projectStates, new PropertiesReactorStateRepository());
+		return new RuntimeReactorStateManager(projectStates, new JsonReactorStateRepository());
 	}
 
 	public void saveProjectStates() throws IOException {

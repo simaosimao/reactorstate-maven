@@ -1,0 +1,19 @@
+{
+  "projectId" : "de.syquel.maven.reactorstate:reactorstate-maven-extension-stub-module3:jar:1.0-SNAPSHOT",
+  "pom" : {
+    "coordinates" : "de.syquel.maven.reactorstate:reactorstate-maven-extension-stub-module3:pom:1.0-SNAPSHOT",
+    "path" : "pom.xml",
+    "properties" : { }
+  },
+  "mainArtifact" : {
+    "coordinates" : "de.syquel.maven.reactorstate:reactorstate-maven-extension-stub-module3:jar:1.0-SNAPSHOT",
+    "path" : "target/reactorstate-maven-extension-stub-module3-1.0-SNAPSHOT.jar",
+    "properties" : {
+      "language" : "java",
+      "constitutesBuildPath" : "true",
+      "type" : "jar",
+      "includesDependencies" : "false"
+    }
+  },
+  "attachedArtifacts" : [ ]
+}

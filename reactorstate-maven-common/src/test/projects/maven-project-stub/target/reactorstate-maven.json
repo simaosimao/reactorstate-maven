@@ -1,0 +1,24 @@
+{
+  "projectId" : "de.syquel.maven.reactorstate:reactorstate-maven-extension-stub:pom:1.0-SNAPSHOT",
+  "pom" : {
+    "coordinates" : "de.syquel.maven.reactorstate:reactorstate-maven-extension-stub:pom:1.0-SNAPSHOT",
+    "path" : "pom.xml",
+    "properties" : {
+      "language" : "none",
+      "constitutesBuildPath" : "false",
+      "type" : "pom",
+      "includesDependencies" : "false"
+    }
+  },
+  "mainArtifact" : {
+    "coordinates" : "de.syquel.maven.reactorstate:reactorstate-maven-extension-stub:pom:1.0-SNAPSHOT",
+    "path" : "pom.xml",
+    "properties" : {
+      "language" : "none",
+      "constitutesBuildPath" : "false",
+      "type" : "pom",
+      "includesDependencies" : "false"
+    }
+  },
+  "attachedArtifacts" : [ ]
+}

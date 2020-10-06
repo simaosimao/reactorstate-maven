@@ -22,7 +22,7 @@ import org.junit.Rule;
 import org.junit.Test;
 
 import de.syquel.maven.reactorstate.common.persistence.IReactorStateRepository;
-import de.syquel.maven.reactorstate.common.persistence.PropertiesReactorStateRepository;
+import de.syquel.maven.reactorstate.common.persistence.json.JsonReactorStateRepository;
 import io.takari.maven.testing.TestMavenRuntime;
 import io.takari.maven.testing.TestResources;
 
@@ -126,7 +126,7 @@ public class RuntimeReactorStateManagerTest {
 	}
 
 	private static MavenProjectState fetchReactorState(final MavenProject project) throws IOException {
-		final IReactorStateRepository reactorStateRepository = new PropertiesReactorStateRepository();
+		final IReactorStateRepository reactorStateRepository = new JsonReactorStateRepository();
 
 		final MavenProjectState mavenProjectState = reactorStateRepository.read(project);
 		reactorStateRepository.delete(mavenProjectState.getProject());

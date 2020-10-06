@@ -13,7 +13,6 @@ import org.apache.maven.execution.MavenSession;
 import org.apache.maven.project.MavenProject;
 import org.apache.maven.project.MavenProjectHelper;
 import org.apache.maven.project.ProjectBuilder;
-import org.eclipse.aether.artifact.ArtifactProperties;
 import org.hamcrest.MatcherAssert;
 import org.junit.Rule;
 import org.junit.Test;

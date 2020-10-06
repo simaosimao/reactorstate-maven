@@ -18,7 +18,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import de.syquel.maven.reactorstate.common.persistence.IReactorStateRepository;
-import de.syquel.maven.reactorstate.common.persistence.PropertiesReactorStateRepository;
+import de.syquel.maven.reactorstate.common.persistence.json.JsonReactorStateRepository;
 
 public class SavedReactorStateManager extends AbstractReactorStateManager {
 
@@ -36,7 +36,7 @@ public class SavedReactorStateManager extends AbstractReactorStateManager {
 		LOGGER.info("Resolving Maven project tree");
 		contributeWorkspaceProjects(session.getCurrentProject(), projects, session.getProjectBuildingRequest(), projectBuilder);
 
-		final IReactorStateRepository reactorStateRepository = new PropertiesReactorStateRepository();
+		final IReactorStateRepository reactorStateRepository = new JsonReactorStateRepository();
 
 		final Set<MavenProjectState> projectStates = new HashSet<>();
 		for (final MavenProject project : projects) {
