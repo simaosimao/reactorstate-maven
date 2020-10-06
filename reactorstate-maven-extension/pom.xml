@@ -12,6 +12,9 @@
 
     <artifactId>reactorstate-maven-extension</artifactId>
 
+    <name>ReactorState Maven Extension</name>
+    <description>A Maven extension for incremental Maven builds</description>
+
     <dependencies>
         <!-- Project -->
         <dependency>

@@ -11,6 +11,9 @@
 
     <artifactId>reactorstate-maven-common</artifactId>
 
+    <name>ReactorState Maven Common</name>
+    <description>Common functionality and utilities for Maven state management</description>
+
     <dependencies>
         <!-- Maven -->
         <dependency>
