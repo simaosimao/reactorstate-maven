@@ -39,6 +39,7 @@ public class RuntimeReactorStateManagerTest {
 
 		final MavenProject topLevelProject = testMavenRuntime.readMavenProject(baseDir);
 		final Properties topLevelProperties = fetchReactorStateProperties(topLevelProject);
+		Files.delete(topLevelProject.getBasedir().toPath().resolve(topLevelProject.getBuild().getDirectory()));
 
 		final MavenProject module1Project = testMavenRuntime.readMavenProject(new File(baseDir, "module1"));
 		final Properties module1Properties = fetchReactorStateProperties(module1Project);
