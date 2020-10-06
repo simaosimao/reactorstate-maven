@@ -1,10 +1,12 @@
 package de.syquel.maven.reactorstate.common;
 
 import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.CoreMatchers.nullValue;
 
 import java.io.File;
 import java.util.Arrays;
+import java.util.List;
 
 import org.apache.maven.artifact.Artifact;
 import org.apache.maven.execution.MavenSession;
@@ -69,6 +71,65 @@ public class SavedReactorStateManagerTest {
 			module1Project.getArtifact().getFile(),
 			is(module1Project.getBasedir().toPath().resolve("target/reactorstate-maven-extension-stub-module1-1.0-SNAPSHOT.jar").toFile())
 		);
+
+		MatcherAssert.assertThat(
+			"Sub-module2 artifact is resolved",
+			module2Project.getArtifact().getFile(),
+			is(module2Project.getBasedir().toPath().resolve("target/reactorstate-maven-extension-stub-module2-1.0-SNAPSHOT.jar").toFile())
+		);
+
+		final Artifact module2AttachedArtifact = module2Project.getAttachedArtifacts().get(0);
+		MatcherAssert.assertThat(
+			"Sub-module2 has javadoc artifact attached",
+			module2AttachedArtifact.getId(),
+			is("de.syquel.maven.reactorstate:reactorstate-maven-extension-stub-module2:jar:javadoc:1.0-SNAPSHOT")
+		);
+		MatcherAssert.assertThat(
+			"Sub-module2 has javadoc artifact file attached",
+			module2AttachedArtifact.getFile(),
+			is(module2Project.getBasedir().toPath().resolve("target/reactorstate-maven-extension-stub-module2-1.0-SNAPSHOT-javadoc.jar").toFile())
+		);
+	}
+
+	@Test
+	public void testRestoreSubModuleState() throws Exception {
+		// given
+		final File baseDir = resources.getBasedir("maven-project-stub");
+
+		final MavenProject topLevelProject = testMavenRuntime.readMavenProject(baseDir);
+		final MavenProject module1Project = testMavenRuntime.readMavenProject(new File(baseDir, "module1"));
+		final MavenProject module2Project = testMavenRuntime.readMavenProject(new File(baseDir, "module2"));
+
+		final MavenSession session = testMavenRuntime.newMavenSession(module2Project);
+
+		final ProjectBuilder projectBuilder = testMavenRuntime.lookup(ProjectBuilder.class);
+		final MavenProjectHelper projectHelper = testMavenRuntime.lookup(MavenProjectHelper.class);
+
+		// when
+		final SavedReactorStateManager reactorStateManager = SavedReactorStateManager.create(session, projectBuilder);
+
+		MatcherAssert.assertThat(
+			"Top-level project state is present",
+			reactorStateManager.getProjectState(topLevelProject),
+			notNullValue(MavenProjectState.class)
+		);
+		MatcherAssert.assertThat(
+			"Sub-module1 project state is present",
+			reactorStateManager.getProjectState(module1Project),
+			notNullValue(MavenProjectState.class)
+		);
+		MatcherAssert.assertThat(
+			"Sub-module2 project state is present",
+			reactorStateManager.getProjectState(module2Project),
+			notNullValue(MavenProjectState.class)
+		);
+
+		reactorStateManager.restoreProjectStates(session, projectHelper);
+
+		// then
+		final List<MavenProject> sessionProjects = session.getProjects();
+		MatcherAssert.assertThat("Maven session contains only one project", sessionProjects.size(), is(1));
+		MatcherAssert.assertThat("Maven session contains only Sub-module2", sessionProjects.get(0), is(module2Project));
 
 		MatcherAssert.assertThat(
 			"Sub-module2 artifact is resolved",
