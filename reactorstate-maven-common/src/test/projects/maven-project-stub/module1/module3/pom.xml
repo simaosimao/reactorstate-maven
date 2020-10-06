@@ -6,18 +6,10 @@
 
     <parent>
         <groupId>de.syquel.maven.reactorstate</groupId>
-        <artifactId>reactorstate-maven-extension-stub</artifactId>
+        <artifactId>reactorstate-maven-extension-stub-module1</artifactId>
         <version>1.0-SNAPSHOT</version>
     </parent>
 
-    <artifactId>reactorstate-maven-extension-stub-module2</artifactId>
-
-    <dependencies>
-        <dependency>
-            <groupId>${project.groupId}</groupId>
-            <artifactId>reactorstate-maven-extension-stub-module3</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-    </dependencies>
+    <artifactId>reactorstate-maven-extension-stub-module3</artifactId>
 
 </project>

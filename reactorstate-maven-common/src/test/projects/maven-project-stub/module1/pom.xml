@@ -11,5 +11,10 @@
     </parent>
 
     <artifactId>reactorstate-maven-extension-stub-module1</artifactId>
+    <packaging>pom</packaging>
+
+    <modules>
+        <module>module3</module>
+    </modules>
 
 </project>

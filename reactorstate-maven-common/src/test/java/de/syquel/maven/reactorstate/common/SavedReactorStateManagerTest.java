@@ -36,9 +36,10 @@ public class SavedReactorStateManagerTest {
 		final MavenProject topLevelProject = testMavenRuntime.readMavenProject(baseDir);
 		final MavenProject module1Project = testMavenRuntime.readMavenProject(new File(baseDir, "module1"));
 		final MavenProject module2Project = testMavenRuntime.readMavenProject(new File(baseDir, "module2"));
+		final MavenProject module3Project = testMavenRuntime.readMavenProject(new File(module1Project.getBasedir(), "module3"));
 
 		final MavenSession session = testMavenRuntime.newMavenSession(topLevelProject);
-		session.setProjects(Arrays.asList(topLevelProject, module1Project, module2Project));
+		session.setProjects(Arrays.asList(topLevelProject, module1Project, module2Project, module3Project));
 
 		final ProjectBuilder projectBuilder = testMavenRuntime.lookup(ProjectBuilder.class);
 		final MavenProjectHelper projectHelper = testMavenRuntime.lookup(MavenProjectHelper.class);
@@ -46,9 +47,9 @@ public class SavedReactorStateManagerTest {
 		// when
 		final SavedReactorStateManager reactorStateManager = SavedReactorStateManager.create(session, projectBuilder);
 		MatcherAssert.assertThat(
-			"Exactly three saved project states are present",
+			"Exactly four saved project states are present",
 			reactorStateManager.getProjectStates().size(),
-			is(3)
+			is(4)
 		);
 
 		final MavenProjectState topLevelProjectState = reactorStateManager.getProjectState(topLevelProject);
@@ -67,9 +68,9 @@ public class SavedReactorStateManagerTest {
 		MatcherAssert.assertThat("Top-level artifact is resolved", topLevelProject.getArtifact().getFile(), is(topLevelProject.getFile()));
 
 		MatcherAssert.assertThat(
-			"Sub-module1 artifact is resolved",
-			module1Project.getArtifact().getFile(),
-			is(module1Project.getBasedir().toPath().resolve("target/reactorstate-maven-extension-stub-module1-1.0-SNAPSHOT.jar").toFile())
+			"Sub-module3 artifact is resolved",
+			module3Project.getArtifact().getFile(),
+			is(module3Project.getBasedir().toPath().resolve("target/reactorstate-maven-extension-stub-module3-1.0-SNAPSHOT.jar").toFile())
 		);
 
 		MatcherAssert.assertThat(
@@ -99,6 +100,7 @@ public class SavedReactorStateManagerTest {
 		final MavenProject topLevelProject = testMavenRuntime.readMavenProject(baseDir);
 		final MavenProject module1Project = testMavenRuntime.readMavenProject(new File(baseDir, "module1"));
 		final MavenProject module2Project = testMavenRuntime.readMavenProject(new File(baseDir, "module2"));
+		final MavenProject module3Project = testMavenRuntime.readMavenProject(new File(module1Project.getBasedir(), "module3"));
 
 		final MavenSession session = testMavenRuntime.newMavenSession(module2Project);
 
@@ -121,6 +123,11 @@ public class SavedReactorStateManagerTest {
 		MatcherAssert.assertThat(
 			"Sub-module2 project state is present",
 			reactorStateManager.getProjectState(module2Project),
+			notNullValue(MavenProjectState.class)
+		);
+		MatcherAssert.assertThat(
+			"Sub-module3 project state is present",
+			reactorStateManager.getProjectState(module3Project),
 			notNullValue(MavenProjectState.class)
 		);
 

@@ -42,11 +42,14 @@ public class RuntimeReactorStateManagerTest {
 
 		final MavenProject module1Project = testMavenRuntime.readMavenProject(new File(baseDir, "module1"));
 		final Properties module1Properties = fetchReactorStateProperties(module1Project);
-		{
-			final Path projectBasePath = module1Project.getBasedir().toPath();
 
-			final Path artifactPath = projectBasePath.resolve("target/reactorstate-maven-extension-stub-module1-1.0-SNAPSHOT.jar");
-			module1Project.getArtifact().setFile(artifactPath.toFile());
+		final MavenProject module3Project = testMavenRuntime.readMavenProject(new File(module1Project.getBasedir(), "module3"));
+		final Properties module3Properties = fetchReactorStateProperties(module3Project);
+		{
+			final Path projectBasePath = module3Project.getBasedir().toPath();
+
+			final Path artifactPath = projectBasePath.resolve("target/reactorstate-maven-extension-stub-module3-1.0-SNAPSHOT.jar");
+			module3Project.getArtifact().setFile(artifactPath.toFile());
 		}
 
 		final MavenProject module2Project = testMavenRuntime.readMavenProject(new File(baseDir, "module2"));
@@ -62,14 +65,14 @@ public class RuntimeReactorStateManagerTest {
 		}
 
 		final MavenSession session = testMavenRuntime.newMavenSession(topLevelProject);
-		session.setProjects(Arrays.asList(topLevelProject, module1Project, module2Project));
+		session.setProjects(Arrays.asList(topLevelProject, module1Project, module2Project, module3Project));
 
 		// when
 		final RuntimeReactorStateManager reactorStateManager = RuntimeReactorStateManager.create(session);
 		Assume.assumeThat(
-			"Exactly three runtime project states are present",
+			"Exactly four runtime project states are present",
 			reactorStateManager.getProjectStates().size(),
-			is(3)
+			is(4)
 		);
 
 		reactorStateManager.saveProjectStates();
@@ -83,6 +86,9 @@ public class RuntimeReactorStateManagerTest {
 
 		final Properties savedModule2Properties = fetchReactorStateProperties(module2Project);
 		assertProperties("Saved module2 reactor state is correct", module2Properties, savedModule2Properties);
+
+		final Properties savedModule3Properties = fetchReactorStateProperties(module3Project);
+		assertProperties("Saved module3 reactor state is correct", module3Properties, savedModule3Properties);
 	}
 
 	private static void assertProperties(final String message, final Properties expected, final Properties actual) {
