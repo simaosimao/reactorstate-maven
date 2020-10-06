@@ -13,6 +13,7 @@ import org.apache.maven.execution.MavenSession;
 import org.apache.maven.project.MavenProject;
 import org.apache.maven.project.MavenProjectHelper;
 import org.apache.maven.project.ProjectBuilder;
+import org.eclipse.aether.artifact.ArtifactProperties;
 import org.hamcrest.MatcherAssert;
 import org.junit.Rule;
 import org.junit.Test;
@@ -67,10 +68,21 @@ public class SavedReactorStateManagerTest {
 		// then
 		MatcherAssert.assertThat("Top-level artifact is resolved", topLevelProject.getArtifact().getFile(), is(topLevelProject.getFile()));
 
+		final Artifact module3MainArtifact = module3Project.getArtifact();
 		MatcherAssert.assertThat(
 			"Sub-module3 artifact is resolved",
-			module3Project.getArtifact().getFile(),
+			module3MainArtifact.getFile(),
 			is(module3Project.getBasedir().toPath().resolve("target/reactorstate-maven-extension-stub-module3-1.0-SNAPSHOT.jar").toFile())
+		);
+		MatcherAssert.assertThat(
+			"Sub-module3 artifact is of type 'jar'",
+			module3MainArtifact.getType(),
+			is("jar")
+		);
+		MatcherAssert.assertThat(
+			"Sub-module3 artifact language is 'java'",
+			module3MainArtifact.getArtifactHandler().getLanguage(),
+			is("java")
 		);
 
 		MatcherAssert.assertThat(
