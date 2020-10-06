@@ -12,7 +12,6 @@ import org.apache.maven.project.MavenProject;
 import org.apache.maven.project.MavenProjectHelper;
 import org.apache.maven.project.ProjectBuilder;
 import org.hamcrest.MatcherAssert;
-import org.junit.Assume;
 import org.junit.Rule;
 import org.junit.Test;
 
@@ -44,21 +43,21 @@ public class SavedReactorStateManagerTest {
 
 		// when
 		final SavedReactorStateManager reactorStateManager = SavedReactorStateManager.create(session, projectBuilder);
-		Assume.assumeThat(
+		MatcherAssert.assertThat(
 			"Exactly three saved project states are present",
 			reactorStateManager.getProjectStates().size(),
 			is(3)
 		);
 
 		final MavenProjectState topLevelProjectState = reactorStateManager.getProjectState(topLevelProject);
-		Assume.assumeThat("Project POM is for top-level project", topLevelProjectState.getPom().getFile(), is(topLevelProject.getFile()));
-		Assume.assumeThat("Main artifact is the project POM", topLevelProjectState.getMainArtifact(), is(topLevelProjectState.getPom()));
-		Assume.assumeThat("Top-level artifact is not resolved", topLevelProject.getArtifact().getFile(), nullValue(File.class));
-		Assume.assumeThat("Top-level has no artifacts attached", topLevelProjectState.getAttachedArtifacts().size(), is(0));
+		MatcherAssert.assertThat("Project POM is for top-level project", topLevelProjectState.getPom().getFile(), is(topLevelProject.getFile()));
+		MatcherAssert.assertThat("Main artifact is the project POM", topLevelProjectState.getMainArtifact(), is(topLevelProjectState.getPom()));
+		MatcherAssert.assertThat("Top-level artifact is not resolved", topLevelProject.getArtifact().getFile(), nullValue(File.class));
+		MatcherAssert.assertThat("Top-level has no artifacts attached", topLevelProjectState.getAttachedArtifacts().size(), is(0));
 
-		Assume.assumeThat("Sub-module1 artifact is not resolved", module1Project.getArtifact().getFile(), nullValue(File.class));
-		Assume.assumeThat("Sub-module2 artifact is not resolved", module2Project.getArtifact().getFile(), nullValue(File.class));
-		Assume.assumeThat("Sub-module2 has no atrifacts attached", module2Project.getAttachedArtifacts().size(), is(0));
+		MatcherAssert.assertThat("Sub-module1 artifact is not resolved", module1Project.getArtifact().getFile(), nullValue(File.class));
+		MatcherAssert.assertThat("Sub-module2 artifact is not resolved", module2Project.getArtifact().getFile(), nullValue(File.class));
+		MatcherAssert.assertThat("Sub-module2 has no artifacts attached", module2Project.getAttachedArtifacts().size(), is(0));
 
 		reactorStateManager.restoreProjectStates(session, projectHelper);
 
