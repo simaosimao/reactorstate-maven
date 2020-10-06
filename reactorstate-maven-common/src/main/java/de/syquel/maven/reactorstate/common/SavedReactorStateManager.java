@@ -101,7 +101,7 @@ public class SavedReactorStateManager extends AbstractReactorStateManager {
 
 		// Discover upstream Maven projects within workspace
 		final MavenProject parentProject = project.getParent();
-		if (parentProject != null && !discoveredProjects.contains(parentProject)) {
+		if (parentProject != null && !discoveredProjects.contains(parentProject) && isWorkspaceProject(parentProject)) {
 			LOGGER.info("Discovered Maven parent project {}", parentProject.getId());
 			discoveredProjects.add(parentProject);
 
@@ -172,6 +172,10 @@ public class SavedReactorStateManager extends AbstractReactorStateManager {
 				.setFile(artifactPath.toFile());
 
 		return artifact;
+	}
+
+	private static boolean isWorkspaceProject(final MavenProject project) {
+		return project.getBasedir() != null;
 	}
 
 }
