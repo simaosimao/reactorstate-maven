@@ -230,6 +230,7 @@
                         <javadocExecutable>${java.home}/bin/</javadocExecutable>
                         <release>${java.version}</release>
                         <additionalOptions>-html5</additionalOptions>
+                        <notimestamp>true</notimestamp>
                     </configuration>
                 </plugin>
                 <plugin>
