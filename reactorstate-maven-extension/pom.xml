@@ -75,6 +75,8 @@
                             <artifactSet>
                                 <includes>
                                     <include>${project.groupId}</include>
+                                    <include>com.fasterxml.jackson.core</include>
+                                    <include>com.fasterxml.jackson.jr</include>
                                 </includes>
                             </artifactSet>
                         </configuration>

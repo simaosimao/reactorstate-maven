@@ -1,13 +1,7 @@
 package de.syquel.maven.reactorstate.common;
 
-import java.io.File;
 import java.io.IOException;
-import java.io.Writer;
-import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
-import java.nio.file.Path;
 import java.util.HashSet;
-import java.util.Properties;
 import java.util.Set;
 
 import org.apache.maven.RepositoryUtils;
@@ -15,12 +9,17 @@ import org.apache.maven.execution.MavenSession;
 import org.apache.maven.project.MavenProject;
 import org.apache.maven.repository.internal.ArtifactDescriptorUtils;
 import org.eclipse.aether.artifact.Artifact;
-import org.eclipse.aether.util.artifact.ArtifactIdUtils;
+
+import de.syquel.maven.reactorstate.common.persistence.IReactorStateRepository;
+import de.syquel.maven.reactorstate.common.persistence.json.JsonReactorStateRepository;
 
 public class RuntimeReactorStateManager extends AbstractReactorStateManager {
 
-	private RuntimeReactorStateManager(final Set<MavenProjectState> projectStates) {
+	private final IReactorStateRepository reactorStateRepository;
+
+	private RuntimeReactorStateManager(final Set<MavenProjectState> projectStates, final IReactorStateRepository reactorStateRepository) {
 		super(projectStates);
+		this.reactorStateRepository = reactorStateRepository;
 	}
 
 	public static RuntimeReactorStateManager create(final MavenSession mavenSession) {
@@ -30,28 +29,12 @@ public class RuntimeReactorStateManager extends AbstractReactorStateManager {
 			projectStates.add(projectState);
 		}
 
-		return new RuntimeReactorStateManager(projectStates);
+		return new RuntimeReactorStateManager(projectStates, new JsonReactorStateRepository());
 	}
 
 	public void saveProjectStates() throws IOException {
-		for (final MavenProjectState state : getProjectStates()) {
-			saveProjectState(state);
-		}
-	}
-
-	private void saveProjectState(final MavenProjectState projectState) throws IOException {
-		final MavenProject project = projectState.getProject();
-
-		final Path projectBuildPath = resolveProjectBuildPath(project);
-		if (!Files.isDirectory(projectBuildPath)) {
-			Files.createDirectory(projectBuildPath);
-		}
-
-		final Properties stateProperties = buildProjectStateProperties(projectState);
-
-		final Path projectStatePath = projectBuildPath.resolve(STATE_PROPERTIES_FILENAME);
-		try (final Writer stateWriter = Files.newBufferedWriter(projectStatePath, StandardCharsets.UTF_8)) {
-			stateProperties.store(stateWriter, "Maven session state");
+		for (final MavenProjectState projectState : getProjectStates()) {
+			reactorStateRepository.save(projectState);
 		}
 	}
 
@@ -73,27 +56,6 @@ public class RuntimeReactorStateManager extends AbstractReactorStateManager {
 		}
 
 		return projectState;
-	}
-
-	private static Properties buildProjectStateProperties(final MavenProjectState projectState) {
-		final Properties stateProperties = new Properties();
-
-		final Path projectBasePath = projectState.getProject().getBasedir().toPath();
-
-		final Artifact pomArtifact = projectState.getPom();
-		stateProperties.put(ArtifactIdUtils.toId(pomArtifact), projectBasePath.relativize(pomArtifact.getFile().toPath()).toString());
-
-		final Artifact mainArtifact = projectState.getMainArtifact();
-		final String mainArtifactId = ArtifactIdUtils.toId(mainArtifact);
-		final File mainArtifactFile = mainArtifact.getFile();
-		stateProperties.put(PROPERTY_KEY_MAIN_ARTIFACT, mainArtifactId);
-		stateProperties.put(mainArtifactId, (mainArtifactFile != null) ? projectBasePath.relativize(mainArtifactFile.toPath()).toString() : "");
-
-		for (final Artifact attachedArtifact : projectState.getAttachedArtifacts()) {
-			stateProperties.put(ArtifactIdUtils.toId(attachedArtifact), projectBasePath.relativize(attachedArtifact.getFile().toPath()).toString());
-		}
-
-		return stateProperties;
 	}
 
 }

@@ -18,6 +18,10 @@
             <artifactId>maven-core</artifactId>
             <scope>provided</scope>
         </dependency>
+        <dependency>
+            <groupId>com.fasterxml.jackson.jr</groupId>
+            <artifactId>jackson-jr-objects</artifactId>
+        </dependency>
 
         <!-- Testing -->
         <dependency>
