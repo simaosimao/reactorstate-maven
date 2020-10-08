@@ -13,6 +13,9 @@
     <artifactId>reactorstate-maven-plugin</artifactId>
     <packaging>maven-plugin</packaging>
 
+    <name>ReactorState Maven Plugin</name>
+    <description>A Maven plugin for incremental Maven builds</description>
+
     <prerequisites>
         <maven>3.5</maven>
     </prerequisites>
