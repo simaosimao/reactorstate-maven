@@ -36,6 +36,7 @@
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <project.build.outputTimestamp>1970-01-01T00:00:00-00:00</project.build.outputTimestamp>
         <java.version>8</java.version>
 
         <maven.compiler.release>${java.version}</maven.compiler.release>
@@ -229,6 +230,7 @@
                         <javadocExecutable>${java.home}/bin/</javadocExecutable>
                         <release>${java.version}</release>
                         <additionalOptions>-html5</additionalOptions>
+                        <notimestamp>true</notimestamp>
                     </configuration>
                 </plugin>
                 <plugin>
