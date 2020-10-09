@@ -49,6 +49,7 @@
         <parallel>classesAndMethods</parallel>
         <threadCount>1</threadCount>
         <perCoreThreadCount>true</perCoreThreadCount>
+        <skipTests/>
     </properties>
 
     <dependencyManagement>
@@ -335,6 +336,7 @@
                     </executions>
                     <configuration>
                         <mutators>STRONGER</mutators>
+                        <skipTests>${skipTests}</skipTests>
                     </configuration>
                 </plugin>
                 <plugin>
