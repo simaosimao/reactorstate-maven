@@ -1,0 +1,18 @@
+---
+---
+
+@import "{{ site.theme }}";
+
+#header_wrap .inner {
+  padding: 20px 10px;
+}
+
+#project_tagline {
+  padding-bottom: inherit;
+  margin: inherit;
+  font-style: italic;
+}
+
+#main_content {
+  padding-top: inherit;
+}

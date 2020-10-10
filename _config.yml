@@ -1,1 +1,27 @@
+# Build settings
 theme: jekyll-theme-slate
+markdown: CommonMarkGhPages
+commonmark:
+  options: ["SMART", "FOOTNOTES"]
+  extensions: ["strikethrough", "autolink", "table", "tagfilter"]
+liquid:
+  error_mode: strict
+
+# Theme Customizing
+description: Stateful Maven builds. Easier development. Better CI.
+
+# Exclude from processing.
+exclude:
+  - Gemfile
+  - Gemfile.lock
+  - node_modules
+  - vendor/bundle/
+  - vendor/cache/
+  - vendor/gems/
+  - vendor/ruby/
+  - CNAME
+  - '*.iml'
+
+collections:
+  mavendocs:
+    output: true
