@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>MavenProjectStateDto.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">ReactorState Maven Common</a> &gt; <a href="index.source.html" class="el_package">de.syquel.maven.reactorstate.common.persistence.json.dto</a> &gt; <span class="el_source">MavenProjectStateDto.java</span></div><h1>MavenProjectStateDto.java</h1><pre class="source lang-java linenums">package de.syquel.maven.reactorstate.common.persistence.json.dto;
+
+import java.util.Collection;
+import java.util.Set;
+
+public class MavenProjectStateDto {
+
+	private String projectId;
+	private ArtifactDto pom;
+	private ArtifactDto mainArtifact;
+	private Collection&lt;ArtifactDto&gt; attachedArtifacts;
+
+<span class="fc" id="L13">	public MavenProjectStateDto(final String projectId, final ArtifactDto pom, final ArtifactDto mainArtifact, final Set&lt;ArtifactDto&gt; attachedArtifacts) {</span>
+<span class="fc" id="L14">		this.projectId = projectId;</span>
+<span class="fc" id="L15">		this.pom = pom;</span>
+<span class="fc" id="L16">		this.mainArtifact = mainArtifact;</span>
+<span class="fc" id="L17">		this.attachedArtifacts = attachedArtifacts;</span>
+<span class="fc" id="L18">	}</span>
+
+<span class="fc" id="L20">	protected MavenProjectStateDto() {</span>
+		// Jackson constructor
+<span class="fc" id="L22">	}</span>
+
+	public String getProjectId() {
+<span class="fc" id="L25">		return projectId;</span>
+	}
+
+	protected void setProjectId(final String projectId) {
+<span class="fc" id="L29">		this.projectId = projectId;</span>
+<span class="fc" id="L30">	}</span>
+
+	public ArtifactDto getPom() {
+<span class="fc" id="L33">		return pom;</span>
+	}
+
+	protected void setPom(final ArtifactDto pom) {
+<span class="fc" id="L37">		this.pom = pom;</span>
+<span class="fc" id="L38">	}</span>
+
+	public ArtifactDto getMainArtifact() {
+<span class="fc" id="L41">		return mainArtifact;</span>
+	}
+
+	protected void setMainArtifact(final ArtifactDto mainArtifact) {
+<span class="fc" id="L45">		this.mainArtifact = mainArtifact;</span>
+<span class="fc" id="L46">	}</span>
+
+	public Collection&lt;ArtifactDto&gt; getAttachedArtifacts() {
+<span class="fc" id="L49">		return attachedArtifacts;</span>
+	}
+
+	protected void setAttachedArtifacts(final Collection&lt;ArtifactDto&gt; attachedArtifacts) {
+<span class="fc" id="L53">		this.attachedArtifacts = attachedArtifacts;</span>
+<span class="fc" id="L54">	}</span>
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.6.202009150832</span></div></body></html>

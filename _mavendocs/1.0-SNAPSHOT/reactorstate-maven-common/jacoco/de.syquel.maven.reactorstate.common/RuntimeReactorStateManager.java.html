@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>RuntimeReactorStateManager.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">ReactorState Maven Common</a> &gt; <a href="index.source.html" class="el_package">de.syquel.maven.reactorstate.common</a> &gt; <span class="el_source">RuntimeReactorStateManager.java</span></div><h1>RuntimeReactorStateManager.java</h1><pre class="source lang-java linenums">package de.syquel.maven.reactorstate.common;
+
+import java.io.IOException;
+import java.util.HashSet;
+import java.util.Set;
+
+import org.apache.maven.RepositoryUtils;
+import org.apache.maven.execution.MavenSession;
+import org.apache.maven.project.MavenProject;
+import org.apache.maven.repository.internal.ArtifactDescriptorUtils;
+import org.eclipse.aether.artifact.Artifact;
+
+import de.syquel.maven.reactorstate.common.persistence.IReactorStateRepository;
+import de.syquel.maven.reactorstate.common.persistence.json.JsonReactorStateRepository;
+
+public class RuntimeReactorStateManager extends AbstractReactorStateManager {
+
+	private final IReactorStateRepository reactorStateRepository;
+
+	private RuntimeReactorStateManager(final Set&lt;MavenProjectState&gt; projectStates, final IReactorStateRepository reactorStateRepository) {
+<span class="fc" id="L21">		super(projectStates);</span>
+<span class="fc" id="L22">		this.reactorStateRepository = reactorStateRepository;</span>
+<span class="fc" id="L23">	}</span>
+
+	public static RuntimeReactorStateManager create(final MavenSession mavenSession) {
+<span class="fc" id="L26">		final Set&lt;MavenProjectState&gt; projectStates = new HashSet&lt;&gt;();</span>
+<span class="fc bfc" id="L27" title="All 2 branches covered.">		for (final MavenProject project : mavenSession.getProjects()) {</span>
+<span class="fc" id="L28">			final MavenProjectState projectState = buildProjectState(project);</span>
+<span class="fc" id="L29">			projectStates.add(projectState);</span>
+<span class="fc" id="L30">		}</span>
+
+<span class="fc" id="L32">		return new RuntimeReactorStateManager(projectStates, new JsonReactorStateRepository());</span>
+	}
+
+	public void saveProjectStates() throws IOException {
+<span class="fc bfc" id="L36" title="All 2 branches covered.">		for (final MavenProjectState projectState : getProjectStates()) {</span>
+<span class="fc" id="L37">			reactorStateRepository.save(projectState);</span>
+<span class="fc" id="L38">		}</span>
+<span class="fc" id="L39">	}</span>
+
+	private static MavenProjectState buildProjectState(final MavenProject project) {
+<span class="fc" id="L42">		final Artifact mainArtifact = RepositoryUtils.toArtifact(project.getArtifact());</span>
+
+<span class="fc" id="L44">		final Artifact pom =</span>
+			ArtifactDescriptorUtils
+<span class="fc" id="L46">				.toPomArtifact(mainArtifact)</span>
+<span class="fc" id="L47">				.setFile(project.getFile());</span>
+
+<span class="fc" id="L49">		final Set&lt;Artifact&gt; attachedArtifacts = new HashSet&lt;&gt;(RepositoryUtils.toArtifacts(project.getAttachedArtifacts()));</span>
+
+		final MavenProjectState projectState;
+<span class="fc bfc" id="L52" title="All 2 branches covered.">		if (&quot;pom&quot;.equals(mainArtifact.getExtension())) {</span>
+<span class="fc" id="L53">			projectState = new MavenProjectState(project, pom, pom, attachedArtifacts);</span>
+		} else {
+<span class="fc" id="L55">			projectState = new MavenProjectState(project, pom, mainArtifact, attachedArtifacts);</span>
+		}
+
+<span class="fc" id="L58">		return projectState;</span>
+	}
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.6.202009150832</span></div></body></html>

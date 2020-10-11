@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>DelegatingIdeWorkspaceReader.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">ReactorState Maven Extension</a> &gt; <a href="index.source.html" class="el_package">de.syquel.maven.reactorstate.extension.workspacereader</a> &gt; <span class="el_source">DelegatingIdeWorkspaceReader.java</span></div><h1>DelegatingIdeWorkspaceReader.java</h1><pre class="source lang-java linenums">package de.syquel.maven.reactorstate.extension.workspacereader;
+
+import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+
+import javax.inject.Inject;
+import javax.inject.Named;
+import javax.inject.Singleton;
+
+import org.apache.maven.AbstractMavenLifecycleParticipant;
+import org.apache.maven.MavenExecutionException;
+import org.apache.maven.execution.MavenSession;
+import org.codehaus.plexus.PlexusContainer;
+import org.codehaus.plexus.component.repository.exception.ComponentLookupException;
+import org.eclipse.aether.artifact.Artifact;
+import org.eclipse.aether.repository.WorkspaceReader;
+import org.eclipse.aether.repository.WorkspaceRepository;
+import org.eclipse.aether.util.repository.ChainedWorkspaceReader;
+import org.eclipse.sisu.Priority;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+@Named(ReactorStateWorkspaceReader.WORKSPACE_READER_IDE_QUALIFIER)
+@Singleton
+@Priority(Integer.MAX_VALUE)
+public class DelegatingIdeWorkspaceReader extends AbstractMavenLifecycleParticipant implements WorkspaceReader {
+
+<span class="fc" id="L30">	private static final Logger LOGGER = LoggerFactory.getLogger(DelegatingIdeWorkspaceReader.class);</span>
+
+	private final PlexusContainer plexusContainer;
+<span class="fc" id="L33">	private ChainedWorkspaceReader delegate = new ChainedWorkspaceReader();</span>
+
+	@Inject
+<span class="fc" id="L36">	public DelegatingIdeWorkspaceReader(final PlexusContainer plexusContainer) {</span>
+<span class="fc" id="L37">		this.plexusContainer = plexusContainer;</span>
+<span class="fc" id="L38">	}</span>
+
+	@Override
+	public void afterSessionStart(final MavenSession session) throws MavenExecutionException {
+		final Map&lt;String, WorkspaceReader&gt; workspaceReaders;
+		try {
+<span class="fc" id="L44">			workspaceReaders = plexusContainer.lookupMap(WorkspaceReader.class);</span>
+<span class="nc" id="L45">		} catch (final ComponentLookupException e) {</span>
+<span class="nc" id="L46">			throw new MavenExecutionException(&quot;No workspace readers registered&quot;, e);</span>
+<span class="fc" id="L47">		}</span>
+
+<span class="fc" id="L49">		final List&lt;WorkspaceReader&gt; ideWorkspaceReaders = new ArrayList&lt;&gt;();</span>
+<span class="fc bfc" id="L50" title="All 2 branches covered.">		for (final Map.Entry&lt;String, WorkspaceReader&gt; workspaceReaderEntry : workspaceReaders.entrySet()) {</span>
+<span class="fc" id="L51">			final String workspaceReaderQualifier = workspaceReaderEntry.getKey();</span>
+<span class="fc bfc" id="L52" title="All 2 branches covered.">			if (!ReactorStateWorkspaceReader.WORKSPACE_READER_IDE_QUALIFIER.equals(workspaceReaderQualifier)) {</span>
+<span class="fc" id="L53">				continue;</span>
+			}
+
+<span class="fc" id="L56">			final WorkspaceReader workspaceReader = workspaceReaderEntry.getValue();</span>
+<span class="fc bfc" id="L57" title="All 2 branches covered.">			if (workspaceReader == this) {</span>
+<span class="fc" id="L58">				continue;</span>
+			}
+
+<span class="fc" id="L61">			LOGGER.info(&quot;Register workspace reader {}&quot;, workspaceReader.getRepository().getId());</span>
+<span class="fc" id="L62">			ideWorkspaceReaders.add(workspaceReader);</span>
+<span class="fc" id="L63">		}</span>
+
+<span class="fc" id="L65">		delegate = new ChainedWorkspaceReader(ideWorkspaceReaders.toArray(new WorkspaceReader[0]));</span>
+<span class="fc" id="L66">	}</span>
+
+	@Override
+	public File findArtifact(final Artifact artifact) {
+<span class="fc" id="L70">		return delegate.findArtifact(artifact);</span>
+	}
+
+	@Override
+	public List&lt;String&gt; findVersions(final Artifact artifact) {
+<span class="fc" id="L75">		return delegate.findVersions(artifact);</span>
+	}
+
+	@Override
+	public WorkspaceRepository getRepository() {
+<span class="fc" id="L80">		return delegate.getRepository();</span>
+	}
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.6.202009150832</span></div></body></html>

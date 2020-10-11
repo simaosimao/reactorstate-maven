@@ -1,0 +1,5 @@
+GROUP,PACKAGE,CLASS,INSTRUCTION_MISSED,INSTRUCTION_COVERED,BRANCH_MISSED,BRANCH_COVERED,LINE_MISSED,LINE_COVERED,COMPLEXITY_MISSED,COMPLEXITY_COVERED,METHOD_MISSED,METHOD_COVERED
+ReactorState Maven Plugin,de.syquel.maven.reactorstate.plugin.config,ReactorStatePluginProperties,2,58,1,1,0,14,1,4,0,4
+ReactorState Maven Plugin,de.syquel.maven.reactorstate.plugin,ReactorStateRestoreMojo,8,31,1,1,3,10,1,2,0,2
+ReactorState Maven Plugin,de.syquel.maven.reactorstate.plugin,ReactorStateSaveMojo,8,23,1,1,3,9,1,2,0,2
+ReactorState Maven Plugin,de.syquel.maven.reactorstate.plugin,ReactorStateInstallLocalMojo,29,161,2,6,9,39,2,6,0,4
