@@ -34,6 +34,14 @@
         <url>https://github.com/Syquel/reactorstate-maven</url>
     </scm>
 
+    <distributionManagement>
+        <site>
+            <id>local</id>
+            <name>local</name>
+            <url>file:///</url>
+        </site>
+    </distributionManagement>
+
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.build.outputTimestamp>1970-01-01T00:00:00-00:00</project.build.outputTimestamp>
@@ -141,13 +149,6 @@
                             <phase>process-test-classes</phase>
                             <goals>
                                 <goal>prepare-agent</goal>
-                            </goals>
-                        </execution>
-                        <execution>
-                            <id>report</id>
-                            <phase>verify</phase>
-                            <goals>
-                                <goal>report</goal>
                             </goals>
                         </execution>
                     </executions>

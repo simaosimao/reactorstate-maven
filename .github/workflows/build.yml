@@ -10,6 +10,7 @@ jobs:
         uses: actions/checkout@v2
         with:
           fetch-depth: 0
+          persist-credentials: false
       - name: "Preparation: Java Setup"
         uses: actions/setup-java@v1
         with:
@@ -64,3 +65,21 @@ jobs:
           mvn -B -Dmaven.ext.class.path=target/dependency/reactorstate-maven-extension-shaded.jar
           -DaltDeploymentRepository=maven::https://maven.pkg.github.com/${GITHUB_REPOSITORY} -DdeployAtEnd=true
           deploy:deploy
+      - id: deployment-stage-maven-site
+        name: "Deployment: Stage Maven Site"
+        if: ${{ github.ref == 'refs/heads/development' || startsWith(github.ref, 'refs/tags/') }}
+        uses: ./.github/actions/stage-maven-site
+      - name: "Deployment: GitHub Pages"
+        if: ${{ github.ref == 'refs/heads/development' || startsWith(github.ref, 'refs/tags/') }}
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_branch: "gh-pages"
+          publish_dir: ${{ steps.deployment-stage-maven-site.outputs.staging-directory }}
+          destination_dir: "./_mavendocs/${{ steps.deployment-stage-maven-site.outputs.project-version }}"
+          allow_empty_commit: true
+          user_name: "github-actions[bot]"
+          user_email: "github-actions[bot]@users.noreply.github.com"
+          commit_message: "Publish Maven Site ${{ steps.deployment-stage-maven-site.outputs.project-version }}"
+          keep_files: false
+          disable_nojekyll: true
