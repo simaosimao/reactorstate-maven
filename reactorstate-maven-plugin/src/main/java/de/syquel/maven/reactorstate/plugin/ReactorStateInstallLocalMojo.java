@@ -25,18 +25,40 @@ import org.eclipse.aether.util.artifact.ArtifactIdUtils;
 
 import de.syquel.maven.reactorstate.plugin.config.ReactorStatePluginProperties;
 
+/**
+ * Installs the reactorstate-maven-extension to the root of the current Maven project by inserting it into <code>.mvn/extensions.xml</code>.
+ */
 @Mojo(name = "install-local", requiresDirectInvocation = true, threadSafe = true, inheritByDefault = false)
 public class ReactorStateInstallLocalMojo extends AbstractMojo {
 
+	/**
+	 * The location of the Maven core extension configuration file.
+	 */
 	private static final String EXTENSIONS_FILENAME = ".mvn/extensions.xml";
 
+	/**
+	 * The current Maven execution context.
+	 */
 	private final MavenSession mavenSession;
 
+	/**
+	 * Constructs a new instance based on the current maven execution context.
+	 *
+	 * @param mavenSession
+	 */
 	@Inject
 	public ReactorStateInstallLocalMojo(final MavenSession mavenSession) {
 		this.mavenSession = mavenSession;
 	}
 
+	/**
+	 * Installs the reactorstate-maven-extension to the root of the current Maven project by inserting it into <code>.mvn/extensions.xml</code>.
+	 *
+	 * The file is automatically created if it does not exist; otherwise already registered extensions are preserved.
+	 *
+	 * @throws MojoExecutionException never.
+	 * @throws MojoFailureException if an error occured while registering the extension.
+	 */
 	@Override
 	public void execute() throws MojoExecutionException, MojoFailureException {
 		final Artifact reactorStateExtensionArtifact;
@@ -69,6 +91,12 @@ public class ReactorStateInstallLocalMojo extends AbstractMojo {
 		getLog().info("Registered " + ArtifactIdUtils.toId(reactorStateExtensionArtifact));
 	}
 
+	/**
+	 * Fetches the current Maven Core Extensions configuration from the root of the Maven project.
+	 *
+	 * @return The current extensions configuration or a new one if none exists.
+	 * @throws MojoFailureException if an error occurred while reading the current extensions configuration.
+	 */
 	private CoreExtensions fetchCoreExtensions() throws MojoFailureException {
 		final Path projectBaseDir = mavenSession.getTopLevelProject().getBasedir().toPath();
 		final Path mavenExtensionsPath = projectBaseDir.resolve(EXTENSIONS_FILENAME);
@@ -95,6 +123,12 @@ public class ReactorStateInstallLocalMojo extends AbstractMojo {
 		return coreExtensions;
 	}
 
+	/**
+	 * Persists the Maven Core Extensions configuration to <code>.mvn/extensions.xml</code>.
+	 *
+	 * @param coreExtensions The extensions configuration to persist.
+	 * @throws MojoFailureException if an error occurred while persisting the extensions configuration.
+	 */
 	private void persistCoreExtensions(final CoreExtensions coreExtensions) throws MojoFailureException {
 		final Path projectBaseDir = mavenSession.getTopLevelProject().getBasedir().toPath();
 		final Path mavenExtensionsPath = projectBaseDir.resolve(EXTENSIONS_FILENAME);

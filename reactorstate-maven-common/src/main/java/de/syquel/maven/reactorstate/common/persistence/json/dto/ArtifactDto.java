@@ -2,10 +2,24 @@ package de.syquel.maven.reactorstate.common.persistence.json.dto;
 
 import java.util.Map;
 
+/**
+ * The JSON-specific representation of a Maven artifact.
+ */
 public class ArtifactDto {
 
+	/**
+	 * The coordiates of a Maven artifact in the format [groupId]:[artifactId]:[extension]:[type]:[version]
+	 */
 	private String coordinates;
+
+	/**
+	 * The filesystem path to the Maven artifact.
+	 */
 	private String path;
+
+	/**
+	 * Aditional metadata which are a bound to the Maven artifact.
+	 */
 	private Map<String, String> properties;
 
 	public ArtifactDto(final String coordinates, final String path, final Map<String, String> properties) {

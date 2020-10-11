@@ -20,6 +20,9 @@ import org.slf4j.LoggerFactory;
 import de.syquel.maven.reactorstate.common.persistence.IReactorStateRepository;
 import de.syquel.maven.reactorstate.common.persistence.json.JsonReactorStateRepository;
 
+/**
+ * The implementation of a Maven Reactor state manager which operates on the saved state of Maven modules within a Maven project.
+ */
 public class SavedReactorStateManager extends AbstractReactorStateManager {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(SavedReactorStateManager.class);
@@ -28,6 +31,15 @@ public class SavedReactorStateManager extends AbstractReactorStateManager {
 		super(projectStates);
 	}
 
+	/**
+	 * Instantiates a Reactor state manager based on the saved state of the Maven project and its Maven modules.
+	 *
+	 * @param session The current Maven execution for the Maven project build.
+	 * @param projectBuilder The builder for Maven projects from POMs.
+	 * @return A Reactor state manager with the saved state of the Maven project and its Maven modules.
+	 * @throws ProjectBuildingException if an invalid POM is encountered.
+	 * @throws IOException if an error occurred while reading the persisted state.
+	 */
 	public static SavedReactorStateManager create(final MavenSession session, final ProjectBuilder projectBuilder)
 		throws ProjectBuildingException, IOException
 	{
@@ -49,6 +61,12 @@ public class SavedReactorStateManager extends AbstractReactorStateManager {
 		return new SavedReactorStateManager(projectStates);
 	}
 
+	/**
+	 * Restores the saved state of the Maven projects and its Maven modules within the current Maven execution.
+	 *
+	 * @param session The current Maven execution.
+	 * @param projectHelper The helper for Maven-related operations on the current state.
+	 */
 	public void restoreProjectStates(final MavenSession session, final MavenProjectHelper projectHelper) {
 		final Set<MavenProject> projects = new HashSet<>(session.getProjects());
 
@@ -72,6 +90,18 @@ public class SavedReactorStateManager extends AbstractReactorStateManager {
 		}
 	}
 
+	/**
+	 * Discovers Maven modules within the workspace of a Maven project recursively.
+	 *
+	 * The main use-case for this functionality is to be able to restore the state of other Maven modules, which are not being built in the current
+	 * Maven execution, but belong to the same Maven workspace, to enable standalone builds of submodules.
+	 *
+	 * @param project The Maven module to search for parent and child modules.
+	 * @param discoveredProjects The already discovered Maven modules within the Maven workspace.
+	 * @param buildingRequest The Maven building request of the current Maven execution.
+	 * @param projectBuilder The builder for Maven projects from POMs.
+	 * @throws ProjectBuildingException if an invalid POM is encountered.
+	 */
 	private static void contributeWorkspaceProjects(
 		final MavenProject project, final Set<MavenProject> discoveredProjects,
 		final ProjectBuildingRequest buildingRequest, final ProjectBuilder projectBuilder
@@ -104,6 +134,12 @@ public class SavedReactorStateManager extends AbstractReactorStateManager {
 		}
 	}
 
+	/**
+	 * Determines if a Maven module belongs to the current Maven workspace.
+	 *
+	 * @param project The Maven module to check.
+	 * @return Whether the Maven module belongs to the current Maven workspace.
+	 */
 	private static boolean isWorkspaceProject(final MavenProject project) {
 		return project.getBasedir() != null;
 	}
