@@ -22,8 +22,14 @@ import de.syquel.maven.reactorstate.common.persistence.json.dto.ArtifactDto;
 import de.syquel.maven.reactorstate.common.persistence.json.dto.MavenProjectStateDto;
 import de.syquel.maven.reactorstate.common.util.MavenProjectUtils;
 
+/**
+ * Implementation of a persistence repository for Maven state information via JSON.
+ */
 public class JsonReactorStateRepository implements IReactorStateRepository {
 
+	/**
+	 * The location to persist Maven state information to.
+	 */
 	private static final String STATE_PROPERTIES_FILENAME = "reactorstate-maven.json";
 
 	@Override

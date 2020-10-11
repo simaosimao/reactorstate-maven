@@ -8,11 +8,33 @@ import java.util.Set;
 import org.apache.maven.project.MavenProject;
 import org.eclipse.aether.artifact.Artifact;
 
+/**
+ * Representation of the state of a Maven module.
+ */
 public class MavenProjectState {
 
+	/**
+	 * The represented Maven module.
+	 */
 	private final MavenProject project;
+
+	/**
+	 * The POM of the Maven module as Maven artifact.
+	 */
 	private final Artifact pom;
+
+	/**
+	 * The main artifact of the Maven module.
+	 *
+	 * This is the primarily generated artifact, e.g. the JAR.
+	 */
 	private final Artifact mainArtifact;
+
+	/**
+	 * Additional attached artifacts on the Maven module.
+	 *
+	 * These are generated supporting artifacts, e.g. JavaDoc and sources JARs.
+	 */
 	private final Set<Artifact> attachedArtifacts;
 
 	public MavenProjectState(final MavenProject project, final Artifact pom, final Artifact mainArtifact, final Set<Artifact> attachedArtifacts) {
