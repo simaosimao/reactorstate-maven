@@ -18,23 +18,48 @@ import org.slf4j.LoggerFactory;
 import de.syquel.maven.reactorstate.common.RuntimeReactorStateManager;
 import de.syquel.maven.reactorstate.common.SavedReactorStateManager;
 
+/**
+ * A Maven Core Extension which saves the state of Maven executions afterwards and restores it beforehand.
+ */
 @Named(ReactorStateSaveExtension.EXTENSION_ID)
 @Singleton
 public class ReactorStateSaveExtension extends AbstractMavenLifecycleParticipant {
 
+	/**
+	 * The unique ID of this Maven Core Extension.
+	 */
 	public static final String EXTENSION_ID = "reactorstate-save";
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(ReactorStateSaveExtension.class);
 
+	/**
+	 * The helper for Maven-related operations on the current state.
+	 */
 	private final MavenProjectHelper projectHelper;
+
+	/**
+	 * The builder for Maven projects from POMs.
+	 */
 	private final ProjectBuilder projectBuilder;
 
+	/**
+	 * Constructs a new instance.
+	 *
+	 * @param projectHelper The helper for Maven-related operations on the current state.
+	 * @param projectBuilder The builder for Maven projects from POMs.
+	 */
 	@Inject
 	public ReactorStateSaveExtension(final MavenProjectHelper projectHelper, final ProjectBuilder projectBuilder) {
 		this.projectHelper = projectHelper;
 		this.projectBuilder = projectBuilder;
 	}
 
+	/**
+	 * Restores the saved state of the Maven projects and its Maven modules within the current Maven execution.
+	 *
+	 * @param session The current Maven execution.
+	 * @throws MavenExecutionException if an error occurred while restoring the saved state.
+	 */
 	@Override
 	public void afterProjectsRead(final MavenSession session) throws MavenExecutionException {
 		try {
@@ -50,6 +75,15 @@ public class ReactorStateSaveExtension extends AbstractMavenLifecycleParticipant
 		}
 	}
 
+	/**
+	 * Saves the current state of all Maven modules within the Maven execution.
+	 *
+	 * This is a Maven lifecycle hook, which is executed directly after the Maven session has read the project definitions of the Maven modules,
+	 * but before it has started building the project.
+	 *
+	 * @param session The current Maven execution.
+	 * @throws MavenExecutionException if an error occurred while saving the current state.
+	 */
 	@Override
 	public void afterSessionEnd(final MavenSession session) throws MavenExecutionException {
 		LOGGER.info("Saving state of Maven session");
