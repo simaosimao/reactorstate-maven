@@ -139,6 +139,7 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <hr>
 <pre>public class <span class="typeNameLabel">SavedReactorStateManager</span>
 extends <a href="AbstractReactorStateManager.html" title="class in de.syquel.maven.reactorstate.common">AbstractReactorStateManager</a></pre>
+<div class="block">The implementation of a Maven Reactor state manager which operates on the saved state of Maven modules within a Maven project.</div>
 </li>
 </ul>
 </div>
@@ -163,13 +164,17 @@ extends <a href="AbstractReactorStateManager.html" title="class in de.syquel.mav
 <td class="colFirst"><code>static <a href="SavedReactorStateManager.html" title="class in de.syquel.maven.reactorstate.common">SavedReactorStateManager</a></code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#create(org.apache.maven.execution.MavenSession,org.apache.maven.project.ProjectBuilder)">create</a></span>&#8203;(org.apache.maven.execution.MavenSession&nbsp;session,
       org.apache.maven.project.ProjectBuilder&nbsp;projectBuilder)</code></th>
-<td class="colLast">&nbsp;</td>
+<td class="colLast">
+<div class="block">Instantiates a Reactor state manager based on the saved state of the Maven project and its Maven modules.</div>
+</td>
 </tr>
 <tr id="i1" class="rowColor">
 <td class="colFirst"><code>void</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#restoreProjectStates(org.apache.maven.execution.MavenSession,org.apache.maven.project.MavenProjectHelper)">restoreProjectStates</a></span>&#8203;(org.apache.maven.execution.MavenSession&nbsp;session,
                     org.apache.maven.project.MavenProjectHelper&nbsp;projectHelper)</code></th>
-<td class="colLast">&nbsp;</td>
+<td class="colLast">
+<div class="block">Restores the saved state of the Maven projects and its Maven modules within the current Maven execution.</div>
+</td>
 </tr>
 </table>
 <ul class="blockList">
@@ -212,10 +217,16 @@ extends <a href="AbstractReactorStateManager.html" title="class in de.syquel.mav
                                               org.apache.maven.project.ProjectBuilder&nbsp;projectBuilder)
                                        throws org.apache.maven.project.ProjectBuildingException,
                                               <a href="https://docs.oracle.com/javase/8/docs/api/java/io/IOException.html?is-external=true" title="class or interface in java.io" class="externalLink">IOException</a></pre>
+<div class="block">Instantiates a Reactor state manager based on the saved state of the Maven project and its Maven modules.</div>
 <dl>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>session</code> - The current Maven execution for the Maven project build.</dd>
+<dd><code>projectBuilder</code> - The builder for Maven projects from POMs.</dd>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd>A Reactor state manager with the saved state of the Maven project and its Maven modules.</dd>
 <dt><span class="throwsLabel">Throws:</span></dt>
-<dd><code>org.apache.maven.project.ProjectBuildingException</code></dd>
-<dd><code><a href="https://docs.oracle.com/javase/8/docs/api/java/io/IOException.html?is-external=true" title="class or interface in java.io" class="externalLink">IOException</a></code></dd>
+<dd><code>org.apache.maven.project.ProjectBuildingException</code> - if an invalid POM is encountered.</dd>
+<dd><code><a href="https://docs.oracle.com/javase/8/docs/api/java/io/IOException.html?is-external=true" title="class or interface in java.io" class="externalLink">IOException</a></code> - if an error occurred while reading the persisted state.</dd>
 </dl>
 </li>
 </ul>
@@ -227,6 +238,12 @@ extends <a href="AbstractReactorStateManager.html" title="class in de.syquel.mav
 <h4>restoreProjectStates</h4>
 <pre class="methodSignature">public&nbsp;void&nbsp;restoreProjectStates&#8203;(org.apache.maven.execution.MavenSession&nbsp;session,
                                  org.apache.maven.project.MavenProjectHelper&nbsp;projectHelper)</pre>
+<div class="block">Restores the saved state of the Maven projects and its Maven modules within the current Maven execution.</div>
+<dl>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>session</code> - The current Maven execution.</dd>
+<dd><code>projectHelper</code> - The helper for Maven-related operations on the current state.</dd>
+</dl>
 </li>
 </ul>
 </li>

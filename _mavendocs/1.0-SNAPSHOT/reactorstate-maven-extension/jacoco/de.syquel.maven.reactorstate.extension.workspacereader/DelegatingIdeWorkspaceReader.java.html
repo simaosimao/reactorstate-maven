@@ -22,62 +22,105 @@ import org.eclipse.sisu.Priority;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/**
+ * A Maven {@link WorkspaceReader}, which registers itself with the current Maven execution and delegates to other registered workspace readers.
+ *
+ * The reason for this workspace reader implementation is that Maven only uses one workspace reader, which might conflict in case an IDE registers its own
+ * besides ours.
+ */
 @Named(ReactorStateWorkspaceReader.WORKSPACE_READER_IDE_QUALIFIER)
 @Singleton
 @Priority(Integer.MAX_VALUE)
 public class DelegatingIdeWorkspaceReader extends AbstractMavenLifecycleParticipant implements WorkspaceReader {
 
-<span class="fc" id="L30">	private static final Logger LOGGER = LoggerFactory.getLogger(DelegatingIdeWorkspaceReader.class);</span>
+<span class="fc" id="L36">	private static final Logger LOGGER = LoggerFactory.getLogger(DelegatingIdeWorkspaceReader.class);</span>
 
+	/**
+	 * The Maven dependency injection and management container.
+	 */
 	private final PlexusContainer plexusContainer;
-<span class="fc" id="L33">	private ChainedWorkspaceReader delegate = new ChainedWorkspaceReader();</span>
 
+	/**
+	 * The workspace readers to delegate to.
+	 */
+<span class="fc" id="L46">	private ChainedWorkspaceReader delegate = new ChainedWorkspaceReader();</span>
+
+	/**
+	 * Constructs a new Workspace reader based on the Maven dependency injection container.
+	 *
+	 * @param plexusContainer The Maven dependency injection and management container to retrieve other workspace reader implementations from.
+	 */
 	@Inject
-<span class="fc" id="L36">	public DelegatingIdeWorkspaceReader(final PlexusContainer plexusContainer) {</span>
-<span class="fc" id="L37">		this.plexusContainer = plexusContainer;</span>
-<span class="fc" id="L38">	}</span>
+<span class="fc" id="L54">	public DelegatingIdeWorkspaceReader(final PlexusContainer plexusContainer) {</span>
+<span class="fc" id="L55">		this.plexusContainer = plexusContainer;</span>
+<span class="fc" id="L56">	}</span>
 
+	/**
+	 * Retrieves other workspace readers from the {@link PlexusContainer}.
+	 *
+	 * This is a Maven lifecycle hook, which is executed directly after the Maven session has been constructed, but before it has started or projects were read.
+	 *
+	 * @param session The current Maven execution.
+	 * @throws MavenExecutionException if other workspace readers could not be retrieved from the {@link PlexusContainer}.
+	 */
 	@Override
 	public void afterSessionStart(final MavenSession session) throws MavenExecutionException {
 		final Map&lt;String, WorkspaceReader&gt; workspaceReaders;
 		try {
-<span class="fc" id="L44">			workspaceReaders = plexusContainer.lookupMap(WorkspaceReader.class);</span>
-<span class="nc" id="L45">		} catch (final ComponentLookupException e) {</span>
-<span class="nc" id="L46">			throw new MavenExecutionException(&quot;No workspace readers registered&quot;, e);</span>
-<span class="fc" id="L47">		}</span>
+<span class="fc" id="L70">			workspaceReaders = plexusContainer.lookupMap(WorkspaceReader.class);</span>
+<span class="nc" id="L71">		} catch (final ComponentLookupException e) {</span>
+<span class="nc" id="L72">			throw new MavenExecutionException(&quot;No workspace readers registered&quot;, e);</span>
+<span class="fc" id="L73">		}</span>
 
-<span class="fc" id="L49">		final List&lt;WorkspaceReader&gt; ideWorkspaceReaders = new ArrayList&lt;&gt;();</span>
-<span class="fc bfc" id="L50" title="All 2 branches covered.">		for (final Map.Entry&lt;String, WorkspaceReader&gt; workspaceReaderEntry : workspaceReaders.entrySet()) {</span>
-<span class="fc" id="L51">			final String workspaceReaderQualifier = workspaceReaderEntry.getKey();</span>
-<span class="fc bfc" id="L52" title="All 2 branches covered.">			if (!ReactorStateWorkspaceReader.WORKSPACE_READER_IDE_QUALIFIER.equals(workspaceReaderQualifier)) {</span>
-<span class="fc" id="L53">				continue;</span>
+<span class="fc" id="L75">		final List&lt;WorkspaceReader&gt; ideWorkspaceReaders = new ArrayList&lt;&gt;();</span>
+<span class="fc bfc" id="L76" title="All 2 branches covered.">		for (final Map.Entry&lt;String, WorkspaceReader&gt; workspaceReaderEntry : workspaceReaders.entrySet()) {</span>
+<span class="fc" id="L77">			final String workspaceReaderQualifier = workspaceReaderEntry.getKey();</span>
+<span class="fc bfc" id="L78" title="All 2 branches covered.">			if (!ReactorStateWorkspaceReader.WORKSPACE_READER_IDE_QUALIFIER.equals(workspaceReaderQualifier)) {</span>
+<span class="fc" id="L79">				continue;</span>
 			}
 
-<span class="fc" id="L56">			final WorkspaceReader workspaceReader = workspaceReaderEntry.getValue();</span>
-<span class="fc bfc" id="L57" title="All 2 branches covered.">			if (workspaceReader == this) {</span>
-<span class="fc" id="L58">				continue;</span>
+<span class="fc" id="L82">			final WorkspaceReader workspaceReader = workspaceReaderEntry.getValue();</span>
+<span class="fc bfc" id="L83" title="All 2 branches covered.">			if (workspaceReader == this) {</span>
+<span class="fc" id="L84">				continue;</span>
 			}
 
-<span class="fc" id="L61">			LOGGER.info(&quot;Register workspace reader {}&quot;, workspaceReader.getRepository().getId());</span>
-<span class="fc" id="L62">			ideWorkspaceReaders.add(workspaceReader);</span>
-<span class="fc" id="L63">		}</span>
+<span class="fc" id="L87">			LOGGER.info(&quot;Register workspace reader {}&quot;, workspaceReader.getRepository().getId());</span>
+<span class="fc" id="L88">			ideWorkspaceReaders.add(workspaceReader);</span>
+<span class="fc" id="L89">		}</span>
 
-<span class="fc" id="L65">		delegate = new ChainedWorkspaceReader(ideWorkspaceReaders.toArray(new WorkspaceReader[0]));</span>
-<span class="fc" id="L66">	}</span>
+<span class="fc" id="L91">		delegate = new ChainedWorkspaceReader(ideWorkspaceReaders.toArray(new WorkspaceReader[0]));</span>
+<span class="fc" id="L92">	}</span>
 
+	/**
+	 * Delegates to other workspace readers to determine the filesystem location of a Maven artifact.
+	 *
+	 * @param artifact The Maven artifact to determine the filesystem location for.
+	 * @return The filesystem location of the Maven artifact.
+	 */
 	@Override
 	public File findArtifact(final Artifact artifact) {
-<span class="fc" id="L70">		return delegate.findArtifact(artifact);</span>
+<span class="fc" id="L102">		return delegate.findArtifact(artifact);</span>
 	}
 
+	/**
+	 * Delegates to other workspace readers to determine the available versions of a Maven artifact.
+	 *
+	 * @param artifact The Maven artifact to determine available version for.
+	 * @return The list of available versions of the Maven artifact.
+	 */
 	@Override
 	public List&lt;String&gt; findVersions(final Artifact artifact) {
-<span class="fc" id="L75">		return delegate.findVersions(artifact);</span>
+<span class="fc" id="L113">		return delegate.findVersions(artifact);</span>
 	}
 
+	/**
+	 * Returns the underlying workspace repository information.
+	 *
+	 * @return The underlying workspace repository information.
+	 */
 	@Override
 	public WorkspaceRepository getRepository() {
-<span class="fc" id="L80">		return delegate.getRepository();</span>
+<span class="fc" id="L123">		return delegate.getRepository();</span>
 	}
 
 }

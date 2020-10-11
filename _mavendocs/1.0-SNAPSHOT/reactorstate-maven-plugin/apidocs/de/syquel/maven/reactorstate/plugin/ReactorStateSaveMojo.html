@@ -148,6 +148,7 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
       aggregator=true)
 public class <span class="typeNameLabel">ReactorStateSaveMojo</span>
 extends org.apache.maven.plugin.AbstractMojo</pre>
+<div class="block">Saves the state of the current Maven execution for usage in subsequent Maven executions.</div>
 </li>
 </ul>
 </div>
@@ -186,7 +187,9 @@ extends org.apache.maven.plugin.AbstractMojo</pre>
 </tr>
 <tr class="altColor">
 <th class="colConstructorName" scope="row"><code><span class="memberNameLink"><a href="#%3Cinit%3E(org.apache.maven.execution.MavenSession)">ReactorStateSaveMojo</a></span>&#8203;(org.apache.maven.execution.MavenSession&nbsp;session)</code></th>
-<td class="colLast">&nbsp;</td>
+<td class="colLast">
+<div class="block">Constructs a new instance based on the current Maven execution context.</div>
+</td>
 </tr>
 </table>
 </li>
@@ -209,7 +212,9 @@ extends org.apache.maven.plugin.AbstractMojo</pre>
 <tr id="i0" class="altColor">
 <td class="colFirst"><code>void</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#execute()">execute</a></span>()</code></th>
-<td class="colLast">&nbsp;</td>
+<td class="colLast">
+<div class="block">Saves the state of the current Maven execution for usage in subsequent Maven executions.</div>
+</td>
 </tr>
 </table>
 <ul class="blockList">
@@ -250,6 +255,11 @@ extends org.apache.maven.plugin.AbstractMojo</pre>
 <h4>ReactorStateSaveMojo</h4>
 <pre>@Inject
 public&nbsp;ReactorStateSaveMojo&#8203;(org.apache.maven.execution.MavenSession&nbsp;session)</pre>
+<div class="block">Constructs a new instance based on the current Maven execution context.</div>
+<dl>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>session</code> - The current Maven execution context.</dd>
+</dl>
 </li>
 </ul>
 </li>
@@ -271,10 +281,11 @@ public&nbsp;ReactorStateSaveMojo&#8203;(org.apache.maven.execution.MavenSession&
 <pre class="methodSignature">public&nbsp;void&nbsp;execute()
              throws org.apache.maven.plugin.MojoExecutionException,
                     org.apache.maven.plugin.MojoFailureException</pre>
+<div class="block">Saves the state of the current Maven execution for usage in subsequent Maven executions.</div>
 <dl>
 <dt><span class="throwsLabel">Throws:</span></dt>
-<dd><code>org.apache.maven.plugin.MojoExecutionException</code></dd>
-<dd><code>org.apache.maven.plugin.MojoFailureException</code></dd>
+<dd><code>org.apache.maven.plugin.MojoExecutionException</code> - if an error occurred while saving the state of the current Maven execution.</dd>
+<dd><code>org.apache.maven.plugin.MojoFailureException</code> - never.</dd>
 </dl>
 </li>
 </ul>

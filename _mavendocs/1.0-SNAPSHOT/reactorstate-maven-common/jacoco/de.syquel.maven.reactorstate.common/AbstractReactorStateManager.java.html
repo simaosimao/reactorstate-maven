@@ -7,22 +7,39 @@ import java.util.Set;
 
 import org.apache.maven.project.MavenProject;
 
+/**
+ * Base class for implementations which operate on the state of a Maven project and its modules.
+ */
 public abstract class AbstractReactorStateManager {
 
-<span class="fc" id="L12">	private final Map&lt;MavenProject, MavenProjectState&gt; projectStates = new HashMap&lt;&gt;();</span>
+	/**
+	 * The states of Maven modules within a Maven project.
+	 */
+<span class="fc" id="L18">	private final Map&lt;MavenProject, MavenProjectState&gt; projectStates = new HashMap&lt;&gt;();</span>
 
-<span class="fc" id="L14">	protected AbstractReactorStateManager(final Set&lt;MavenProjectState&gt; projectStates) {</span>
-<span class="fc bfc" id="L15" title="All 2 branches covered.">		for (final MavenProjectState projectState : projectStates) {</span>
-<span class="fc" id="L16">			this.projectStates.put(projectState.getProject(), projectState);</span>
-<span class="fc" id="L17">		}</span>
-<span class="fc" id="L18">	}</span>
+<span class="fc" id="L20">	protected AbstractReactorStateManager(final Set&lt;MavenProjectState&gt; projectStates) {</span>
+<span class="fc bfc" id="L21" title="All 2 branches covered.">		for (final MavenProjectState projectState : projectStates) {</span>
+<span class="fc" id="L22">			this.projectStates.put(projectState.getProject(), projectState);</span>
+<span class="fc" id="L23">		}</span>
+<span class="fc" id="L24">	}</span>
 
+	/**
+	 * Returns the states of Maven modules within a Maven project.
+	 *
+	 * @return
+	 */
 	public Set&lt;MavenProjectState&gt; getProjectStates() {
-<span class="fc" id="L21">		return new HashSet&lt;&gt;(projectStates.values());</span>
+<span class="fc" id="L32">		return new HashSet&lt;&gt;(projectStates.values());</span>
 	}
 
+	/**
+	 * Returns the state of a specific Maven module within a Maven project.
+	 *
+	 * @param project The Maven module to return the state for.
+	 * @return The state of the requested Maven module.
+	 */
 	public MavenProjectState getProjectState(final MavenProject project) {
-<span class="fc" id="L25">		return projectStates.get(project);</span>
+<span class="fc" id="L42">		return projectStates.get(project);</span>
 	}
 
 }

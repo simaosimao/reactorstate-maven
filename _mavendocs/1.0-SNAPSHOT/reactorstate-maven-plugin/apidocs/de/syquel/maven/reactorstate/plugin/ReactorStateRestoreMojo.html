@@ -148,6 +148,7 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
       aggregator=true)
 public class <span class="typeNameLabel">ReactorStateRestoreMojo</span>
 extends org.apache.maven.plugin.AbstractMojo</pre>
+<div class="block">Restores the state of a previous Maven execution into the current one.</div>
 </li>
 </ul>
 </div>
@@ -188,7 +189,9 @@ extends org.apache.maven.plugin.AbstractMojo</pre>
 <th class="colConstructorName" scope="row"><code><span class="memberNameLink"><a href="#%3Cinit%3E(org.apache.maven.execution.MavenSession,org.apache.maven.project.MavenProjectHelper,org.apache.maven.project.ProjectBuilder)">ReactorStateRestoreMojo</a></span>&#8203;(org.apache.maven.execution.MavenSession&nbsp;session,
                        org.apache.maven.project.MavenProjectHelper&nbsp;projectHelper,
                        org.apache.maven.project.ProjectBuilder&nbsp;projectBuilder)</code></th>
-<td class="colLast">&nbsp;</td>
+<td class="colLast">
+<div class="block">Constructs a new instance based on the current Maven execution context.</div>
+</td>
 </tr>
 </table>
 </li>
@@ -211,7 +214,9 @@ extends org.apache.maven.plugin.AbstractMojo</pre>
 <tr id="i0" class="altColor">
 <td class="colFirst"><code>void</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#execute()">execute</a></span>()</code></th>
-<td class="colLast">&nbsp;</td>
+<td class="colLast">
+<div class="block">Restores the state of a previous Maven execution into the current one.</div>
+</td>
 </tr>
 </table>
 <ul class="blockList">
@@ -254,6 +259,13 @@ extends org.apache.maven.plugin.AbstractMojo</pre>
 public&nbsp;ReactorStateRestoreMojo&#8203;(org.apache.maven.execution.MavenSession&nbsp;session,
                                org.apache.maven.project.MavenProjectHelper&nbsp;projectHelper,
                                org.apache.maven.project.ProjectBuilder&nbsp;projectBuilder)</pre>
+<div class="block">Constructs a new instance based on the current Maven execution context.</div>
+<dl>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>session</code> - The current Maven execution context.</dd>
+<dd><code>projectHelper</code> - The helper for Maven-related operations on the current state.</dd>
+<dd><code>projectBuilder</code> - The builder for Maven projects from POMs.</dd>
+</dl>
 </li>
 </ul>
 </li>
@@ -275,10 +287,11 @@ public&nbsp;ReactorStateRestoreMojo&#8203;(org.apache.maven.execution.MavenSessi
 <pre class="methodSignature">public&nbsp;void&nbsp;execute()
              throws org.apache.maven.plugin.MojoExecutionException,
                     org.apache.maven.plugin.MojoFailureException</pre>
+<div class="block">Restores the state of a previous Maven execution into the current one.</div>
 <dl>
 <dt><span class="throwsLabel">Throws:</span></dt>
-<dd><code>org.apache.maven.plugin.MojoExecutionException</code></dd>
-<dd><code>org.apache.maven.plugin.MojoFailureException</code></dd>
+<dd><code>org.apache.maven.plugin.MojoExecutionException</code> - if an error occurred while restoring the saved state of a previous Maven execution.</dd>
+<dd><code>org.apache.maven.plugin.MojoFailureException</code> - never.</dd>
 </dl>
 </li>
 </ul>

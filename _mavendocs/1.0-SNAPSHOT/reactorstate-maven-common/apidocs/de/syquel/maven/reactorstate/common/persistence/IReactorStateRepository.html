@@ -129,6 +129,7 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 </dl>
 <hr>
 <pre>public interface <span class="typeNameLabel">IReactorStateRepository</span></pre>
+<div class="block">The persistence repository for Maven state information.</div>
 </li>
 </ul>
 </div>
@@ -152,17 +153,23 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <tr id="i0" class="altColor">
 <td class="colFirst"><code>void</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#delete(org.apache.maven.project.MavenProject)">delete</a></span>&#8203;(org.apache.maven.project.MavenProject&nbsp;mavenProject)</code></th>
-<td class="colLast">&nbsp;</td>
+<td class="colLast">
+<div class="block">Deletes the persisted state of a specific Maven module.</div>
+</td>
 </tr>
 <tr id="i1" class="rowColor">
 <td class="colFirst"><code><a href="../MavenProjectState.html" title="class in de.syquel.maven.reactorstate.common">MavenProjectState</a></code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#read(org.apache.maven.project.MavenProject)">read</a></span>&#8203;(org.apache.maven.project.MavenProject&nbsp;mavenProject)</code></th>
-<td class="colLast">&nbsp;</td>
+<td class="colLast">
+<div class="block">Reads the persisted state of a specific Maven module</div>
+</td>
 </tr>
 <tr id="i2" class="altColor">
 <td class="colFirst"><code>void</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#save(de.syquel.maven.reactorstate.common.MavenProjectState)">save</a></span>&#8203;(<a href="../MavenProjectState.html" title="class in de.syquel.maven.reactorstate.common">MavenProjectState</a>&nbsp;mavenProjectState)</code></th>
-<td class="colLast">&nbsp;</td>
+<td class="colLast">
+<div class="block">Saves the current state of a specific Maven module.</div>
+</td>
 </tr>
 </table>
 </li>
@@ -189,9 +196,14 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <h4>read</h4>
 <pre class="methodSignature"><a href="../MavenProjectState.html" title="class in de.syquel.maven.reactorstate.common">MavenProjectState</a>&nbsp;read&#8203;(org.apache.maven.project.MavenProject&nbsp;mavenProject)
                 throws <a href="https://docs.oracle.com/javase/8/docs/api/java/io/IOException.html?is-external=true" title="class or interface in java.io" class="externalLink">IOException</a></pre>
+<div class="block">Reads the persisted state of a specific Maven module</div>
 <dl>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>mavenProject</code> - The Maven module to read the persisted state for.</dd>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd>The persisted Maven state or null if no state has been persisted yet.</dd>
 <dt><span class="throwsLabel">Throws:</span></dt>
-<dd><code><a href="https://docs.oracle.com/javase/8/docs/api/java/io/IOException.html?is-external=true" title="class or interface in java.io" class="externalLink">IOException</a></code></dd>
+<dd><code><a href="https://docs.oracle.com/javase/8/docs/api/java/io/IOException.html?is-external=true" title="class or interface in java.io" class="externalLink">IOException</a></code> - if an error occurred while reading the persisted state.</dd>
 </dl>
 </li>
 </ul>
@@ -203,9 +215,12 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <h4>save</h4>
 <pre class="methodSignature">void&nbsp;save&#8203;(<a href="../MavenProjectState.html" title="class in de.syquel.maven.reactorstate.common">MavenProjectState</a>&nbsp;mavenProjectState)
    throws <a href="https://docs.oracle.com/javase/8/docs/api/java/io/IOException.html?is-external=true" title="class or interface in java.io" class="externalLink">IOException</a></pre>
+<div class="block">Saves the current state of a specific Maven module.</div>
 <dl>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>mavenProjectState</code> - The current state of a Maven module.</dd>
 <dt><span class="throwsLabel">Throws:</span></dt>
-<dd><code><a href="https://docs.oracle.com/javase/8/docs/api/java/io/IOException.html?is-external=true" title="class or interface in java.io" class="externalLink">IOException</a></code></dd>
+<dd><code><a href="https://docs.oracle.com/javase/8/docs/api/java/io/IOException.html?is-external=true" title="class or interface in java.io" class="externalLink">IOException</a></code> - if an error occurred while saving the state</dd>
 </dl>
 </li>
 </ul>
@@ -217,9 +232,12 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <h4>delete</h4>
 <pre class="methodSignature">void&nbsp;delete&#8203;(org.apache.maven.project.MavenProject&nbsp;mavenProject)
      throws <a href="https://docs.oracle.com/javase/8/docs/api/java/io/IOException.html?is-external=true" title="class or interface in java.io" class="externalLink">IOException</a></pre>
+<div class="block">Deletes the persisted state of a specific Maven module.</div>
 <dl>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>mavenProject</code> - The Maven module to delete the persisted state for.</dd>
 <dt><span class="throwsLabel">Throws:</span></dt>
-<dd><code><a href="https://docs.oracle.com/javase/8/docs/api/java/io/IOException.html?is-external=true" title="class or interface in java.io" class="externalLink">IOException</a></code></dd>
+<dd><code><a href="https://docs.oracle.com/javase/8/docs/api/java/io/IOException.html?is-external=true" title="class or interface in java.io" class="externalLink">IOException</a></code> - if an error occured while deleting the persisted state.</dd>
 </dl>
 </li>
 </ul>

@@ -139,6 +139,7 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <pre>public class <span class="typeNameLabel">JsonReactorStateRepository</span>
 extends <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Object.html?is-external=true" title="class or interface in java.lang" class="externalLink">Object</a>
 implements <a href="../IReactorStateRepository.html" title="interface in de.syquel.maven.reactorstate.common.persistence">IReactorStateRepository</a></pre>
+<div class="block">Implementation of a persistence repository for Maven state information via JSON.</div>
 </li>
 </ul>
 </div>
@@ -183,17 +184,23 @@ implements <a href="../IReactorStateRepository.html" title="interface in de.syqu
 <tr id="i0" class="altColor">
 <td class="colFirst"><code>void</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#delete(org.apache.maven.project.MavenProject)">delete</a></span>&#8203;(org.apache.maven.project.MavenProject&nbsp;mavenProject)</code></th>
-<td class="colLast">&nbsp;</td>
+<td class="colLast">
+<div class="block">Deletes the persisted state of a specific Maven module.</div>
+</td>
 </tr>
 <tr id="i1" class="rowColor">
 <td class="colFirst"><code><a href="../../MavenProjectState.html" title="class in de.syquel.maven.reactorstate.common">MavenProjectState</a></code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#read(org.apache.maven.project.MavenProject)">read</a></span>&#8203;(org.apache.maven.project.MavenProject&nbsp;mavenProject)</code></th>
-<td class="colLast">&nbsp;</td>
+<td class="colLast">
+<div class="block">Reads the persisted state of a specific Maven module</div>
+</td>
 </tr>
 <tr id="i2" class="altColor">
 <td class="colFirst"><code>void</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#save(de.syquel.maven.reactorstate.common.MavenProjectState)">save</a></span>&#8203;(<a href="../../MavenProjectState.html" title="class in de.syquel.maven.reactorstate.common">MavenProjectState</a>&nbsp;mavenProjectState)</code></th>
-<td class="colLast">&nbsp;</td>
+<td class="colLast">
+<div class="block">Saves the current state of a specific Maven module.</div>
+</td>
 </tr>
 </table>
 <ul class="blockList">
@@ -246,11 +253,17 @@ implements <a href="../IReactorStateRepository.html" title="interface in de.syqu
 <h4>read</h4>
 <pre class="methodSignature">public&nbsp;<a href="../../MavenProjectState.html" title="class in de.syquel.maven.reactorstate.common">MavenProjectState</a>&nbsp;read&#8203;(org.apache.maven.project.MavenProject&nbsp;mavenProject)
                        throws <a href="https://docs.oracle.com/javase/8/docs/api/java/io/IOException.html?is-external=true" title="class or interface in java.io" class="externalLink">IOException</a></pre>
+<div class="block"><span class="descfrmTypeLabel">Description copied from interface:&nbsp;<code><a href="../IReactorStateRepository.html#read(org.apache.maven.project.MavenProject)">IReactorStateRepository</a></code></span></div>
+<div class="block">Reads the persisted state of a specific Maven module</div>
 <dl>
 <dt><span class="overrideSpecifyLabel">Specified by:</span></dt>
 <dd><code><a href="../IReactorStateRepository.html#read(org.apache.maven.project.MavenProject)">read</a></code>&nbsp;in interface&nbsp;<code><a href="../IReactorStateRepository.html" title="interface in de.syquel.maven.reactorstate.common.persistence">IReactorStateRepository</a></code></dd>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>mavenProject</code> - The Maven module to read the persisted state for.</dd>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd>The persisted Maven state or null if no state has been persisted yet.</dd>
 <dt><span class="throwsLabel">Throws:</span></dt>
-<dd><code><a href="https://docs.oracle.com/javase/8/docs/api/java/io/IOException.html?is-external=true" title="class or interface in java.io" class="externalLink">IOException</a></code></dd>
+<dd><code><a href="https://docs.oracle.com/javase/8/docs/api/java/io/IOException.html?is-external=true" title="class or interface in java.io" class="externalLink">IOException</a></code> - if an error occurred while reading the persisted state.</dd>
 </dl>
 </li>
 </ul>
@@ -262,11 +275,15 @@ implements <a href="../IReactorStateRepository.html" title="interface in de.syqu
 <h4>save</h4>
 <pre class="methodSignature">public&nbsp;void&nbsp;save&#8203;(<a href="../../MavenProjectState.html" title="class in de.syquel.maven.reactorstate.common">MavenProjectState</a>&nbsp;mavenProjectState)
           throws <a href="https://docs.oracle.com/javase/8/docs/api/java/io/IOException.html?is-external=true" title="class or interface in java.io" class="externalLink">IOException</a></pre>
+<div class="block"><span class="descfrmTypeLabel">Description copied from interface:&nbsp;<code><a href="../IReactorStateRepository.html#save(de.syquel.maven.reactorstate.common.MavenProjectState)">IReactorStateRepository</a></code></span></div>
+<div class="block">Saves the current state of a specific Maven module.</div>
 <dl>
 <dt><span class="overrideSpecifyLabel">Specified by:</span></dt>
 <dd><code><a href="../IReactorStateRepository.html#save(de.syquel.maven.reactorstate.common.MavenProjectState)">save</a></code>&nbsp;in interface&nbsp;<code><a href="../IReactorStateRepository.html" title="interface in de.syquel.maven.reactorstate.common.persistence">IReactorStateRepository</a></code></dd>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>mavenProjectState</code> - The current state of a Maven module.</dd>
 <dt><span class="throwsLabel">Throws:</span></dt>
-<dd><code><a href="https://docs.oracle.com/javase/8/docs/api/java/io/IOException.html?is-external=true" title="class or interface in java.io" class="externalLink">IOException</a></code></dd>
+<dd><code><a href="https://docs.oracle.com/javase/8/docs/api/java/io/IOException.html?is-external=true" title="class or interface in java.io" class="externalLink">IOException</a></code> - if an error occurred while saving the state</dd>
 </dl>
 </li>
 </ul>
@@ -278,11 +295,15 @@ implements <a href="../IReactorStateRepository.html" title="interface in de.syqu
 <h4>delete</h4>
 <pre class="methodSignature">public&nbsp;void&nbsp;delete&#8203;(org.apache.maven.project.MavenProject&nbsp;mavenProject)
             throws <a href="https://docs.oracle.com/javase/8/docs/api/java/io/IOException.html?is-external=true" title="class or interface in java.io" class="externalLink">IOException</a></pre>
+<div class="block"><span class="descfrmTypeLabel">Description copied from interface:&nbsp;<code><a href="../IReactorStateRepository.html#delete(org.apache.maven.project.MavenProject)">IReactorStateRepository</a></code></span></div>
+<div class="block">Deletes the persisted state of a specific Maven module.</div>
 <dl>
 <dt><span class="overrideSpecifyLabel">Specified by:</span></dt>
 <dd><code><a href="../IReactorStateRepository.html#delete(org.apache.maven.project.MavenProject)">delete</a></code>&nbsp;in interface&nbsp;<code><a href="../IReactorStateRepository.html" title="interface in de.syquel.maven.reactorstate.common.persistence">IReactorStateRepository</a></code></dd>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>mavenProject</code> - The Maven module to delete the persisted state for.</dd>
 <dt><span class="throwsLabel">Throws:</span></dt>
-<dd><code><a href="https://docs.oracle.com/javase/8/docs/api/java/io/IOException.html?is-external=true" title="class or interface in java.io" class="externalLink">IOException</a></code></dd>
+<dd><code><a href="https://docs.oracle.com/javase/8/docs/api/java/io/IOException.html?is-external=true" title="class or interface in java.io" class="externalLink">IOException</a></code> - if an error occured while deleting the persisted state.</dd>
 </dl>
 </li>
 </ul>

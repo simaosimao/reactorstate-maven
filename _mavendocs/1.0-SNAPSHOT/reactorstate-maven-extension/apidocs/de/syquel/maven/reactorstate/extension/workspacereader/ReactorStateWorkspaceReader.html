@@ -146,6 +146,11 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 public class <span class="typeNameLabel">ReactorStateWorkspaceReader</span>
 extends org.apache.maven.AbstractMavenLifecycleParticipant
 implements org.eclipse.aether.repository.WorkspaceReader</pre>
+<div class="block">A Maven <code>WorkspaceReader</code>, which contributes Maven artifacts from the current Maven workspace
+ based on their saved state to the current Maven execution.
+
+ This workspace reader is able to restore the state of  Maven modules, which are not being built in the current Maven execution,
+ but belong to the same Maven workspace, to enable standalone builds of submodules.</div>
 </li>
 </ul>
 </div>
@@ -169,7 +174,9 @@ implements org.eclipse.aether.repository.WorkspaceReader</pre>
 <tr class="altColor">
 <td class="colFirst"><code>static <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a></code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#WORKSPACE_READER_IDE_QUALIFIER">WORKSPACE_READER_IDE_QUALIFIER</a></span></code></th>
-<td class="colLast">&nbsp;</td>
+<td class="colLast">
+<div class="block">The Maven-defined qualifier for custom workspace reader implementations.</div>
+</td>
 </tr>
 </table>
 </li>
@@ -190,7 +197,9 @@ implements org.eclipse.aether.repository.WorkspaceReader</pre>
 </tr>
 <tr class="altColor">
 <th class="colConstructorName" scope="row"><code><span class="memberNameLink"><a href="#%3Cinit%3E(org.apache.maven.project.ProjectBuilder)">ReactorStateWorkspaceReader</a></span>&#8203;(org.apache.maven.project.ProjectBuilder&nbsp;projectBuilder)</code></th>
-<td class="colLast">&nbsp;</td>
+<td class="colLast">
+<div class="block">Constructs a new state-based workspace reader.</div>
+</td>
 </tr>
 </table>
 </li>
@@ -213,22 +222,30 @@ implements org.eclipse.aether.repository.WorkspaceReader</pre>
 <tr id="i0" class="altColor">
 <td class="colFirst"><code>void</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#afterProjectsRead(org.apache.maven.execution.MavenSession)">afterProjectsRead</a></span>&#8203;(org.apache.maven.execution.MavenSession&nbsp;session)</code></th>
-<td class="colLast">&nbsp;</td>
+<td class="colLast">
+<div class="block">Initializes the workspace reader with the saved state of the Maven modules within the current Maven workspace.</div>
+</td>
 </tr>
 <tr id="i1" class="rowColor">
 <td class="colFirst"><code><a href="https://docs.oracle.com/javase/8/docs/api/java/io/File.html?is-external=true" title="class or interface in java.io" class="externalLink">File</a></code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#findArtifact(org.eclipse.aether.artifact.Artifact)">findArtifact</a></span>&#8203;(org.eclipse.aether.artifact.Artifact&nbsp;artifact)</code></th>
-<td class="colLast">&nbsp;</td>
+<td class="colLast">
+<div class="block">Determines the filesystem location of a Maven artifact.</div>
+</td>
 </tr>
 <tr id="i2" class="altColor">
 <td class="colFirst"><code><a href="https://docs.oracle.com/javase/8/docs/api/java/util/List.html?is-external=true" title="class or interface in java.util" class="externalLink">List</a>&lt;<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&gt;</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#findVersions(org.eclipse.aether.artifact.Artifact)">findVersions</a></span>&#8203;(org.eclipse.aether.artifact.Artifact&nbsp;artifact)</code></th>
-<td class="colLast">&nbsp;</td>
+<td class="colLast">
+<div class="block">Determines the available versions of a Maven artifact.</div>
+</td>
 </tr>
 <tr id="i3" class="rowColor">
 <td class="colFirst"><code>org.eclipse.aether.repository.WorkspaceRepository</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getRepository()">getRepository</a></span>()</code></th>
-<td class="colLast">&nbsp;</td>
+<td class="colLast">
+<div class="block">Returns the underlying workspace repository information.</div>
+</td>
 </tr>
 </table>
 <ul class="blockList">
@@ -268,6 +285,7 @@ implements org.eclipse.aether.repository.WorkspaceReader</pre>
 <li class="blockList">
 <h4>WORKSPACE_READER_IDE_QUALIFIER</h4>
 <pre>public static final&nbsp;<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a> WORKSPACE_READER_IDE_QUALIFIER</pre>
+<div class="block">The Maven-defined qualifier for custom workspace reader implementations.</div>
 <dl>
 <dt><span class="seeLabel">See Also:</span></dt>
 <dd><a href="../../../../../../constant-values.html#de.syquel.maven.reactorstate.extension.workspacereader.ReactorStateWorkspaceReader.WORKSPACE_READER_IDE_QUALIFIER">Constant Field Values</a></dd>
@@ -292,6 +310,11 @@ implements org.eclipse.aether.repository.WorkspaceReader</pre>
 <h4>ReactorStateWorkspaceReader</h4>
 <pre>@Inject
 public&nbsp;ReactorStateWorkspaceReader&#8203;(org.apache.maven.project.ProjectBuilder&nbsp;projectBuilder)</pre>
+<div class="block">Constructs a new state-based workspace reader.</div>
+<dl>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>projectBuilder</code> - </dd>
+</dl>
 </li>
 </ul>
 </li>
@@ -312,11 +335,17 @@ public&nbsp;ReactorStateWorkspaceReader&#8203;(org.apache.maven.project.ProjectB
 <h4>afterProjectsRead</h4>
 <pre class="methodSignature">public&nbsp;void&nbsp;afterProjectsRead&#8203;(org.apache.maven.execution.MavenSession&nbsp;session)
                        throws org.apache.maven.MavenExecutionException</pre>
+<div class="block">Initializes the workspace reader with the saved state of the Maven modules within the current Maven workspace.
+
+ This is a Maven lifecycle hook, which is executed directly after the Maven session has read the project definitions of the Maven modules,
+ but before it has started building the project.</div>
 <dl>
 <dt><span class="overrideSpecifyLabel">Overrides:</span></dt>
 <dd><code>afterProjectsRead</code>&nbsp;in class&nbsp;<code>org.apache.maven.AbstractMavenLifecycleParticipant</code></dd>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>session</code> - The current Maven execution.</dd>
 <dt><span class="throwsLabel">Throws:</span></dt>
-<dd><code>org.apache.maven.MavenExecutionException</code></dd>
+<dd><code>org.apache.maven.MavenExecutionException</code> - if an error occurred while reading the saved state of the Maven modules.</dd>
 </dl>
 </li>
 </ul>
@@ -327,9 +356,12 @@ public&nbsp;ReactorStateWorkspaceReader&#8203;(org.apache.maven.project.ProjectB
 <li class="blockList">
 <h4>getRepository</h4>
 <pre class="methodSignature">public&nbsp;org.eclipse.aether.repository.WorkspaceRepository&nbsp;getRepository()</pre>
+<div class="block">Returns the underlying workspace repository information.</div>
 <dl>
 <dt><span class="overrideSpecifyLabel">Specified by:</span></dt>
 <dd><code>getRepository</code>&nbsp;in interface&nbsp;<code>org.eclipse.aether.repository.WorkspaceReader</code></dd>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd>The underlying workspace repository information.</dd>
 </dl>
 </li>
 </ul>
@@ -340,9 +372,14 @@ public&nbsp;ReactorStateWorkspaceReader&#8203;(org.apache.maven.project.ProjectB
 <li class="blockList">
 <h4>findArtifact</h4>
 <pre class="methodSignature">public&nbsp;<a href="https://docs.oracle.com/javase/8/docs/api/java/io/File.html?is-external=true" title="class or interface in java.io" class="externalLink">File</a>&nbsp;findArtifact&#8203;(org.eclipse.aether.artifact.Artifact&nbsp;artifact)</pre>
+<div class="block">Determines the filesystem location of a Maven artifact.</div>
 <dl>
 <dt><span class="overrideSpecifyLabel">Specified by:</span></dt>
 <dd><code>findArtifact</code>&nbsp;in interface&nbsp;<code>org.eclipse.aether.repository.WorkspaceReader</code></dd>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>artifact</code> - The Maven artifact to determine the filesystem location for.</dd>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd>The filesystem location of the Maven artifact.</dd>
 </dl>
 </li>
 </ul>
@@ -353,9 +390,14 @@ public&nbsp;ReactorStateWorkspaceReader&#8203;(org.apache.maven.project.ProjectB
 <li class="blockList">
 <h4>findVersions</h4>
 <pre class="methodSignature">public&nbsp;<a href="https://docs.oracle.com/javase/8/docs/api/java/util/List.html?is-external=true" title="class or interface in java.util" class="externalLink">List</a>&lt;<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&gt;&nbsp;findVersions&#8203;(org.eclipse.aether.artifact.Artifact&nbsp;artifact)</pre>
+<div class="block">Determines the available versions of a Maven artifact.</div>
 <dl>
 <dt><span class="overrideSpecifyLabel">Specified by:</span></dt>
 <dd><code>findVersions</code>&nbsp;in interface&nbsp;<code>org.eclipse.aether.repository.WorkspaceReader</code></dd>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>artifact</code> - The Maven artifact to determine available version for.</dd>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd>The list of available versions of the Maven artifact.</dd>
 </dl>
 </li>
 </ul>

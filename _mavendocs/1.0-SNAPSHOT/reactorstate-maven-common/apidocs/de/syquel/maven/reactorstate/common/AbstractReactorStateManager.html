@@ -138,6 +138,7 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <hr>
 <pre>public abstract class <span class="typeNameLabel">AbstractReactorStateManager</span>
 extends <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Object.html?is-external=true" title="class or interface in java.lang" class="externalLink">Object</a></pre>
+<div class="block">Base class for implementations which operate on the state of a Maven project and its modules.</div>
 </li>
 </ul>
 </div>
@@ -184,12 +185,16 @@ extends <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Object.html
 <tr id="i0" class="altColor">
 <td class="colFirst"><code><a href="MavenProjectState.html" title="class in de.syquel.maven.reactorstate.common">MavenProjectState</a></code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getProjectState(org.apache.maven.project.MavenProject)">getProjectState</a></span>&#8203;(org.apache.maven.project.MavenProject&nbsp;project)</code></th>
-<td class="colLast">&nbsp;</td>
+<td class="colLast">
+<div class="block">Returns the state of a specific Maven module within a Maven project.</div>
+</td>
 </tr>
 <tr id="i1" class="rowColor">
 <td class="colFirst"><code><a href="https://docs.oracle.com/javase/8/docs/api/java/util/Set.html?is-external=true" title="class or interface in java.util" class="externalLink">Set</a>&lt;<a href="MavenProjectState.html" title="class in de.syquel.maven.reactorstate.common">MavenProjectState</a>&gt;</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getProjectStates()">getProjectStates</a></span>()</code></th>
-<td class="colLast">&nbsp;</td>
+<td class="colLast">
+<div class="block">Returns the states of Maven modules within a Maven project.</div>
+</td>
 </tr>
 </table>
 <ul class="blockList">
@@ -241,6 +246,10 @@ extends <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Object.html
 <li class="blockList">
 <h4>getProjectStates</h4>
 <pre class="methodSignature">public&nbsp;<a href="https://docs.oracle.com/javase/8/docs/api/java/util/Set.html?is-external=true" title="class or interface in java.util" class="externalLink">Set</a>&lt;<a href="MavenProjectState.html" title="class in de.syquel.maven.reactorstate.common">MavenProjectState</a>&gt;&nbsp;getProjectStates()</pre>
+<div class="block">Returns the states of Maven modules within a Maven project.</div>
+<dl>
+<dt><span class="returnLabel">Returns:</span></dt>
+</dl>
 </li>
 </ul>
 <a id="getProjectState(org.apache.maven.project.MavenProject)">
@@ -250,6 +259,13 @@ extends <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Object.html
 <li class="blockList">
 <h4>getProjectState</h4>
 <pre class="methodSignature">public&nbsp;<a href="MavenProjectState.html" title="class in de.syquel.maven.reactorstate.common">MavenProjectState</a>&nbsp;getProjectState&#8203;(org.apache.maven.project.MavenProject&nbsp;project)</pre>
+<div class="block">Returns the state of a specific Maven module within a Maven project.</div>
+<dl>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>project</code> - The Maven module to return the state for.</dd>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd>The state of the requested Maven module.</dd>
+</dl>
 </li>
 </ul>
 </li>

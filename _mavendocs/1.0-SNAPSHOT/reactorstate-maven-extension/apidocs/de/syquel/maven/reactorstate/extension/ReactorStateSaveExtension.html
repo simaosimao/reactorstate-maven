@@ -141,6 +141,7 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 @Singleton
 public class <span class="typeNameLabel">ReactorStateSaveExtension</span>
 extends org.apache.maven.AbstractMavenLifecycleParticipant</pre>
+<div class="block">A Maven Core Extension which saves the state of Maven executions afterwards and restores it beforehand.</div>
 </li>
 </ul>
 </div>
@@ -164,7 +165,9 @@ extends org.apache.maven.AbstractMavenLifecycleParticipant</pre>
 <tr class="altColor">
 <td class="colFirst"><code>static <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a></code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#EXTENSION_ID">EXTENSION_ID</a></span></code></th>
-<td class="colLast">&nbsp;</td>
+<td class="colLast">
+<div class="block">The unique ID of this Maven Core Extension.</div>
+</td>
 </tr>
 </table>
 </li>
@@ -186,7 +189,9 @@ extends org.apache.maven.AbstractMavenLifecycleParticipant</pre>
 <tr class="altColor">
 <th class="colConstructorName" scope="row"><code><span class="memberNameLink"><a href="#%3Cinit%3E(org.apache.maven.project.MavenProjectHelper,org.apache.maven.project.ProjectBuilder)">ReactorStateSaveExtension</a></span>&#8203;(org.apache.maven.project.MavenProjectHelper&nbsp;projectHelper,
                          org.apache.maven.project.ProjectBuilder&nbsp;projectBuilder)</code></th>
-<td class="colLast">&nbsp;</td>
+<td class="colLast">
+<div class="block">Constructs a new instance.</div>
+</td>
 </tr>
 </table>
 </li>
@@ -209,12 +214,16 @@ extends org.apache.maven.AbstractMavenLifecycleParticipant</pre>
 <tr id="i0" class="altColor">
 <td class="colFirst"><code>void</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#afterProjectsRead(org.apache.maven.execution.MavenSession)">afterProjectsRead</a></span>&#8203;(org.apache.maven.execution.MavenSession&nbsp;session)</code></th>
-<td class="colLast">&nbsp;</td>
+<td class="colLast">
+<div class="block">Restores the saved state of the Maven projects and its Maven modules within the current Maven execution.</div>
+</td>
 </tr>
 <tr id="i1" class="rowColor">
 <td class="colFirst"><code>void</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#afterSessionEnd(org.apache.maven.execution.MavenSession)">afterSessionEnd</a></span>&#8203;(org.apache.maven.execution.MavenSession&nbsp;session)</code></th>
-<td class="colLast">&nbsp;</td>
+<td class="colLast">
+<div class="block">Saves the current state of all Maven modules within the Maven execution.</div>
+</td>
 </tr>
 </table>
 <ul class="blockList">
@@ -254,6 +263,7 @@ extends org.apache.maven.AbstractMavenLifecycleParticipant</pre>
 <li class="blockList">
 <h4>EXTENSION_ID</h4>
 <pre>public static final&nbsp;<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a> EXTENSION_ID</pre>
+<div class="block">The unique ID of this Maven Core Extension.</div>
 <dl>
 <dt><span class="seeLabel">See Also:</span></dt>
 <dd><a href="../../../../../constant-values.html#de.syquel.maven.reactorstate.extension.ReactorStateSaveExtension.EXTENSION_ID">Constant Field Values</a></dd>
@@ -279,6 +289,12 @@ extends org.apache.maven.AbstractMavenLifecycleParticipant</pre>
 <pre>@Inject
 public&nbsp;ReactorStateSaveExtension&#8203;(org.apache.maven.project.MavenProjectHelper&nbsp;projectHelper,
                                  org.apache.maven.project.ProjectBuilder&nbsp;projectBuilder)</pre>
+<div class="block">Constructs a new instance.</div>
+<dl>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>projectHelper</code> - The helper for Maven-related operations on the current state.</dd>
+<dd><code>projectBuilder</code> - The builder for Maven projects from POMs.</dd>
+</dl>
 </li>
 </ul>
 </li>
@@ -299,11 +315,14 @@ public&nbsp;ReactorStateSaveExtension&#8203;(org.apache.maven.project.MavenProje
 <h4>afterProjectsRead</h4>
 <pre class="methodSignature">public&nbsp;void&nbsp;afterProjectsRead&#8203;(org.apache.maven.execution.MavenSession&nbsp;session)
                        throws org.apache.maven.MavenExecutionException</pre>
+<div class="block">Restores the saved state of the Maven projects and its Maven modules within the current Maven execution.</div>
 <dl>
 <dt><span class="overrideSpecifyLabel">Overrides:</span></dt>
 <dd><code>afterProjectsRead</code>&nbsp;in class&nbsp;<code>org.apache.maven.AbstractMavenLifecycleParticipant</code></dd>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>session</code> - The current Maven execution.</dd>
 <dt><span class="throwsLabel">Throws:</span></dt>
-<dd><code>org.apache.maven.MavenExecutionException</code></dd>
+<dd><code>org.apache.maven.MavenExecutionException</code> - if an error occurred while restoring the saved state.</dd>
 </dl>
 </li>
 </ul>
@@ -315,11 +334,17 @@ public&nbsp;ReactorStateSaveExtension&#8203;(org.apache.maven.project.MavenProje
 <h4>afterSessionEnd</h4>
 <pre class="methodSignature">public&nbsp;void&nbsp;afterSessionEnd&#8203;(org.apache.maven.execution.MavenSession&nbsp;session)
                      throws org.apache.maven.MavenExecutionException</pre>
+<div class="block">Saves the current state of all Maven modules within the Maven execution.
+
+ This is a Maven lifecycle hook, which is executed directly after the Maven session has read the project definitions of the Maven modules,
+ but before it has started building the project.</div>
 <dl>
 <dt><span class="overrideSpecifyLabel">Overrides:</span></dt>
 <dd><code>afterSessionEnd</code>&nbsp;in class&nbsp;<code>org.apache.maven.AbstractMavenLifecycleParticipant</code></dd>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>session</code> - The current Maven execution.</dd>
 <dt><span class="throwsLabel">Throws:</span></dt>
-<dd><code>org.apache.maven.MavenExecutionException</code></dd>
+<dd><code>org.apache.maven.MavenExecutionException</code> - if an error occurred while saving the current state.</dd>
 </dl>
 </li>
 </ul>

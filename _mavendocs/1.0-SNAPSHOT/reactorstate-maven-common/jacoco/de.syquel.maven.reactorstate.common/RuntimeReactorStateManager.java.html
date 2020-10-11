@@ -13,49 +13,72 @@ import org.eclipse.aether.artifact.Artifact;
 import de.syquel.maven.reactorstate.common.persistence.IReactorStateRepository;
 import de.syquel.maven.reactorstate.common.persistence.json.JsonReactorStateRepository;
 
+/**
+ * The implementation of a Maven Reactor state manager which operates on the current state of Maven modules within a Maven project.
+ */
 public class RuntimeReactorStateManager extends AbstractReactorStateManager {
 
+	/**
+	 * The persistence repository for Maven module states.
+	 */
 	private final IReactorStateRepository reactorStateRepository;
 
 	private RuntimeReactorStateManager(final Set&lt;MavenProjectState&gt; projectStates, final IReactorStateRepository reactorStateRepository) {
-<span class="fc" id="L21">		super(projectStates);</span>
-<span class="fc" id="L22">		this.reactorStateRepository = reactorStateRepository;</span>
-<span class="fc" id="L23">	}</span>
+<span class="fc" id="L27">		super(projectStates);</span>
+<span class="fc" id="L28">		this.reactorStateRepository = reactorStateRepository;</span>
+<span class="fc" id="L29">	}</span>
 
+	/**
+	 * Instantiates a Reactor state manager based on the current state of the Maven execution.
+	 *
+	 * @param mavenSession The state of a Maven execution.
+	 * @return A Reactor state manager with the current state of the Maven execution.
+	 */
 	public static RuntimeReactorStateManager create(final MavenSession mavenSession) {
-<span class="fc" id="L26">		final Set&lt;MavenProjectState&gt; projectStates = new HashSet&lt;&gt;();</span>
-<span class="fc bfc" id="L27" title="All 2 branches covered.">		for (final MavenProject project : mavenSession.getProjects()) {</span>
-<span class="fc" id="L28">			final MavenProjectState projectState = buildProjectState(project);</span>
-<span class="fc" id="L29">			projectStates.add(projectState);</span>
-<span class="fc" id="L30">		}</span>
+<span class="fc" id="L38">		final Set&lt;MavenProjectState&gt; projectStates = new HashSet&lt;&gt;();</span>
+<span class="fc bfc" id="L39" title="All 2 branches covered.">		for (final MavenProject project : mavenSession.getProjects()) {</span>
+<span class="fc" id="L40">			final MavenProjectState projectState = buildProjectState(project);</span>
+<span class="fc" id="L41">			projectStates.add(projectState);</span>
+<span class="fc" id="L42">		}</span>
 
-<span class="fc" id="L32">		return new RuntimeReactorStateManager(projectStates, new JsonReactorStateRepository());</span>
+<span class="fc" id="L44">		return new RuntimeReactorStateManager(projectStates, new JsonReactorStateRepository());</span>
 	}
 
+	/**
+	 * Saves the current state of all Maven modules within the Maven execution.
+	 *
+	 * @throws IOException if an error occurred while saving the state.
+	 */
 	public void saveProjectStates() throws IOException {
-<span class="fc bfc" id="L36" title="All 2 branches covered.">		for (final MavenProjectState projectState : getProjectStates()) {</span>
-<span class="fc" id="L37">			reactorStateRepository.save(projectState);</span>
-<span class="fc" id="L38">		}</span>
-<span class="fc" id="L39">	}</span>
+<span class="fc bfc" id="L53" title="All 2 branches covered.">		for (final MavenProjectState projectState : getProjectStates()) {</span>
+<span class="fc" id="L54">			reactorStateRepository.save(projectState);</span>
+<span class="fc" id="L55">		}</span>
+<span class="fc" id="L56">	}</span>
 
+	/**
+	 * Builds the state of a Maven module based on its current state.
+	 *
+	 * @param project The Maven module to save the state for.
+	 * @return The current state of the Maven module.
+	 */
 	private static MavenProjectState buildProjectState(final MavenProject project) {
-<span class="fc" id="L42">		final Artifact mainArtifact = RepositoryUtils.toArtifact(project.getArtifact());</span>
+<span class="fc" id="L65">		final Artifact mainArtifact = RepositoryUtils.toArtifact(project.getArtifact());</span>
 
-<span class="fc" id="L44">		final Artifact pom =</span>
+<span class="fc" id="L67">		final Artifact pom =</span>
 			ArtifactDescriptorUtils
-<span class="fc" id="L46">				.toPomArtifact(mainArtifact)</span>
-<span class="fc" id="L47">				.setFile(project.getFile());</span>
+<span class="fc" id="L69">				.toPomArtifact(mainArtifact)</span>
+<span class="fc" id="L70">				.setFile(project.getFile());</span>
 
-<span class="fc" id="L49">		final Set&lt;Artifact&gt; attachedArtifacts = new HashSet&lt;&gt;(RepositoryUtils.toArtifacts(project.getAttachedArtifacts()));</span>
+<span class="fc" id="L72">		final Set&lt;Artifact&gt; attachedArtifacts = new HashSet&lt;&gt;(RepositoryUtils.toArtifacts(project.getAttachedArtifacts()));</span>
 
 		final MavenProjectState projectState;
-<span class="fc bfc" id="L52" title="All 2 branches covered.">		if (&quot;pom&quot;.equals(mainArtifact.getExtension())) {</span>
-<span class="fc" id="L53">			projectState = new MavenProjectState(project, pom, pom, attachedArtifacts);</span>
+<span class="fc bfc" id="L75" title="All 2 branches covered.">		if (&quot;pom&quot;.equals(mainArtifact.getExtension())) {</span>
+<span class="fc" id="L76">			projectState = new MavenProjectState(project, pom, pom, attachedArtifacts);</span>
 		} else {
-<span class="fc" id="L55">			projectState = new MavenProjectState(project, pom, mainArtifact, attachedArtifacts);</span>
+<span class="fc" id="L78">			projectState = new MavenProjectState(project, pom, mainArtifact, attachedArtifacts);</span>
 		}
 
-<span class="fc" id="L58">		return projectState;</span>
+<span class="fc" id="L81">		return projectState;</span>
 	}
 
 }

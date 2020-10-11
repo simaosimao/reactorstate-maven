@@ -3,55 +3,77 @@
 import java.util.Collection;
 import java.util.Set;
 
+/**
+ * The JSON-specific representation of the state of a Maven module.
+ */
 public class MavenProjectStateDto {
 
+	/**
+	 * The full ID of the Maven module in the format [groupId]:[artifactId]:[packaging]:[version]
+	 */
 	private String projectId;
+
+	/**
+	 * The POM of the Maven module as Maven artifact.
+	 */
 	private ArtifactDto pom;
+
+	/**
+	 * The main artifact of the Maven module.
+	 *
+	 * This is the primarily generated artifact, e.g. the JAR.
+	 */
 	private ArtifactDto mainArtifact;
+
+	/**
+	 * Additional attached artifacts on the Maven module.
+	 *
+	 * These are generated supporting artifacts, e.g. JavaDoc and sources JARs.
+	 */
 	private Collection&lt;ArtifactDto&gt; attachedArtifacts;
 
-<span class="fc" id="L13">	public MavenProjectStateDto(final String projectId, final ArtifactDto pom, final ArtifactDto mainArtifact, final Set&lt;ArtifactDto&gt; attachedArtifacts) {</span>
-<span class="fc" id="L14">		this.projectId = projectId;</span>
-<span class="fc" id="L15">		this.pom = pom;</span>
-<span class="fc" id="L16">		this.mainArtifact = mainArtifact;</span>
-<span class="fc" id="L17">		this.attachedArtifacts = attachedArtifacts;</span>
-<span class="fc" id="L18">	}</span>
+<span class="fc" id="L35">	public MavenProjectStateDto(final String projectId, final ArtifactDto pom, final ArtifactDto mainArtifact, final Set&lt;ArtifactDto&gt; attachedArtifacts) {</span>
+<span class="fc" id="L36">		this.projectId = projectId;</span>
+<span class="fc" id="L37">		this.pom = pom;</span>
+<span class="fc" id="L38">		this.mainArtifact = mainArtifact;</span>
+<span class="fc" id="L39">		this.attachedArtifacts = attachedArtifacts;</span>
+<span class="fc" id="L40">	}</span>
 
-<span class="fc" id="L20">	protected MavenProjectStateDto() {</span>
+<span class="fc" id="L42">	protected MavenProjectStateDto() {</span>
 		// Jackson constructor
-<span class="fc" id="L22">	}</span>
+<span class="fc" id="L44">	}</span>
 
 	public String getProjectId() {
-<span class="fc" id="L25">		return projectId;</span>
+<span class="fc" id="L47">		return projectId;</span>
 	}
 
 	protected void setProjectId(final String projectId) {
-<span class="fc" id="L29">		this.projectId = projectId;</span>
-<span class="fc" id="L30">	}</span>
+<span class="fc" id="L51">		this.projectId = projectId;</span>
+<span class="fc" id="L52">	}</span>
 
 	public ArtifactDto getPom() {
-<span class="fc" id="L33">		return pom;</span>
+<span class="fc" id="L55">		return pom;</span>
 	}
 
 	protected void setPom(final ArtifactDto pom) {
-<span class="fc" id="L37">		this.pom = pom;</span>
-<span class="fc" id="L38">	}</span>
+<span class="fc" id="L59">		this.pom = pom;</span>
+<span class="fc" id="L60">	}</span>
 
 	public ArtifactDto getMainArtifact() {
-<span class="fc" id="L41">		return mainArtifact;</span>
+<span class="fc" id="L63">		return mainArtifact;</span>
 	}
 
 	protected void setMainArtifact(final ArtifactDto mainArtifact) {
-<span class="fc" id="L45">		this.mainArtifact = mainArtifact;</span>
-<span class="fc" id="L46">	}</span>
+<span class="fc" id="L67">		this.mainArtifact = mainArtifact;</span>
+<span class="fc" id="L68">	}</span>
 
 	public Collection&lt;ArtifactDto&gt; getAttachedArtifacts() {
-<span class="fc" id="L49">		return attachedArtifacts;</span>
+<span class="fc" id="L71">		return attachedArtifacts;</span>
 	}
 
 	protected void setAttachedArtifacts(final Collection&lt;ArtifactDto&gt; attachedArtifacts) {
-<span class="fc" id="L53">		this.attachedArtifacts = attachedArtifacts;</span>
-<span class="fc" id="L54">	}</span>
+<span class="fc" id="L75">		this.attachedArtifacts = attachedArtifacts;</span>
+<span class="fc" id="L76">	}</span>
 
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.6.202009150832</span></div></body></html>

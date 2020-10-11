@@ -7,38 +7,71 @@ import java.util.Properties;
 import org.eclipse.aether.artifact.Artifact;
 import org.eclipse.aether.artifact.DefaultArtifact;
 
+/**
+ * An Accessor for internal configuration properties.
+ */
 public class ReactorStatePluginProperties {
 
+	/**
+	 * The location of the persisted properties.
+	 */
 	private static final String PROPERTIES_FILENAME = &quot;reactorstate-maven-plugin.properties&quot;;
+
+	/**
+	 * The property key for the reactorstate-maven-extension artifact property.
+	 */
 	private static final String PROPERTY_KEY_EXTENSION_ARTIFACT = &quot;extension.artifact&quot;;
 
+	/**
+	 * The specific artifact coordinated for the reactorstate-maven-extension.
+	 */
 	private final Artifact extensionArtifact;
 
-<span class="fc" id="L17">	private ReactorStatePluginProperties(final Artifact extensionArtifact) {</span>
-<span class="fc" id="L18">		this.extensionArtifact = extensionArtifact;</span>
-<span class="fc" id="L19">	}</span>
+	/**
+	 * Constructs a new instance with its properties.
+	 *
+	 * @param extensionArtifact The specific artifact coordinated for the reactorstate-maven-extension.
+	 */
+<span class="fc" id="L35">	private ReactorStatePluginProperties(final Artifact extensionArtifact) {</span>
+<span class="fc" id="L36">		this.extensionArtifact = extensionArtifact;</span>
+<span class="fc" id="L37">	}</span>
 
+	/**
+	 * Instantiate this accessor based on its persisted state.
+	 *
+	 * @return An internal properties accessor.
+	 * @throws IOException if the properties file cannot be read.
+	 */
 	public static ReactorStatePluginProperties create() throws IOException {
-<span class="fc" id="L22">		final Properties properties = new Properties();</span>
-<span class="fc" id="L23">		try (final InputStream propertiesStream = ReactorStatePluginProperties.class.getResourceAsStream(PROPERTIES_FILENAME)) {</span>
-<span class="fc" id="L24">			properties.load(propertiesStream);</span>
+<span class="fc" id="L46">		final Properties properties = new Properties();</span>
+<span class="fc" id="L47">		try (final InputStream propertiesStream = ReactorStatePluginProperties.class.getResourceAsStream(PROPERTIES_FILENAME)) {</span>
+<span class="fc" id="L48">			properties.load(propertiesStream);</span>
 		}
 
-<span class="fc" id="L27">		final String artifactCoordinates = properties.getProperty(PROPERTY_KEY_EXTENSION_ARTIFACT);</span>
-<span class="fc" id="L28">		final Artifact extensionArtifact = new DefaultArtifact(artifactCoordinates);</span>
+<span class="fc" id="L51">		final String artifactCoordinates = properties.getProperty(PROPERTY_KEY_EXTENSION_ARTIFACT);</span>
+<span class="fc" id="L52">		final Artifact extensionArtifact = new DefaultArtifact(artifactCoordinates);</span>
 
-<span class="fc" id="L30">		final ReactorStatePluginProperties reactorStatePluginProperties = new ReactorStatePluginProperties(extensionArtifact);</span>
-<span class="fc" id="L31">		return reactorStatePluginProperties;</span>
+<span class="fc" id="L54">		final ReactorStatePluginProperties reactorStatePluginProperties = new ReactorStatePluginProperties(extensionArtifact);</span>
+<span class="fc" id="L55">		return reactorStatePluginProperties;</span>
 	}
 
+	/**
+	 * @return The specific artifact coordinated for the reactorstate-maven-extension.
+	 */
 	public Artifact getExtensionArtifact() {
-<span class="fc" id="L35">		return getExtensionArtifact(null);</span>
+<span class="fc" id="L62">		return getExtensionArtifact(null);</span>
 	}
 
+	/**
+	 * Returns the specific artifact coordinated for the reactorstate-maven-extension with a custom artifact classifier.
+	 *
+	 * @param classifier The custom artifact classifier.
+	 * @return The specific artifact coordinated for the reactorstate-maven-extension.
+	 */
 	public Artifact getExtensionArtifact(final String classifier) {
-<span class="fc" id="L39">		return new DefaultArtifact(</span>
-<span class="pc bpc" id="L40" title="1 of 2 branches missed.">			extensionArtifact.getGroupId(), extensionArtifact.getArtifactId(), ((classifier != null) ? classifier : extensionArtifact.getClassifier()),</span>
-<span class="fc" id="L41">			extensionArtifact.getExtension(), extensionArtifact.getVersion()</span>
+<span class="fc" id="L72">		return new DefaultArtifact(</span>
+<span class="pc bpc" id="L73" title="1 of 2 branches missed.">			extensionArtifact.getGroupId(), extensionArtifact.getArtifactId(), ((classifier != null) ? classifier : extensionArtifact.getClassifier()),</span>
+<span class="fc" id="L74">			extensionArtifact.getExtension(), extensionArtifact.getVersion()</span>
 		);
 	}
 

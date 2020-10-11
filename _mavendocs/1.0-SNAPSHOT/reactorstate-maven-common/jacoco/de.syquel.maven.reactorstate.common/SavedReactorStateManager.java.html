@@ -20,92 +20,128 @@ import org.slf4j.LoggerFactory;
 import de.syquel.maven.reactorstate.common.persistence.IReactorStateRepository;
 import de.syquel.maven.reactorstate.common.persistence.json.JsonReactorStateRepository;
 
+/**
+ * The implementation of a Maven Reactor state manager which operates on the saved state of Maven modules within a Maven project.
+ */
 public class SavedReactorStateManager extends AbstractReactorStateManager {
 
-<span class="fc" id="L25">	private static final Logger LOGGER = LoggerFactory.getLogger(SavedReactorStateManager.class);</span>
+<span class="fc" id="L28">	private static final Logger LOGGER = LoggerFactory.getLogger(SavedReactorStateManager.class);</span>
 
 	private SavedReactorStateManager(final Set&lt;MavenProjectState&gt; projectStates) {
-<span class="fc" id="L28">		super(projectStates);</span>
-<span class="fc" id="L29">	}</span>
+<span class="fc" id="L31">		super(projectStates);</span>
+<span class="fc" id="L32">	}</span>
 
+	/**
+	 * Instantiates a Reactor state manager based on the saved state of the Maven project and its Maven modules.
+	 *
+	 * @param session The current Maven execution for the Maven project build.
+	 * @param projectBuilder The builder for Maven projects from POMs.
+	 * @return A Reactor state manager with the saved state of the Maven project and its Maven modules.
+	 * @throws ProjectBuildingException if an invalid POM is encountered.
+	 * @throws IOException if an error occurred while reading the persisted state.
+	 */
 	public static SavedReactorStateManager create(final MavenSession session, final ProjectBuilder projectBuilder)
 		throws ProjectBuildingException, IOException
 	{
-<span class="fc" id="L34">		final Set&lt;MavenProject&gt; projects = new HashSet&lt;&gt;(session.getProjects());</span>
+<span class="fc" id="L46">		final Set&lt;MavenProject&gt; projects = new HashSet&lt;&gt;(session.getProjects());</span>
 
-<span class="fc" id="L36">		LOGGER.info(&quot;Resolving Maven project tree&quot;);</span>
-<span class="fc" id="L37">		contributeWorkspaceProjects(session.getCurrentProject(), projects, session.getProjectBuildingRequest(), projectBuilder);</span>
+<span class="fc" id="L48">		LOGGER.info(&quot;Resolving Maven project tree&quot;);</span>
+<span class="fc" id="L49">		contributeWorkspaceProjects(session.getCurrentProject(), projects, session.getProjectBuildingRequest(), projectBuilder);</span>
 
-<span class="fc" id="L39">		final IReactorStateRepository reactorStateRepository = new JsonReactorStateRepository();</span>
+<span class="fc" id="L51">		final IReactorStateRepository reactorStateRepository = new JsonReactorStateRepository();</span>
 
-<span class="fc" id="L41">		final Set&lt;MavenProjectState&gt; projectStates = new HashSet&lt;&gt;();</span>
-<span class="fc bfc" id="L42" title="All 2 branches covered.">		for (final MavenProject project : projects) {</span>
-<span class="fc" id="L43">			final MavenProjectState projectState = reactorStateRepository.read(project);</span>
-<span class="pc bpc" id="L44" title="1 of 2 branches missed.">			if (projectState != null) {</span>
-<span class="fc" id="L45">				projectStates.add(projectState);</span>
+<span class="fc" id="L53">		final Set&lt;MavenProjectState&gt; projectStates = new HashSet&lt;&gt;();</span>
+<span class="fc bfc" id="L54" title="All 2 branches covered.">		for (final MavenProject project : projects) {</span>
+<span class="fc" id="L55">			final MavenProjectState projectState = reactorStateRepository.read(project);</span>
+<span class="pc bpc" id="L56" title="1 of 2 branches missed.">			if (projectState != null) {</span>
+<span class="fc" id="L57">				projectStates.add(projectState);</span>
 			}
-<span class="fc" id="L47">		}</span>
+<span class="fc" id="L59">		}</span>
 
-<span class="fc" id="L49">		return new SavedReactorStateManager(projectStates);</span>
+<span class="fc" id="L61">		return new SavedReactorStateManager(projectStates);</span>
 	}
 
+	/**
+	 * Restores the saved state of the Maven projects and its Maven modules within the current Maven execution.
+	 *
+	 * @param session The current Maven execution.
+	 * @param projectHelper The helper for Maven-related operations on the current state.
+	 */
 	public void restoreProjectStates(final MavenSession session, final MavenProjectHelper projectHelper) {
-<span class="fc" id="L53">		final Set&lt;MavenProject&gt; projects = new HashSet&lt;&gt;(session.getProjects());</span>
+<span class="fc" id="L71">		final Set&lt;MavenProject&gt; projects = new HashSet&lt;&gt;(session.getProjects());</span>
 
-<span class="fc bfc" id="L55" title="All 2 branches covered.">		for (final MavenProject project : projects) {</span>
-<span class="fc" id="L56">			final MavenProjectState projectState = getProjectState(project);</span>
-<span class="pc bpc" id="L57" title="1 of 2 branches missed.">			if (projectState == null) {</span>
-<span class="nc" id="L58">				throw new IllegalStateException(&quot;No saved state found for Maven project &quot; + project.getId() + &quot;: Rebuild required.&quot;);</span>
+<span class="fc bfc" id="L73" title="All 2 branches covered.">		for (final MavenProject project : projects) {</span>
+<span class="fc" id="L74">			final MavenProjectState projectState = getProjectState(project);</span>
+<span class="pc bpc" id="L75" title="1 of 2 branches missed.">			if (projectState == null) {</span>
+<span class="nc" id="L76">				throw new IllegalStateException(&quot;No saved state found for Maven project &quot; + project.getId() + &quot;: Rebuild required.&quot;);</span>
 			}
 
-<span class="fc" id="L61">			final org.apache.maven.artifact.Artifact mainArtifact = RepositoryUtils.toArtifact(projectState.getMainArtifact());</span>
-<span class="fc" id="L62">			project.getArtifact().setFile(mainArtifact.getFile());</span>
-<span class="fc" id="L63">			LOGGER.info(&quot;Restored main artifact {}&quot;, mainArtifact.getId());</span>
+<span class="fc" id="L79">			final org.apache.maven.artifact.Artifact mainArtifact = RepositoryUtils.toArtifact(projectState.getMainArtifact());</span>
+<span class="fc" id="L80">			project.getArtifact().setFile(mainArtifact.getFile());</span>
+<span class="fc" id="L81">			LOGGER.info(&quot;Restored main artifact {}&quot;, mainArtifact.getId());</span>
 
-<span class="fc" id="L65">			final Collection&lt;org.apache.maven.artifact.Artifact&gt; attachedArtifacts =</span>
-<span class="fc" id="L66">				projectState.getAttachedArtifacts().stream().map(RepositoryUtils::toArtifact).collect(Collectors.toList());</span>
-<span class="fc" id="L67">			project.getAttachedArtifacts().clear();</span>
-<span class="fc bfc" id="L68" title="All 2 branches covered.">			for (final org.apache.maven.artifact.Artifact attachedArtifact : attachedArtifacts) {</span>
-<span class="fc" id="L69">				projectHelper.attachArtifact(project, attachedArtifact.getType(), attachedArtifact.getClassifier(), attachedArtifact.getFile());</span>
-<span class="fc" id="L70">				LOGGER.info(&quot;Restored attached artifact {}&quot;, attachedArtifact.getId());</span>
-<span class="fc" id="L71">			}</span>
-<span class="fc" id="L72">		}</span>
-<span class="fc" id="L73">	}</span>
+<span class="fc" id="L83">			final Collection&lt;org.apache.maven.artifact.Artifact&gt; attachedArtifacts =</span>
+<span class="fc" id="L84">				projectState.getAttachedArtifacts().stream().map(RepositoryUtils::toArtifact).collect(Collectors.toList());</span>
+<span class="fc" id="L85">			project.getAttachedArtifacts().clear();</span>
+<span class="fc bfc" id="L86" title="All 2 branches covered.">			for (final org.apache.maven.artifact.Artifact attachedArtifact : attachedArtifacts) {</span>
+<span class="fc" id="L87">				projectHelper.attachArtifact(project, attachedArtifact.getType(), attachedArtifact.getClassifier(), attachedArtifact.getFile());</span>
+<span class="fc" id="L88">				LOGGER.info(&quot;Restored attached artifact {}&quot;, attachedArtifact.getId());</span>
+<span class="fc" id="L89">			}</span>
+<span class="fc" id="L90">		}</span>
+<span class="fc" id="L91">	}</span>
 
+	/**
+	 * Discovers Maven modules within the workspace of a Maven project recursively.
+	 *
+	 * The main use-case for this functionality is to be able to restore the state of other Maven modules, which are not being built in the current
+	 * Maven execution, but belong to the same Maven workspace, to enable standalone builds of submodules.
+	 *
+	 * @param project The Maven module to search for parent and child modules.
+	 * @param discoveredProjects The already discovered Maven modules within the Maven workspace.
+	 * @param buildingRequest The Maven building request of the current Maven execution.
+	 * @param projectBuilder The builder for Maven projects from POMs.
+	 * @throws ProjectBuildingException if an invalid POM is encountered.
+	 */
 	private static void contributeWorkspaceProjects(
 		final MavenProject project, final Set&lt;MavenProject&gt; discoveredProjects,
 		final ProjectBuildingRequest buildingRequest, final ProjectBuilder projectBuilder
 	) throws ProjectBuildingException
 	{
-<span class="fc" id="L80">		final Path projectBasePath = project.getBasedir().toPath();</span>
+<span class="fc" id="L110">		final Path projectBasePath = project.getBasedir().toPath();</span>
 
 		// Discover downstream Maven projects within workspace
-<span class="fc bfc" id="L83" title="All 2 branches covered.">		for (final String module : project.getModules()) {</span>
-<span class="fc" id="L84">			final Path modulePomPath = projectBasePath.resolve(module).resolve(&quot;pom.xml&quot;);</span>
+<span class="fc bfc" id="L113" title="All 2 branches covered.">		for (final String module : project.getModules()) {</span>
+<span class="fc" id="L114">			final Path modulePomPath = projectBasePath.resolve(module).resolve(&quot;pom.xml&quot;);</span>
 
-<span class="fc" id="L86">			final MavenProject moduleProject = projectBuilder.build(modulePomPath.toFile(), buildingRequest).getProject();</span>
-<span class="fc bfc" id="L87" title="All 2 branches covered.">			if (discoveredProjects.contains(moduleProject)) {</span>
-<span class="fc" id="L88">				continue;</span>
+<span class="fc" id="L116">			final MavenProject moduleProject = projectBuilder.build(modulePomPath.toFile(), buildingRequest).getProject();</span>
+<span class="fc bfc" id="L117" title="All 2 branches covered.">			if (discoveredProjects.contains(moduleProject)) {</span>
+<span class="fc" id="L118">				continue;</span>
 			}
 
-<span class="fc" id="L91">			LOGGER.info(&quot;Discovered upstream Maven project {}&quot;, moduleProject.getId());</span>
-<span class="fc" id="L92">			discoveredProjects.add(moduleProject);</span>
+<span class="fc" id="L121">			LOGGER.info(&quot;Discovered upstream Maven project {}&quot;, moduleProject.getId());</span>
+<span class="fc" id="L122">			discoveredProjects.add(moduleProject);</span>
 
-<span class="fc" id="L94">			contributeWorkspaceProjects(moduleProject, discoveredProjects, buildingRequest, projectBuilder);</span>
-<span class="fc" id="L95">		}</span>
+<span class="fc" id="L124">			contributeWorkspaceProjects(moduleProject, discoveredProjects, buildingRequest, projectBuilder);</span>
+<span class="fc" id="L125">		}</span>
 
 		// Discover upstream Maven projects within workspace
-<span class="fc" id="L98">		final MavenProject parentProject = project.getParent();</span>
-<span class="pc bpc" id="L99" title="1 of 6 branches missed.">		if (parentProject != null &amp;&amp; !discoveredProjects.contains(parentProject) &amp;&amp; isWorkspaceProject(parentProject)) {</span>
-<span class="fc" id="L100">			LOGGER.info(&quot;Discovered Maven parent project {}&quot;, parentProject.getId());</span>
-<span class="fc" id="L101">			discoveredProjects.add(parentProject);</span>
+<span class="fc" id="L128">		final MavenProject parentProject = project.getParent();</span>
+<span class="pc bpc" id="L129" title="1 of 6 branches missed.">		if (parentProject != null &amp;&amp; !discoveredProjects.contains(parentProject) &amp;&amp; isWorkspaceProject(parentProject)) {</span>
+<span class="fc" id="L130">			LOGGER.info(&quot;Discovered Maven parent project {}&quot;, parentProject.getId());</span>
+<span class="fc" id="L131">			discoveredProjects.add(parentProject);</span>
 
-<span class="fc" id="L103">			contributeWorkspaceProjects(parentProject, discoveredProjects, buildingRequest, projectBuilder);</span>
+<span class="fc" id="L133">			contributeWorkspaceProjects(parentProject, discoveredProjects, buildingRequest, projectBuilder);</span>
 		}
-<span class="fc" id="L105">	}</span>
+<span class="fc" id="L135">	}</span>
 
+	/**
+	 * Determines if a Maven module belongs to the current Maven workspace.
+	 *
+	 * @param project The Maven module to check.
+	 * @return Whether the Maven module belongs to the current Maven workspace.
+	 */
 	private static boolean isWorkspaceProject(final MavenProject project) {
-<span class="fc bfc" id="L108" title="All 2 branches covered.">		return project.getBasedir() != null;</span>
+<span class="fc bfc" id="L144" title="All 2 branches covered.">		return project.getBasedir() != null;</span>
 	}
 
 }

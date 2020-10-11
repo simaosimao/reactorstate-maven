@@ -99,13 +99,21 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <h2 class="title">A</h2>
 <dl>
 <dt><span class="memberNameLink"><a href="de/syquel/maven/reactorstate/extension/ReactorStateSaveExtension.html#afterProjectsRead(org.apache.maven.execution.MavenSession)">afterProjectsRead(MavenSession)</a></span> - Method in class de.syquel.maven.reactorstate.extension.<a href="de/syquel/maven/reactorstate/extension/ReactorStateSaveExtension.html" title="class in de.syquel.maven.reactorstate.extension">ReactorStateSaveExtension</a></dt>
-<dd>&nbsp;</dd>
+<dd>
+<div class="block">Restores the saved state of the Maven projects and its Maven modules within the current Maven execution.</div>
+</dd>
 <dt><span class="memberNameLink"><a href="de/syquel/maven/reactorstate/extension/workspacereader/ReactorStateWorkspaceReader.html#afterProjectsRead(org.apache.maven.execution.MavenSession)">afterProjectsRead(MavenSession)</a></span> - Method in class de.syquel.maven.reactorstate.extension.workspacereader.<a href="de/syquel/maven/reactorstate/extension/workspacereader/ReactorStateWorkspaceReader.html" title="class in de.syquel.maven.reactorstate.extension.workspacereader">ReactorStateWorkspaceReader</a></dt>
-<dd>&nbsp;</dd>
+<dd>
+<div class="block">Initializes the workspace reader with the saved state of the Maven modules within the current Maven workspace.</div>
+</dd>
 <dt><span class="memberNameLink"><a href="de/syquel/maven/reactorstate/extension/ReactorStateSaveExtension.html#afterSessionEnd(org.apache.maven.execution.MavenSession)">afterSessionEnd(MavenSession)</a></span> - Method in class de.syquel.maven.reactorstate.extension.<a href="de/syquel/maven/reactorstate/extension/ReactorStateSaveExtension.html" title="class in de.syquel.maven.reactorstate.extension">ReactorStateSaveExtension</a></dt>
-<dd>&nbsp;</dd>
+<dd>
+<div class="block">Saves the current state of all Maven modules within the Maven execution.</div>
+</dd>
 <dt><span class="memberNameLink"><a href="de/syquel/maven/reactorstate/extension/workspacereader/DelegatingIdeWorkspaceReader.html#afterSessionStart(org.apache.maven.execution.MavenSession)">afterSessionStart(MavenSession)</a></span> - Method in class de.syquel.maven.reactorstate.extension.workspacereader.<a href="de/syquel/maven/reactorstate/extension/workspacereader/DelegatingIdeWorkspaceReader.html" title="class in de.syquel.maven.reactorstate.extension.workspacereader">DelegatingIdeWorkspaceReader</a></dt>
-<dd>&nbsp;</dd>
+<dd>
+<div class="block">Retrieves other workspace readers from the <code>PlexusContainer</code>.</div>
+</dd>
 </dl>
 <a id="I:D">
 <!--   -->
@@ -117,9 +125,13 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <dt><a href="de/syquel/maven/reactorstate/extension/workspacereader/package-summary.html">de.syquel.maven.reactorstate.extension.workspacereader</a> - package de.syquel.maven.reactorstate.extension.workspacereader</dt>
 <dd>&nbsp;</dd>
 <dt><a href="de/syquel/maven/reactorstate/extension/workspacereader/DelegatingIdeWorkspaceReader.html" title="class in de.syquel.maven.reactorstate.extension.workspacereader"><span class="typeNameLink">DelegatingIdeWorkspaceReader</span></a> - Class in <a href="de/syquel/maven/reactorstate/extension/workspacereader/package-summary.html">de.syquel.maven.reactorstate.extension.workspacereader</a></dt>
-<dd>&nbsp;</dd>
+<dd>
+<div class="block">A Maven <code>WorkspaceReader</code>, which registers itself with the current Maven execution and delegates to other registered workspace readers.</div>
+</dd>
 <dt><span class="memberNameLink"><a href="de/syquel/maven/reactorstate/extension/workspacereader/DelegatingIdeWorkspaceReader.html#%3Cinit%3E(org.codehaus.plexus.PlexusContainer)">DelegatingIdeWorkspaceReader(PlexusContainer)</a></span> - Constructor for class de.syquel.maven.reactorstate.extension.workspacereader.<a href="de/syquel/maven/reactorstate/extension/workspacereader/DelegatingIdeWorkspaceReader.html" title="class in de.syquel.maven.reactorstate.extension.workspacereader">DelegatingIdeWorkspaceReader</a></dt>
-<dd>&nbsp;</dd>
+<dd>
+<div class="block">Constructs a new Workspace reader based on the Maven dependency injection container.</div>
+</dd>
 </dl>
 <a id="I:E">
 <!--   -->
@@ -127,7 +139,9 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <h2 class="title">E</h2>
 <dl>
 <dt><span class="memberNameLink"><a href="de/syquel/maven/reactorstate/extension/ReactorStateSaveExtension.html#EXTENSION_ID">EXTENSION_ID</a></span> - Static variable in class de.syquel.maven.reactorstate.extension.<a href="de/syquel/maven/reactorstate/extension/ReactorStateSaveExtension.html" title="class in de.syquel.maven.reactorstate.extension">ReactorStateSaveExtension</a></dt>
-<dd>&nbsp;</dd>
+<dd>
+<div class="block">The unique ID of this Maven Core Extension.</div>
+</dd>
 </dl>
 <a id="I:F">
 <!--   -->
@@ -135,13 +149,21 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <h2 class="title">F</h2>
 <dl>
 <dt><span class="memberNameLink"><a href="de/syquel/maven/reactorstate/extension/workspacereader/DelegatingIdeWorkspaceReader.html#findArtifact(org.eclipse.aether.artifact.Artifact)">findArtifact(Artifact)</a></span> - Method in class de.syquel.maven.reactorstate.extension.workspacereader.<a href="de/syquel/maven/reactorstate/extension/workspacereader/DelegatingIdeWorkspaceReader.html" title="class in de.syquel.maven.reactorstate.extension.workspacereader">DelegatingIdeWorkspaceReader</a></dt>
-<dd>&nbsp;</dd>
+<dd>
+<div class="block">Delegates to other workspace readers to determine the filesystem location of a Maven artifact.</div>
+</dd>
 <dt><span class="memberNameLink"><a href="de/syquel/maven/reactorstate/extension/workspacereader/ReactorStateWorkspaceReader.html#findArtifact(org.eclipse.aether.artifact.Artifact)">findArtifact(Artifact)</a></span> - Method in class de.syquel.maven.reactorstate.extension.workspacereader.<a href="de/syquel/maven/reactorstate/extension/workspacereader/ReactorStateWorkspaceReader.html" title="class in de.syquel.maven.reactorstate.extension.workspacereader">ReactorStateWorkspaceReader</a></dt>
-<dd>&nbsp;</dd>
+<dd>
+<div class="block">Determines the filesystem location of a Maven artifact.</div>
+</dd>
 <dt><span class="memberNameLink"><a href="de/syquel/maven/reactorstate/extension/workspacereader/DelegatingIdeWorkspaceReader.html#findVersions(org.eclipse.aether.artifact.Artifact)">findVersions(Artifact)</a></span> - Method in class de.syquel.maven.reactorstate.extension.workspacereader.<a href="de/syquel/maven/reactorstate/extension/workspacereader/DelegatingIdeWorkspaceReader.html" title="class in de.syquel.maven.reactorstate.extension.workspacereader">DelegatingIdeWorkspaceReader</a></dt>
-<dd>&nbsp;</dd>
+<dd>
+<div class="block">Delegates to other workspace readers to determine the available versions of a Maven artifact.</div>
+</dd>
 <dt><span class="memberNameLink"><a href="de/syquel/maven/reactorstate/extension/workspacereader/ReactorStateWorkspaceReader.html#findVersions(org.eclipse.aether.artifact.Artifact)">findVersions(Artifact)</a></span> - Method in class de.syquel.maven.reactorstate.extension.workspacereader.<a href="de/syquel/maven/reactorstate/extension/workspacereader/ReactorStateWorkspaceReader.html" title="class in de.syquel.maven.reactorstate.extension.workspacereader">ReactorStateWorkspaceReader</a></dt>
-<dd>&nbsp;</dd>
+<dd>
+<div class="block">Determines the available versions of a Maven artifact.</div>
+</dd>
 </dl>
 <a id="I:G">
 <!--   -->
@@ -149,9 +171,13 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <h2 class="title">G</h2>
 <dl>
 <dt><span class="memberNameLink"><a href="de/syquel/maven/reactorstate/extension/workspacereader/DelegatingIdeWorkspaceReader.html#getRepository()">getRepository()</a></span> - Method in class de.syquel.maven.reactorstate.extension.workspacereader.<a href="de/syquel/maven/reactorstate/extension/workspacereader/DelegatingIdeWorkspaceReader.html" title="class in de.syquel.maven.reactorstate.extension.workspacereader">DelegatingIdeWorkspaceReader</a></dt>
-<dd>&nbsp;</dd>
+<dd>
+<div class="block">Returns the underlying workspace repository information.</div>
+</dd>
 <dt><span class="memberNameLink"><a href="de/syquel/maven/reactorstate/extension/workspacereader/ReactorStateWorkspaceReader.html#getRepository()">getRepository()</a></span> - Method in class de.syquel.maven.reactorstate.extension.workspacereader.<a href="de/syquel/maven/reactorstate/extension/workspacereader/ReactorStateWorkspaceReader.html" title="class in de.syquel.maven.reactorstate.extension.workspacereader">ReactorStateWorkspaceReader</a></dt>
-<dd>&nbsp;</dd>
+<dd>
+<div class="block">Returns the underlying workspace repository information.</div>
+</dd>
 </dl>
 <a id="I:R">
 <!--   -->
@@ -159,13 +185,22 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <h2 class="title">R</h2>
 <dl>
 <dt><a href="de/syquel/maven/reactorstate/extension/ReactorStateSaveExtension.html" title="class in de.syquel.maven.reactorstate.extension"><span class="typeNameLink">ReactorStateSaveExtension</span></a> - Class in <a href="de/syquel/maven/reactorstate/extension/package-summary.html">de.syquel.maven.reactorstate.extension</a></dt>
-<dd>&nbsp;</dd>
+<dd>
+<div class="block">A Maven Core Extension which saves the state of Maven executions afterwards and restores it beforehand.</div>
+</dd>
 <dt><span class="memberNameLink"><a href="de/syquel/maven/reactorstate/extension/ReactorStateSaveExtension.html#%3Cinit%3E(org.apache.maven.project.MavenProjectHelper,org.apache.maven.project.ProjectBuilder)">ReactorStateSaveExtension(MavenProjectHelper, ProjectBuilder)</a></span> - Constructor for class de.syquel.maven.reactorstate.extension.<a href="de/syquel/maven/reactorstate/extension/ReactorStateSaveExtension.html" title="class in de.syquel.maven.reactorstate.extension">ReactorStateSaveExtension</a></dt>
-<dd>&nbsp;</dd>
+<dd>
+<div class="block">Constructs a new instance.</div>
+</dd>
 <dt><a href="de/syquel/maven/reactorstate/extension/workspacereader/ReactorStateWorkspaceReader.html" title="class in de.syquel.maven.reactorstate.extension.workspacereader"><span class="typeNameLink">ReactorStateWorkspaceReader</span></a> - Class in <a href="de/syquel/maven/reactorstate/extension/workspacereader/package-summary.html">de.syquel.maven.reactorstate.extension.workspacereader</a></dt>
-<dd>&nbsp;</dd>
+<dd>
+<div class="block">A Maven <code>WorkspaceReader</code>, which contributes Maven artifacts from the current Maven workspace
+ based on their saved state to the current Maven execution.</div>
+</dd>
 <dt><span class="memberNameLink"><a href="de/syquel/maven/reactorstate/extension/workspacereader/ReactorStateWorkspaceReader.html#%3Cinit%3E(org.apache.maven.project.ProjectBuilder)">ReactorStateWorkspaceReader(ProjectBuilder)</a></span> - Constructor for class de.syquel.maven.reactorstate.extension.workspacereader.<a href="de/syquel/maven/reactorstate/extension/workspacereader/ReactorStateWorkspaceReader.html" title="class in de.syquel.maven.reactorstate.extension.workspacereader">ReactorStateWorkspaceReader</a></dt>
-<dd>&nbsp;</dd>
+<dd>
+<div class="block">Constructs a new state-based workspace reader.</div>
+</dd>
 </dl>
 <a id="I:W">
 <!--   -->
@@ -173,7 +208,9 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <h2 class="title">W</h2>
 <dl>
 <dt><span class="memberNameLink"><a href="de/syquel/maven/reactorstate/extension/workspacereader/ReactorStateWorkspaceReader.html#WORKSPACE_READER_IDE_QUALIFIER">WORKSPACE_READER_IDE_QUALIFIER</a></span> - Static variable in class de.syquel.maven.reactorstate.extension.workspacereader.<a href="de/syquel/maven/reactorstate/extension/workspacereader/ReactorStateWorkspaceReader.html" title="class in de.syquel.maven.reactorstate.extension.workspacereader">ReactorStateWorkspaceReader</a></dt>
-<dd>&nbsp;</dd>
+<dd>
+<div class="block">The Maven-defined qualifier for custom workspace reader implementations.</div>
+</dd>
 </dl>
 <a href="#I:A">A</a>&nbsp;<a href="#I:D">D</a>&nbsp;<a href="#I:E">E</a>&nbsp;<a href="#I:F">F</a>&nbsp;<a href="#I:G">G</a>&nbsp;<a href="#I:R">R</a>&nbsp;<a href="#I:W">W</a>&nbsp;<br><a href="allclasses-index.html">All&nbsp;Classes</a>&nbsp;<a href="allpackages-index.html">All&nbsp;Packages</a></div>
 </main>

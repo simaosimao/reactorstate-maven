@@ -2,45 +2,59 @@
 
 import java.util.Map;
 
+/**
+ * The JSON-specific representation of a Maven artifact.
+ */
 public class ArtifactDto {
 
+	/**
+	 * The coordiates of a Maven artifact in the format [groupId]:[artifactId]:[extension]:[type]:[version]
+	 */
 	private String coordinates;
+
+	/**
+	 * The filesystem path to the Maven artifact.
+	 */
 	private String path;
+
+	/**
+	 * Aditional metadata which are a bound to the Maven artifact.
+	 */
 	private Map&lt;String, String&gt; properties;
 
-<span class="fc" id="L11">	public ArtifactDto(final String coordinates, final String path, final Map&lt;String, String&gt; properties) {</span>
-<span class="fc" id="L12">		this.coordinates = coordinates;</span>
-<span class="fc" id="L13">		this.path = path;</span>
-<span class="fc" id="L14">		this.properties = properties;</span>
-<span class="fc" id="L15">	}</span>
+<span class="fc" id="L25">	public ArtifactDto(final String coordinates, final String path, final Map&lt;String, String&gt; properties) {</span>
+<span class="fc" id="L26">		this.coordinates = coordinates;</span>
+<span class="fc" id="L27">		this.path = path;</span>
+<span class="fc" id="L28">		this.properties = properties;</span>
+<span class="fc" id="L29">	}</span>
 
-<span class="fc" id="L17">	protected ArtifactDto() {</span>
+<span class="fc" id="L31">	protected ArtifactDto() {</span>
 		// Jackson constructor
-<span class="fc" id="L19">	}</span>
+<span class="fc" id="L33">	}</span>
 
 	public String getCoordinates() {
-<span class="fc" id="L22">		return coordinates;</span>
+<span class="fc" id="L36">		return coordinates;</span>
 	}
 
 	protected void setCoordinates(final String coordinates) {
-<span class="fc" id="L26">		this.coordinates = coordinates;</span>
-<span class="fc" id="L27">	}</span>
+<span class="fc" id="L40">		this.coordinates = coordinates;</span>
+<span class="fc" id="L41">	}</span>
 
 	public String getPath() {
-<span class="fc" id="L30">		return path;</span>
+<span class="fc" id="L44">		return path;</span>
 	}
 
 	protected void setPath(final String path) {
-<span class="fc" id="L34">		this.path = path;</span>
-<span class="fc" id="L35">	}</span>
+<span class="fc" id="L48">		this.path = path;</span>
+<span class="fc" id="L49">	}</span>
 
 	public Map&lt;String, String&gt; getProperties() {
-<span class="fc" id="L38">		return properties;</span>
+<span class="fc" id="L52">		return properties;</span>
 	}
 
 	protected void setProperties(final Map&lt;String, String&gt; properties) {
-<span class="fc" id="L42">		this.properties = properties;</span>
-<span class="fc" id="L43">	}</span>
+<span class="fc" id="L56">		this.properties = properties;</span>
+<span class="fc" id="L57">	}</span>
 
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.6.202009150832</span></div></body></html>

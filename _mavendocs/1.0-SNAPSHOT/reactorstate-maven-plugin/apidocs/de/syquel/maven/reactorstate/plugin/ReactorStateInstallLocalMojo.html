@@ -147,6 +147,7 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
       inheritByDefault=false)
 public class <span class="typeNameLabel">ReactorStateInstallLocalMojo</span>
 extends org.apache.maven.plugin.AbstractMojo</pre>
+<div class="block">Installs the reactorstate-maven-extension to the root of the current Maven project by inserting it into <code>.mvn/extensions.xml</code>.</div>
 </li>
 </ul>
 </div>
@@ -185,7 +186,9 @@ extends org.apache.maven.plugin.AbstractMojo</pre>
 </tr>
 <tr class="altColor">
 <th class="colConstructorName" scope="row"><code><span class="memberNameLink"><a href="#%3Cinit%3E(org.apache.maven.execution.MavenSession)">ReactorStateInstallLocalMojo</a></span>&#8203;(org.apache.maven.execution.MavenSession&nbsp;mavenSession)</code></th>
-<td class="colLast">&nbsp;</td>
+<td class="colLast">
+<div class="block">Constructs a new instance based on the current maven execution context.</div>
+</td>
 </tr>
 </table>
 </li>
@@ -208,7 +211,9 @@ extends org.apache.maven.plugin.AbstractMojo</pre>
 <tr id="i0" class="altColor">
 <td class="colFirst"><code>void</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#execute()">execute</a></span>()</code></th>
-<td class="colLast">&nbsp;</td>
+<td class="colLast">
+<div class="block">Installs the reactorstate-maven-extension to the root of the current Maven project by inserting it into <code>.mvn/extensions.xml</code>.</div>
+</td>
 </tr>
 </table>
 <ul class="blockList">
@@ -249,6 +254,11 @@ extends org.apache.maven.plugin.AbstractMojo</pre>
 <h4>ReactorStateInstallLocalMojo</h4>
 <pre>@Inject
 public&nbsp;ReactorStateInstallLocalMojo&#8203;(org.apache.maven.execution.MavenSession&nbsp;mavenSession)</pre>
+<div class="block">Constructs a new instance based on the current maven execution context.</div>
+<dl>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>mavenSession</code> - </dd>
+</dl>
 </li>
 </ul>
 </li>
@@ -270,10 +280,13 @@ public&nbsp;ReactorStateInstallLocalMojo&#8203;(org.apache.maven.execution.Maven
 <pre class="methodSignature">public&nbsp;void&nbsp;execute()
              throws org.apache.maven.plugin.MojoExecutionException,
                     org.apache.maven.plugin.MojoFailureException</pre>
+<div class="block">Installs the reactorstate-maven-extension to the root of the current Maven project by inserting it into <code>.mvn/extensions.xml</code>.
+
+ The file is automatically created if it does not exist; otherwise already registered extensions are preserved.</div>
 <dl>
 <dt><span class="throwsLabel">Throws:</span></dt>
-<dd><code>org.apache.maven.plugin.MojoExecutionException</code></dd>
-<dd><code>org.apache.maven.plugin.MojoFailureException</code></dd>
+<dd><code>org.apache.maven.plugin.MojoExecutionException</code> - never.</dd>
+<dd><code>org.apache.maven.plugin.MojoFailureException</code> - if an error occured while registering the extension.</dd>
 </dl>
 </li>
 </ul>

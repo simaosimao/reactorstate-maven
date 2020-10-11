@@ -12,30 +12,47 @@ import org.apache.maven.plugins.annotations.Mojo;
 
 import de.syquel.maven.reactorstate.common.RuntimeReactorStateManager;
 
+/**
+ * Saves the state of the current Maven execution for usage in subsequent Maven executions.
+ */
 @Mojo(name = &quot;save&quot;, requiresDirectInvocation = true, threadSafe = true, inheritByDefault = false, aggregator = true)
 public class ReactorStateSaveMojo extends AbstractMojo {
 
+	/**
+	 * The current Maven execution context.
+	 */
 	private final MavenSession session;
 
+	/**
+	 * Constructs a new instance based on the current Maven execution context.
+	 *
+	 * @param session The current Maven execution context.
+	 */
 	@Inject
-<span class="fc" id="L21">	public ReactorStateSaveMojo(final MavenSession session) {</span>
-<span class="fc" id="L22">		this.session = session;</span>
-<span class="fc" id="L23">	}</span>
+<span class="fc" id="L32">	public ReactorStateSaveMojo(final MavenSession session) {</span>
+<span class="fc" id="L33">		this.session = session;</span>
+<span class="fc" id="L34">	}</span>
 
+	/**
+	 * Saves the state of the current Maven execution for usage in subsequent Maven executions.
+	 *
+	 * @throws MojoExecutionException if an error occurred while saving the state of the current Maven execution.
+	 * @throws MojoFailureException never.
+	 */
 	@Override
 	public void execute() throws MojoExecutionException, MojoFailureException {
-<span class="pc bpc" id="L27" title="1 of 2 branches missed.">		if (!session.getCurrentProject().isExecutionRoot()) {</span>
-<span class="nc" id="L28">			return;</span>
+<span class="pc bpc" id="L44" title="1 of 2 branches missed.">		if (!session.getCurrentProject().isExecutionRoot()) {</span>
+<span class="nc" id="L45">			return;</span>
 		}
 
-<span class="fc" id="L31">		final RuntimeReactorStateManager projectStateManager = RuntimeReactorStateManager.create(session);</span>
+<span class="fc" id="L48">		final RuntimeReactorStateManager projectStateManager = RuntimeReactorStateManager.create(session);</span>
 		try {
-<span class="fc" id="L33">			projectStateManager.saveProjectStates();</span>
-<span class="fc" id="L34">			getLog().info(&quot;Saved Maven reactor state&quot;);</span>
-<span class="nc" id="L35">		} catch (final IOException e) {</span>
-<span class="nc" id="L36">			throw new MojoExecutionException(&quot;Cannot save Maven project state&quot;, e);</span>
-<span class="fc" id="L37">		}</span>
-<span class="fc" id="L38">	}</span>
+<span class="fc" id="L50">			projectStateManager.saveProjectStates();</span>
+<span class="fc" id="L51">			getLog().info(&quot;Saved Maven reactor state&quot;);</span>
+<span class="nc" id="L52">		} catch (final IOException e) {</span>
+<span class="nc" id="L53">			throw new MojoExecutionException(&quot;Cannot save Maven project state&quot;, e);</span>
+<span class="fc" id="L54">		}</span>
+<span class="fc" id="L55">	}</span>
 
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.6.202009150832</span></div></body></html>

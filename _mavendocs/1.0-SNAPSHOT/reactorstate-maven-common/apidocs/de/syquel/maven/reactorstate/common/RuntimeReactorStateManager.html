@@ -139,6 +139,7 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <hr>
 <pre>public class <span class="typeNameLabel">RuntimeReactorStateManager</span>
 extends <a href="AbstractReactorStateManager.html" title="class in de.syquel.maven.reactorstate.common">AbstractReactorStateManager</a></pre>
+<div class="block">The implementation of a Maven Reactor state manager which operates on the current state of Maven modules within a Maven project.</div>
 </li>
 </ul>
 </div>
@@ -162,12 +163,16 @@ extends <a href="AbstractReactorStateManager.html" title="class in de.syquel.mav
 <tr id="i0" class="altColor">
 <td class="colFirst"><code>static <a href="RuntimeReactorStateManager.html" title="class in de.syquel.maven.reactorstate.common">RuntimeReactorStateManager</a></code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#create(org.apache.maven.execution.MavenSession)">create</a></span>&#8203;(org.apache.maven.execution.MavenSession&nbsp;mavenSession)</code></th>
-<td class="colLast">&nbsp;</td>
+<td class="colLast">
+<div class="block">Instantiates a Reactor state manager based on the current state of the Maven execution.</div>
+</td>
 </tr>
 <tr id="i1" class="rowColor">
 <td class="colFirst"><code>void</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#saveProjectStates()">saveProjectStates</a></span>()</code></th>
-<td class="colLast">&nbsp;</td>
+<td class="colLast">
+<div class="block">Saves the current state of all Maven modules within the Maven execution.</div>
+</td>
 </tr>
 </table>
 <ul class="blockList">
@@ -207,6 +212,13 @@ extends <a href="AbstractReactorStateManager.html" title="class in de.syquel.mav
 <li class="blockList">
 <h4>create</h4>
 <pre class="methodSignature">public static&nbsp;<a href="RuntimeReactorStateManager.html" title="class in de.syquel.maven.reactorstate.common">RuntimeReactorStateManager</a>&nbsp;create&#8203;(org.apache.maven.execution.MavenSession&nbsp;mavenSession)</pre>
+<div class="block">Instantiates a Reactor state manager based on the current state of the Maven execution.</div>
+<dl>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>mavenSession</code> - The state of a Maven execution.</dd>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd>A Reactor state manager with the current state of the Maven execution.</dd>
+</dl>
 </li>
 </ul>
 <a id="saveProjectStates()">
@@ -217,9 +229,10 @@ extends <a href="AbstractReactorStateManager.html" title="class in de.syquel.mav
 <h4>saveProjectStates</h4>
 <pre class="methodSignature">public&nbsp;void&nbsp;saveProjectStates()
                        throws <a href="https://docs.oracle.com/javase/8/docs/api/java/io/IOException.html?is-external=true" title="class or interface in java.io" class="externalLink">IOException</a></pre>
+<div class="block">Saves the current state of all Maven modules within the Maven execution.</div>
 <dl>
 <dt><span class="throwsLabel">Throws:</span></dt>
-<dd><code><a href="https://docs.oracle.com/javase/8/docs/api/java/io/IOException.html?is-external=true" title="class or interface in java.io" class="externalLink">IOException</a></code></dd>
+<dd><code><a href="https://docs.oracle.com/javase/8/docs/api/java/io/IOException.html?is-external=true" title="class or interface in java.io" class="externalLink">IOException</a></code> - if an error occurred while saving the state.</dd>
 </dl>
 </li>
 </ul>

@@ -147,6 +147,10 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 public class <span class="typeNameLabel">DelegatingIdeWorkspaceReader</span>
 extends org.apache.maven.AbstractMavenLifecycleParticipant
 implements org.eclipse.aether.repository.WorkspaceReader</pre>
+<div class="block">A Maven <code>WorkspaceReader</code>, which registers itself with the current Maven execution and delegates to other registered workspace readers.
+
+ The reason for this workspace reader implementation is that Maven only uses one workspace reader, which might conflict in case an IDE registers its own
+ besides ours.</div>
 </li>
 </ul>
 </div>
@@ -168,7 +172,9 @@ implements org.eclipse.aether.repository.WorkspaceReader</pre>
 </tr>
 <tr class="altColor">
 <th class="colConstructorName" scope="row"><code><span class="memberNameLink"><a href="#%3Cinit%3E(org.codehaus.plexus.PlexusContainer)">DelegatingIdeWorkspaceReader</a></span>&#8203;(org.codehaus.plexus.PlexusContainer&nbsp;plexusContainer)</code></th>
-<td class="colLast">&nbsp;</td>
+<td class="colLast">
+<div class="block">Constructs a new Workspace reader based on the Maven dependency injection container.</div>
+</td>
 </tr>
 </table>
 </li>
@@ -191,22 +197,30 @@ implements org.eclipse.aether.repository.WorkspaceReader</pre>
 <tr id="i0" class="altColor">
 <td class="colFirst"><code>void</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#afterSessionStart(org.apache.maven.execution.MavenSession)">afterSessionStart</a></span>&#8203;(org.apache.maven.execution.MavenSession&nbsp;session)</code></th>
-<td class="colLast">&nbsp;</td>
+<td class="colLast">
+<div class="block">Retrieves other workspace readers from the <code>PlexusContainer</code>.</div>
+</td>
 </tr>
 <tr id="i1" class="rowColor">
 <td class="colFirst"><code><a href="https://docs.oracle.com/javase/8/docs/api/java/io/File.html?is-external=true" title="class or interface in java.io" class="externalLink">File</a></code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#findArtifact(org.eclipse.aether.artifact.Artifact)">findArtifact</a></span>&#8203;(org.eclipse.aether.artifact.Artifact&nbsp;artifact)</code></th>
-<td class="colLast">&nbsp;</td>
+<td class="colLast">
+<div class="block">Delegates to other workspace readers to determine the filesystem location of a Maven artifact.</div>
+</td>
 </tr>
 <tr id="i2" class="altColor">
 <td class="colFirst"><code><a href="https://docs.oracle.com/javase/8/docs/api/java/util/List.html?is-external=true" title="class or interface in java.util" class="externalLink">List</a>&lt;<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&gt;</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#findVersions(org.eclipse.aether.artifact.Artifact)">findVersions</a></span>&#8203;(org.eclipse.aether.artifact.Artifact&nbsp;artifact)</code></th>
-<td class="colLast">&nbsp;</td>
+<td class="colLast">
+<div class="block">Delegates to other workspace readers to determine the available versions of a Maven artifact.</div>
+</td>
 </tr>
 <tr id="i3" class="rowColor">
 <td class="colFirst"><code>org.eclipse.aether.repository.WorkspaceRepository</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getRepository()">getRepository</a></span>()</code></th>
-<td class="colLast">&nbsp;</td>
+<td class="colLast">
+<div class="block">Returns the underlying workspace repository information.</div>
+</td>
 </tr>
 </table>
 <ul class="blockList">
@@ -247,6 +261,11 @@ implements org.eclipse.aether.repository.WorkspaceReader</pre>
 <h4>DelegatingIdeWorkspaceReader</h4>
 <pre>@Inject
 public&nbsp;DelegatingIdeWorkspaceReader&#8203;(org.codehaus.plexus.PlexusContainer&nbsp;plexusContainer)</pre>
+<div class="block">Constructs a new Workspace reader based on the Maven dependency injection container.</div>
+<dl>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>plexusContainer</code> - The Maven dependency injection and management container to retrieve other workspace reader implementations from.</dd>
+</dl>
 </li>
 </ul>
 </li>
@@ -267,11 +286,16 @@ public&nbsp;DelegatingIdeWorkspaceReader&#8203;(org.codehaus.plexus.PlexusContai
 <h4>afterSessionStart</h4>
 <pre class="methodSignature">public&nbsp;void&nbsp;afterSessionStart&#8203;(org.apache.maven.execution.MavenSession&nbsp;session)
                        throws org.apache.maven.MavenExecutionException</pre>
+<div class="block">Retrieves other workspace readers from the <code>PlexusContainer</code>.
+
+ This is a Maven lifecycle hook, which is executed directly after the Maven session has been constructed, but before it has started or projects were read.</div>
 <dl>
 <dt><span class="overrideSpecifyLabel">Overrides:</span></dt>
 <dd><code>afterSessionStart</code>&nbsp;in class&nbsp;<code>org.apache.maven.AbstractMavenLifecycleParticipant</code></dd>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>session</code> - The current Maven execution.</dd>
 <dt><span class="throwsLabel">Throws:</span></dt>
-<dd><code>org.apache.maven.MavenExecutionException</code></dd>
+<dd><code>org.apache.maven.MavenExecutionException</code> - if other workspace readers could not be retrieved from the <code>PlexusContainer</code>.</dd>
 </dl>
 </li>
 </ul>
@@ -282,9 +306,14 @@ public&nbsp;DelegatingIdeWorkspaceReader&#8203;(org.codehaus.plexus.PlexusContai
 <li class="blockList">
 <h4>findArtifact</h4>
 <pre class="methodSignature">public&nbsp;<a href="https://docs.oracle.com/javase/8/docs/api/java/io/File.html?is-external=true" title="class or interface in java.io" class="externalLink">File</a>&nbsp;findArtifact&#8203;(org.eclipse.aether.artifact.Artifact&nbsp;artifact)</pre>
+<div class="block">Delegates to other workspace readers to determine the filesystem location of a Maven artifact.</div>
 <dl>
 <dt><span class="overrideSpecifyLabel">Specified by:</span></dt>
 <dd><code>findArtifact</code>&nbsp;in interface&nbsp;<code>org.eclipse.aether.repository.WorkspaceReader</code></dd>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>artifact</code> - The Maven artifact to determine the filesystem location for.</dd>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd>The filesystem location of the Maven artifact.</dd>
 </dl>
 </li>
 </ul>
@@ -295,9 +324,14 @@ public&nbsp;DelegatingIdeWorkspaceReader&#8203;(org.codehaus.plexus.PlexusContai
 <li class="blockList">
 <h4>findVersions</h4>
 <pre class="methodSignature">public&nbsp;<a href="https://docs.oracle.com/javase/8/docs/api/java/util/List.html?is-external=true" title="class or interface in java.util" class="externalLink">List</a>&lt;<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&gt;&nbsp;findVersions&#8203;(org.eclipse.aether.artifact.Artifact&nbsp;artifact)</pre>
+<div class="block">Delegates to other workspace readers to determine the available versions of a Maven artifact.</div>
 <dl>
 <dt><span class="overrideSpecifyLabel">Specified by:</span></dt>
 <dd><code>findVersions</code>&nbsp;in interface&nbsp;<code>org.eclipse.aether.repository.WorkspaceReader</code></dd>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>artifact</code> - The Maven artifact to determine available version for.</dd>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd>The list of available versions of the Maven artifact.</dd>
 </dl>
 </li>
 </ul>
@@ -308,9 +342,12 @@ public&nbsp;DelegatingIdeWorkspaceReader&#8203;(org.codehaus.plexus.PlexusContai
 <li class="blockList">
 <h4>getRepository</h4>
 <pre class="methodSignature">public&nbsp;org.eclipse.aether.repository.WorkspaceRepository&nbsp;getRepository()</pre>
+<div class="block">Returns the underlying workspace repository information.</div>
 <dl>
 <dt><span class="overrideSpecifyLabel">Specified by:</span></dt>
 <dd><code>getRepository</code>&nbsp;in interface&nbsp;<code>org.eclipse.aether.repository.WorkspaceReader</code></dd>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd>The underlying workspace repository information.</dd>
 </dl>
 </li>
 </ul>

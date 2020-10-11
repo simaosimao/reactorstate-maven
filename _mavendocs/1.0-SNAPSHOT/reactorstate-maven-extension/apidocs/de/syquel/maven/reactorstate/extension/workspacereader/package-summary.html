@@ -108,11 +108,16 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <tbody>
 <tr class="altColor">
 <th class="colFirst" scope="row"><a href="DelegatingIdeWorkspaceReader.html" title="class in de.syquel.maven.reactorstate.extension.workspacereader">DelegatingIdeWorkspaceReader</a></th>
-<td class="colLast">&nbsp;</td>
+<td class="colLast">
+<div class="block">A Maven <code>WorkspaceReader</code>, which registers itself with the current Maven execution and delegates to other registered workspace readers.</div>
+</td>
 </tr>
 <tr class="rowColor">
 <th class="colFirst" scope="row"><a href="ReactorStateWorkspaceReader.html" title="class in de.syquel.maven.reactorstate.extension.workspacereader">ReactorStateWorkspaceReader</a></th>
-<td class="colLast">&nbsp;</td>
+<td class="colLast">
+<div class="block">A Maven <code>WorkspaceReader</code>, which contributes Maven artifacts from the current Maven workspace
+ based on their saved state to the current Maven execution.</div>
+</td>
 </tr>
 </tbody>
 </table>
