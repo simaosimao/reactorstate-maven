@@ -2,6 +2,7 @@ package de.syquel.maven.reactorstate.common;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.notNullValue;
+import static org.hamcrest.CoreMatchers.nullValue;
 
 import java.io.File;
 import java.io.IOException;
@@ -13,7 +14,7 @@ import java.util.Map;
 
 import org.apache.maven.artifact.repository.metadata.ArtifactRepositoryMetadata;
 import org.apache.maven.artifact.repository.metadata.GroupRepositoryMetadata;
-import org.apache.maven.artifact.repository.metadata.SnapshotArtifactRepositoryMetadata;
+import org.apache.maven.artifact.repository.metadata.Metadata;
 import org.apache.maven.execution.MavenSession;
 import org.apache.maven.project.MavenProject;
 import org.apache.maven.project.MavenProjectHelper;
@@ -71,6 +72,16 @@ public class RuntimeReactorStateManagerTest {
 
 			final Path javadocPath = projectBasePath.resolve("target/reactorstate-maven-extension-stub-module2-1.0-SNAPSHOT-javadoc.jar");
 			projectHelper.attachArtifact(module2Project, javadocPath.toFile(), "javadoc");
+
+			final Metadata artifactMetadata = module2State.getMainArtifactState().getArtifactRepositoryMetadata();
+			final ArtifactRepositoryMetadata artifactRepositoryMetadata = new ArtifactRepositoryMetadata(module2Project.getArtifact());
+			artifactRepositoryMetadata.setMetadata(artifactMetadata);
+			module2Project.getArtifact().addMetadata(artifactRepositoryMetadata);
+
+			final Metadata groupMetadata = module2State.getMainArtifactState().getGroupRepositoryMetadata();
+			final GroupRepositoryMetadata groupRepositoryMetadata = new GroupRepositoryMetadata(module2Project.getGroupId());
+			groupRepositoryMetadata.setMetadata(groupMetadata);
+			module2Project.getArtifact().addMetadata(groupRepositoryMetadata);
 		}
 
 		final MavenSession session = testMavenRuntime.newMavenSession(topLevelProject);
@@ -132,26 +143,21 @@ public class RuntimeReactorStateManagerTest {
 		);
 	}
 
+	private static void assertMetadata(final Metadata expected, final Metadata actual) {
+		if (expected == null) {
+			MatcherAssert.assertThat("Metadata does not exist", actual, nullValue(Metadata.class));
+		} else {
+			MatcherAssert.assertThat("Metadata has correct group ID", expected.getGroupId(), is(actual.getGroupId()));
+			MatcherAssert.assertThat("Metadata has correct artifact ID", expected.getArtifactId(), is(actual.getArtifactId()));
+		}
+	}
+
 	private static void assertArtifactState(final MavenArtifactState expected, final MavenArtifactState actual) {
 		assertArtifact(expected.getArtifact(), actual.getArtifact());
 
-		MatcherAssert.assertThat(
-			ArtifactRepositoryMetadata.class.getName() + " is correct",
-			actual.getArtifactRepositoryMetadata(),
-			is(expected.getArtifactRepositoryMetadata())
-		);
-
-		MatcherAssert.assertThat(
-			GroupRepositoryMetadata.class.getName() + " is correct",
-			actual.getGroupRepositoryMetadata(),
-			is(expected.getGroupRepositoryMetadata())
-		);
-
-		MatcherAssert.assertThat(
-			SnapshotArtifactRepositoryMetadata.class.getName() + " is correct",
-			actual.getSnapshotRepositoryMetadata(),
-			is(expected.getSnapshotRepositoryMetadata())
-		);
+		assertMetadata(expected.getArtifactRepositoryMetadata(), actual.getArtifactRepositoryMetadata());
+		assertMetadata(expected.getGroupRepositoryMetadata(), actual.getGroupRepositoryMetadata());
+		assertMetadata(expected.getSnapshotRepositoryMetadata(), actual.getSnapshotRepositoryMetadata());
 	}
 
 	private static MavenProjectState fetchReactorState(final MavenProject project) throws IOException {
