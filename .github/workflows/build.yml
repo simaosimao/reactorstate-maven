@@ -41,7 +41,7 @@ jobs:
           mvn -B -Dmaven.ext.class.path=target/dependency/reactorstate-maven-extension-shaded.jar
           -Dsonar.host.url=https://sonarcloud.io -Dsonar.organization=syquel-github -Dsonar.projectKey=Syquel_reactorstate-maven
           org.sonarsource.scanner.maven:sonar-maven-plugin:sonar
-      - name: "Deployment: Setup GPG Secrets"
+      - name: "Deployment: Setup Secrets"
         if: ${{ github.ref == 'refs/heads/development' || startsWith(github.ref, 'refs/tags/') }}
         uses: actions/setup-java@v1
         with:
@@ -83,3 +83,12 @@ jobs:
           commit_message: "Publish Maven Site ${{ steps.deployment-stage-maven-site.outputs.project-version }}"
           keep_files: false
           disable_nojekyll: true
+      - name: "Deployment: OSSRH Maven Repository"
+        if: ${{ startsWith(github.ref, 'refs/tags/') }}
+        env:
+          MAVEN_USER: ${{ secrets.OSSRH_USER }}
+          MAVEN_PASSWORD: ${{ secrets.OSSRH_TOKEN }}
+        run: >
+          mvn -B -Dmaven.ext.class.path=target/dependency/reactorstate-maven-extension-shaded.jar
+          -DnexusUrl=https://oss.sonatype.org/ -DserverId=maven -DautoReleaseAfterClose=true
+          org.sonatype.plugins:nexus-staging-maven-plugin:deploy
