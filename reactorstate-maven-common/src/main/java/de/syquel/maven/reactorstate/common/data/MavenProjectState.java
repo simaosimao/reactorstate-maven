@@ -1,4 +1,4 @@
-package de.syquel.maven.reactorstate.common;
+package de.syquel.maven.reactorstate.common.data;
 
 import java.util.Collection;
 import java.util.Collections;
@@ -24,24 +24,26 @@ public class MavenProjectState {
 	private final Artifact pom;
 
 	/**
-	 * The main artifact of the Maven module.
+	 * The main artifact state of the Maven module.
 	 *
 	 * This is the primarily generated artifact, e.g. the JAR.
 	 */
-	private final Artifact mainArtifact;
+	private final MavenArtifactState mainArtifactState;
 
 	/**
-	 * Additional attached artifacts on the Maven module.
+	 * Additional states of attached artifacts on the Maven module.
 	 *
 	 * These are generated supporting artifacts, e.g. JavaDoc and sources JARs.
 	 */
-	private final Set<Artifact> attachedArtifacts;
+	private final Set<MavenArtifactState> attachedArtifactStates;
 
-	public MavenProjectState(final MavenProject project, final Artifact pom, final Artifact mainArtifact, final Set<Artifact> attachedArtifacts) {
+	public MavenProjectState(
+		final MavenProject project, final Artifact pom, final MavenArtifactState mainArtifactState, final Set<MavenArtifactState> attachedArtifactStates
+	) {
 		this.project = project;
 		this.pom = pom;
-		this.mainArtifact = mainArtifact;
-		this.attachedArtifacts = Collections.unmodifiableSet(new HashSet<>(attachedArtifacts));
+		this.mainArtifactState = mainArtifactState;
+		this.attachedArtifactStates = Collections.unmodifiableSet(new HashSet<>(attachedArtifactStates));
 	}
 
 	public MavenProject getProject() {
@@ -52,12 +54,12 @@ public class MavenProjectState {
 		return pom;
 	}
 
-	public Artifact getMainArtifact() {
-		return mainArtifact;
+	public MavenArtifactState getMainArtifactState() {
+		return mainArtifactState;
 	}
 
-	public Collection<Artifact> getAttachedArtifacts() {
-		return attachedArtifacts;
+	public Collection<MavenArtifactState> getAttachedArtifactStates() {
+		return attachedArtifactStates;
 	}
 
 }

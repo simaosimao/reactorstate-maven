@@ -11,6 +11,9 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.apache.maven.artifact.repository.metadata.ArtifactRepositoryMetadata;
+import org.apache.maven.artifact.repository.metadata.GroupRepositoryMetadata;
+import org.apache.maven.artifact.repository.metadata.SnapshotArtifactRepositoryMetadata;
 import org.apache.maven.execution.MavenSession;
 import org.apache.maven.project.MavenProject;
 import org.apache.maven.project.MavenProjectHelper;
@@ -21,6 +24,8 @@ import org.junit.Assume;
 import org.junit.Rule;
 import org.junit.Test;
 
+import de.syquel.maven.reactorstate.common.data.MavenArtifactState;
+import de.syquel.maven.reactorstate.common.data.MavenProjectState;
 import de.syquel.maven.reactorstate.common.persistence.IReactorStateRepository;
 import de.syquel.maven.reactorstate.common.persistence.json.JsonReactorStateRepository;
 import io.takari.maven.testing.TestMavenRuntime;
@@ -97,18 +102,20 @@ public class RuntimeReactorStateManagerTest {
 
 	private static void assertMavenProjectState(final MavenProjectState expected, final MavenProjectState actual) {
 		assertArtifact(expected.getPom(), actual.getPom());
-		assertArtifact(expected.getMainArtifact(), actual.getMainArtifact());
+		assertArtifactState(expected.getMainArtifactState(), actual.getMainArtifactState());
 
-		final Map<String, Artifact> actualAttachedArtifacts = new HashMap<>();
-		for (final Artifact actualAttachedArtifact : actual.getAttachedArtifacts()) {
-			actualAttachedArtifacts.put(ArtifactIdUtils.toId(actualAttachedArtifact), actualAttachedArtifact);
+		final Map<String, MavenArtifactState> actualAttachedArtifactStates = new HashMap<>();
+		for (final MavenArtifactState actualAttachedArtifactState : actual.getAttachedArtifactStates()) {
+			final String artifactCoordinates = ArtifactIdUtils.toId(actualAttachedArtifactState.getArtifact());
+			actualAttachedArtifactStates.put(artifactCoordinates, actualAttachedArtifactState);
 		}
 
-		for (final Artifact expectedAttachedArtifact : expected.getAttachedArtifacts()) {
-			final Artifact actualAttachedArtifact = actualAttachedArtifacts.get(ArtifactIdUtils.toId(expectedAttachedArtifact));
+		for (final MavenArtifactState expectedAttachedArtifactState : expected.getAttachedArtifactStates()) {
+			final String artifactCoordinates = ArtifactIdUtils.toId(expectedAttachedArtifactState.getArtifact());
+			final MavenArtifactState actualAttachedArtifactState = actualAttachedArtifactStates.get(artifactCoordinates);
 
-			MatcherAssert.assertThat("Artifact state exists", actualAttachedArtifact, notNullValue(Artifact.class));
-			assertArtifact(expectedAttachedArtifact, actualAttachedArtifact);
+			MatcherAssert.assertThat("Artifact state exists", actualAttachedArtifactState, notNullValue(MavenArtifactState.class));
+			assertArtifactState(expectedAttachedArtifactState, actualAttachedArtifactState);
 		}
 	}
 
@@ -122,6 +129,28 @@ public class RuntimeReactorStateManagerTest {
 			"Artifact file path is correct",
 			actual.getFile(),
 			is(expected.getFile())
+		);
+	}
+
+	private static void assertArtifactState(final MavenArtifactState expected, final MavenArtifactState actual) {
+		assertArtifact(expected.getArtifact(), actual.getArtifact());
+
+		MatcherAssert.assertThat(
+			ArtifactRepositoryMetadata.class.getName() + " is correct",
+			actual.getArtifactRepositoryMetadata(),
+			is(expected.getArtifactRepositoryMetadata())
+		);
+
+		MatcherAssert.assertThat(
+			GroupRepositoryMetadata.class.getName() + " is correct",
+			actual.getGroupRepositoryMetadata(),
+			is(expected.getGroupRepositoryMetadata())
+		);
+
+		MatcherAssert.assertThat(
+			SnapshotArtifactRepositoryMetadata.class.getName() + " is correct",
+			actual.getSnapshotRepositoryMetadata(),
+			is(expected.getSnapshotRepositoryMetadata())
 		);
 	}
 

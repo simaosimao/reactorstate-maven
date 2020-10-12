@@ -24,8 +24,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import de.syquel.maven.reactorstate.common.AbstractReactorStateManager;
-import de.syquel.maven.reactorstate.common.MavenProjectState;
 import de.syquel.maven.reactorstate.common.SavedReactorStateManager;
+import de.syquel.maven.reactorstate.common.data.MavenArtifactState;
+import de.syquel.maven.reactorstate.common.data.MavenProjectState;
 
 /**
  * A Maven {@link WorkspaceReader}, which contributes Maven artifacts from the current Maven workspace
@@ -90,10 +91,10 @@ public class ReactorStateWorkspaceReader extends AbstractMavenLifecycleParticipa
 
 		for (final MavenProjectState projectState : projectStateManager.getProjectStates()) {
 			add(projectState.getPom());
-			add(projectState.getMainArtifact());
+			add(projectState.getMainArtifactState().getArtifact());
 
-			for (final Artifact attachedArtifact : projectState.getAttachedArtifacts()) {
-				add(attachedArtifact);
+			for (final MavenArtifactState attachedArtifactState : projectState.getAttachedArtifactStates()) {
+				add(attachedArtifactState.getArtifact());
 			}
 		}
 	}
