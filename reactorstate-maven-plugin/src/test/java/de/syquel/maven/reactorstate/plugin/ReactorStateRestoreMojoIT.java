@@ -8,6 +8,7 @@ import org.junit.runner.RunWith;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import de.syquel.maven.reactorstate.plugin.util.TestUtils;
 import io.takari.maven.testing.TestResources;
 import io.takari.maven.testing.executor.MavenExecution;
 import io.takari.maven.testing.executor.MavenExecutionResult;
@@ -19,7 +20,7 @@ import io.takari.maven.testing.executor.junit.MavenJUnitTestRunner;
 @MavenVersions( { "3.5.4", "3.6.3" })
 public class ReactorStateRestoreMojoIT {
 
-	private static final String PLUGIN_GAV = "de.syquel.maven.reactorstate:reactorstate-maven-plugin:1.0-SNAPSHOT";
+	private static final String PLUGIN_GAV = TestUtils.getProjectGav();
 	private static final Logger LOGGER = LoggerFactory.getLogger(ReactorStateRestoreMojoIT.class);
 
 	@Rule

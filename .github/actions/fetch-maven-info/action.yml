@@ -1,0 +1,30 @@
+name: "Fetch Maven Info"
+description: "Fetches information about the Maven project"
+outputs:
+  project-groupid:
+    description: "The groupId of the Maven project"
+    value: ${{ steps.fetch-project-groupid.outputs.value }}
+  project-artifactid:
+    description: "The artifactId of the Maven project"
+    value: ${{ steps.fetch-project-artifactid.outputs.value }}
+  project-version:
+    description: "The version of the Maven project"
+    value: ${{ steps.fetch-project-version.outputs.value }}
+runs:
+  using: "composite"
+  steps:
+    - id: fetch-project-groupid
+      run: |
+        VALUE="$(mvn -B -q -N help:evaluate -DforceStdout=true -Dexpression=project.groupId)"
+        echo "::set-output name=value::${VALUE}"
+      shell: bash
+    - id: fetch-project-artifactid
+      run: |
+        VALUE="$(mvn -B -q -N help:evaluate -DforceStdout=true -Dexpression=project.artifactId)"
+        echo "::set-output name=value::${VALUE}"
+      shell: bash
+    - id: fetch-project-version
+      run: |
+        VALUE="$(mvn -B -q -N help:evaluate -DforceStdout=true -Dexpression=project.version)"
+        echo "::set-output name=value::${VALUE}"
+      shell: bash

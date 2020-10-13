@@ -1,9 +1,6 @@
 name: "Stage Maven Site"
 description: "Stage a generated Maven Site"
 outputs:
-  project-version:
-    description: "The version of the Maven project"
-    value: ${{ steps.fetch-maven-project-properties.outputs.project-version }}
   staging-directory:
     description: "The location of the staged Maven Site"
     value: ${{ steps.fetch-maven-project-properties.outputs.staging-directory }}
@@ -16,8 +13,6 @@ runs:
       shell: bash
     - id: fetch-maven-project-properties
       run: |
-        PROJECT_VERSION="$(mvn -B -q -N help:evaluate -DforceStdout=true -Dexpression=project.version)"
-        echo "::set-output name=project-version::${PROJECT_VERSION}"
         PROJECT_BUILD_DIR="$(mvn -B -q -N help:evaluate -DforceStdout=true -Dexpression=project.build.directory)"
         SITE_STAGING_DIR_PROP="$(mvn -B -q -N help:evaluate -DforceStdout=true -Dexpression=stagingDirectory)"
         SITE_STAGING_DIR_RELATIVE="$([ "${SITE_STAGING_DIR_PROP}" = "null object or invalid expression" ] && echo "staging" || echo ${SITE_STAGING_DIR_PROP})"

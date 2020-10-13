@@ -8,6 +8,7 @@ import org.junit.runner.RunWith;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import de.syquel.maven.reactorstate.extension.util.TestUtils;
 import io.takari.maven.testing.TestResources;
 import io.takari.maven.testing.executor.MavenExecution;
 import io.takari.maven.testing.executor.MavenExecutionResult;
@@ -24,7 +25,7 @@ public class ReactorStateSaveExtensionIT {
 	@Rule
 	public final TestResources resources = new TestResources();
 
-	public final MavenRuntime mavenRuntime;
+	private final MavenRuntime mavenRuntime;
 
 	public ReactorStateSaveExtensionIT(final MavenRuntime.MavenRuntimeBuilder mavenRuntimeBuilder) throws Exception {
 		mavenRuntime =
@@ -36,6 +37,8 @@ public class ReactorStateSaveExtensionIT {
 	@Test
 	public void testInvocation() throws Exception {
 		final File baseDir = resources.getBasedir("maven-project-stub");
+		TestUtils.installExtension(baseDir.toPath());
+
 		final MavenExecution mavenExecution = mavenRuntime.forProject(baseDir);
 
 		LOGGER.info("Execute Maven stage 'verify'");
@@ -51,6 +54,7 @@ public class ReactorStateSaveExtensionIT {
 	public void testSubModuleBuild() throws Exception {
 		// given
 		final File baseDir = resources.getBasedir("maven-project-stub");
+		TestUtils.installExtension(baseDir.toPath());
 
 		LOGGER.info("Execute top-level Maven stage 'verify'");
 		final MavenExecution mavenExecution = mavenRuntime.forProject(baseDir);
