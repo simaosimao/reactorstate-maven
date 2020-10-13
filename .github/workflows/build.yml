@@ -27,8 +27,15 @@ jobs:
           path: ~/.sonar/cache
           key: ${{ runner.os }}-sonar
           restore-keys: ${{ runner.os }}-sonar
+      - id: fetch-maven-info
+        name: "Preparation"
+        uses: ./.github/actions/fetch-maven-info
       - name: "Build: Maven"
-        run: mvn -B verify -Dartifact=de.syquel.maven.reactorstate:reactorstate-maven-extension:1.0-SNAPSHOT:jar:shaded -Dmdep.stripVersion=true dependency:copy
+        run: >
+          mvn -B
+          -Dartifact=de.syquel.maven.reactorstate:reactorstate-maven-extension:${{ steps.fetch-maven-info.outputs.project-version }}:jar:shaded
+          -Dmdep.stripVersion=true
+          verify dependency:copy
       - name: "Build: Maven with Extension" # Let's take our own poison
         run: mvn -B -Dmaven.ext.class.path=target/dependency/reactorstate-maven-extension-shaded.jar verify
       - name: "Documentation: Maven Site" # Implicitly tests the extension; without it the inter-module dependencies couldn't be resolved
@@ -76,11 +83,11 @@ jobs:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_branch: "gh-pages"
           publish_dir: ${{ steps.deployment-stage-maven-site.outputs.staging-directory }}
-          destination_dir: "./_mavendocs/${{ steps.deployment-stage-maven-site.outputs.project-version }}"
+          destination_dir: "./_mavendocs/${{ steps.fetch-maven-info.outputs.project-version }}"
           allow_empty_commit: true
           user_name: "github-actions[bot]"
           user_email: "github-actions[bot]@users.noreply.github.com"
-          commit_message: "Publish Maven Site ${{ steps.deployment-stage-maven-site.outputs.project-version }}"
+          commit_message: "Publish Maven Site ${{ steps.fetch-maven-info.outputs.project-version }}"
           keep_files: false
           disable_nojekyll: true
       - name: "Deployment: OSSRH Maven Repository"
