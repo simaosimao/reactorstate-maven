@@ -28,8 +28,14 @@ jobs:
           key: ${{ runner.os }}-sonar
           restore-keys: ${{ runner.os }}-sonar
       - id: fetch-maven-info
-        name: "Preparation"
+        name: "Preparation: Fetch Maven Info"
         uses: ./.github/actions/fetch-maven-info
+      - name: "Preparation: Sanity Check"
+        uses: ./.github/actions/check-maven-gitflow
+        with:
+          git-ref: ${{ github.ref }}
+          git-target-ref: ${{ github.base_ref }}
+          project-version: ${{ steps.fetch-maven-info.outputs.project-version }}
       - name: "Build: Maven"
         run: >
           mvn -B
