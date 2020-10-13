@@ -1,0 +1,153 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>ReactorStateWorkspaceReader.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">ReactorState Maven Extension</a> &gt; <a href="index.source.html" class="el_package">de.syquel.maven.reactorstate.extension.workspacereader</a> &gt; <span class="el_source">ReactorStateWorkspaceReader.java</span></div><h1>ReactorStateWorkspaceReader.java</h1><pre class="source lang-java linenums">package de.syquel.maven.reactorstate.extension.workspacereader;
+
+import java.io.File;
+import java.io.IOException;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import javax.inject.Inject;
+import javax.inject.Named;
+import javax.inject.Singleton;
+
+import org.apache.maven.AbstractMavenLifecycleParticipant;
+import org.apache.maven.MavenExecutionException;
+import org.apache.maven.execution.MavenSession;
+import org.apache.maven.project.ProjectBuilder;
+import org.apache.maven.project.ProjectBuildingException;
+import org.eclipse.aether.artifact.Artifact;
+import org.eclipse.aether.repository.WorkspaceReader;
+import org.eclipse.aether.repository.WorkspaceRepository;
+import org.eclipse.aether.util.artifact.ArtifactIdUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import de.syquel.maven.reactorstate.common.AbstractReactorStateManager;
+import de.syquel.maven.reactorstate.common.MavenProjectState;
+import de.syquel.maven.reactorstate.common.SavedReactorStateManager;
+
+/**
+ * A Maven {@link WorkspaceReader}, which contributes Maven artifacts from the current Maven workspace
+ * based on their saved state to the current Maven execution.
+ *
+ * This workspace reader is able to restore the state of  Maven modules, which are not being built in the current Maven execution,
+ * but belong to the same Maven workspace, to enable standalone builds of submodules.
+ */
+@Named(ReactorStateWorkspaceReader.WORKSPACE_READER_IDE_QUALIFIER)
+@Singleton
+public class ReactorStateWorkspaceReader extends AbstractMavenLifecycleParticipant implements WorkspaceReader {
+
+	/**
+	 * The Maven-defined qualifier for custom workspace reader implementations.
+	 */
+	public static final String WORKSPACE_READER_IDE_QUALIFIER = &quot;ide&quot;;
+
+<span class="fc" id="L46">	private static final Logger LOGGER = LoggerFactory.getLogger(ReactorStateWorkspaceReader.class);</span>
+
+	/**
+	 * The builder for Maven projects from POMs.
+	 */
+	private final ProjectBuilder projectBuilder;
+
+	/**
+	 * The underlying workspace repository information.
+	 */
+<span class="fc" id="L56">	private final WorkspaceRepository repository = new WorkspaceRepository();</span>
+
+	/**
+	 * The saved states of Maven artifacts within the current Maven workspace.
+	 */
+<span class="fc" id="L61">	private final Map&lt;String, Artifact&gt; artifactLookupMap = new HashMap&lt;&gt;();</span>
+
+	/**
+	 * Constructs a new state-based workspace reader.
+	 *
+	 * @param projectBuilder
+	 */
+	@Inject
+<span class="fc" id="L69">	public ReactorStateWorkspaceReader(final ProjectBuilder projectBuilder) {</span>
+<span class="fc" id="L70">		this.projectBuilder = projectBuilder;</span>
+<span class="fc" id="L71">	}</span>
+
+	/**
+	 * Initializes the workspace reader with the saved state of the Maven modules within the current Maven workspace.
+	 *
+	 * This is a Maven lifecycle hook, which is executed directly after the Maven session has read the project definitions of the Maven modules,
+	 * but before it has started building the project.
+	 *
+	 * @param session The current Maven execution.
+	 * @throws MavenExecutionException if an error occurred while reading the saved state of the Maven modules.
+	 */
+	@Override
+	public void afterProjectsRead(final MavenSession session) throws MavenExecutionException {
+		final AbstractReactorStateManager projectStateManager;
+		try {
+<span class="fc" id="L86">			projectStateManager = SavedReactorStateManager.create(session, projectBuilder);</span>
+<span class="nc" id="L87">		} catch (final ProjectBuildingException | IOException e) {</span>
+<span class="nc" id="L88">			throw new MavenExecutionException(&quot;Cannot acquire saved reactor state&quot;, e);</span>
+<span class="fc" id="L89">		}</span>
+
+<span class="fc bfc" id="L91" title="All 2 branches covered.">		for (final MavenProjectState projectState : projectStateManager.getProjectStates()) {</span>
+<span class="fc" id="L92">			add(projectState.getPom());</span>
+<span class="fc" id="L93">			add(projectState.getMainArtifact());</span>
+
+<span class="fc bfc" id="L95" title="All 2 branches covered.">			for (final Artifact attachedArtifact : projectState.getAttachedArtifacts()) {</span>
+<span class="fc" id="L96">				add(attachedArtifact);</span>
+<span class="fc" id="L97">			}</span>
+<span class="fc" id="L98">		}</span>
+<span class="fc" id="L99">	}</span>
+
+	/**
+	 * Returns the underlying workspace repository information.
+	 *
+	 * @return The underlying workspace repository information.
+	 */
+	@Override
+	public WorkspaceRepository getRepository() {
+<span class="fc" id="L108">		return repository;</span>
+	}
+
+	/**
+	 * Determines the filesystem location of a Maven artifact.
+	 *
+	 * @param artifact The Maven artifact to determine the filesystem location for.
+	 * @return The filesystem location of the Maven artifact.
+	 */
+	@Override
+	public File findArtifact(final Artifact artifact) {
+<span class="fc" id="L119">		final Artifact lookedupArtifact = artifactLookupMap.get(ArtifactIdUtils.toVersionlessId(artifact));</span>
+<span class="fc bfc" id="L120" title="All 2 branches covered.">		if (ArtifactIdUtils.equalsBaseId(artifact, lookedupArtifact)) {</span>
+<span class="fc" id="L121">			return lookedupArtifact.getFile();</span>
+		}
+
+<span class="fc" id="L124">		return null;</span>
+	}
+
+	/**
+	 * Determines the available versions of a Maven artifact.
+	 *
+	 * @param artifact The Maven artifact to determine available version for.
+	 * @return The list of available versions of the Maven artifact.
+	 */
+	@Override
+	public List&lt;String&gt; findVersions(final Artifact artifact) {
+<span class="fc" id="L135">		final Artifact lookedupArtifact = artifactLookupMap.get(ArtifactIdUtils.toVersionlessId(artifact));</span>
+<span class="fc bfc" id="L136" title="All 2 branches covered.">		if (ArtifactIdUtils.equalsBaseId(artifact, lookedupArtifact)) {</span>
+<span class="fc" id="L137">			return Collections.singletonList(lookedupArtifact.getVersion());</span>
+		}
+
+<span class="fc" id="L140">		return Collections.emptyList();</span>
+	}
+
+	/**
+	 * Adds an Maven artifact to the list of available states.
+	 *
+	 * @param artifact The Maven artifact to add.
+	 */
+	private void add(final Artifact artifact) {
+<span class="fc" id="L149">		artifactLookupMap.put(ArtifactIdUtils.toVersionlessId(artifact), artifact);</span>
+<span class="fc" id="L150">	}</span>
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.6.202009150832</span></div></body></html>
