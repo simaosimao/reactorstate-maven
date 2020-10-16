@@ -58,7 +58,6 @@ function check_tag() {
 	fi
 
 	# Check that Maven version and Git tag name match
-	readonly gitTag="${BASH_REMATCH[1]}"
 	if [ "${gitTag}" != "$mavenVersion" ]; then
 		log_error 4 "Maven version and Git tag name must match | Maven version: ${mavenVersion} | Git tag: ${gitTag}"
 	fi
