@@ -26,7 +26,7 @@ import org.eclipse.aether.util.artifact.ArtifactIdUtils;
 import de.syquel.maven.reactorstate.plugin.config.ReactorStatePluginProperties;
 
 /**
- * Installs the reactorstate-maven-extension to the root of the current Maven project by inserting it into <code>.mvn/extensions.xml</code>.
+ * Installs the reactorstate-maven-extension to the root of the current Maven project by inserting it into {@code .mvn/extensions.xml}.
  */
 @Mojo(name = "install-local", requiresDirectInvocation = true, threadSafe = true, inheritByDefault = false)
 public class ReactorStateInstallLocalMojo extends AbstractMojo {
@@ -44,7 +44,7 @@ public class ReactorStateInstallLocalMojo extends AbstractMojo {
 	/**
 	 * Constructs a new instance based on the current maven execution context.
 	 *
-	 * @param mavenSession
+	 * @param mavenSession The current Maven execution context.
 	 */
 	@Inject
 	public ReactorStateInstallLocalMojo(final MavenSession mavenSession) {
@@ -52,7 +52,7 @@ public class ReactorStateInstallLocalMojo extends AbstractMojo {
 	}
 
 	/**
-	 * Installs the reactorstate-maven-extension to the root of the current Maven project by inserting it into <code>.mvn/extensions.xml</code>.
+	 * Installs the reactorstate-maven-extension to the root of the current Maven project by inserting it into {@code .mvn/extensions.xml}.
 	 *
 	 * The file is automatically created if it does not exist; otherwise already registered extensions are preserved.
 	 *
@@ -124,7 +124,7 @@ public class ReactorStateInstallLocalMojo extends AbstractMojo {
 	}
 
 	/**
-	 * Persists the Maven Core Extensions configuration to <code>.mvn/extensions.xml</code>.
+	 * Persists the Maven Core Extensions configuration to {@code .mvn/extensions.xml}.
 	 *
 	 * @param coreExtensions The extensions configuration to persist.
 	 * @throws MojoFailureException if an error occurred while persisting the extensions configuration.

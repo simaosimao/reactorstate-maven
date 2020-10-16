@@ -24,9 +24,7 @@ public abstract class AbstractReactorStateManager {
 	}
 
 	/**
-	 * Returns the states of Maven modules within a Maven project.
-	 *
-	 * @return
+	 * @return the states of Maven modules within a Maven project.
 	 */
 	public Set<MavenProjectState> getProjectStates() {
 		return new HashSet<>(projectStates.values());

@@ -63,7 +63,7 @@ public class ReactorStateWorkspaceReader extends AbstractMavenLifecycleParticipa
 	/**
 	 * Constructs a new state-based workspace reader.
 	 *
-	 * @param projectBuilder
+	 * @param projectBuilder The builder for Maven projects from POMs.
 	 */
 	@Inject
 	public ReactorStateWorkspaceReader(final ProjectBuilder projectBuilder) {
