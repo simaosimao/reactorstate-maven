@@ -57,7 +57,7 @@ public class ReactorStateInstallLocalMojo extends AbstractMojo {
 	 * The file is automatically created if it does not exist; otherwise already registered extensions are preserved.
 	 *
 	 * @throws MojoExecutionException never.
-	 * @throws MojoFailureException if an error occured while registering the extension.
+	 * @throws MojoFailureException if an error occurred while registering the extension.
 	 */
 	@Override
 	public void execute() throws MojoExecutionException, MojoFailureException {
