@@ -26,7 +26,7 @@ import org.eclipse.aether.util.artifact.ArtifactIdUtils;
 import de.syquel.maven.reactorstate.plugin.config.ReactorStatePluginProperties;
 
 /**
- * Installs the reactorstate-maven-extension to the root of the current Maven project by inserting it into &lt;code&gt;.mvn/extensions.xml&lt;/code&gt;.
+ * Installs the reactorstate-maven-extension to the root of the current Maven project by inserting it into {@code .mvn/extensions.xml}.
  */
 @Mojo(name = &quot;install-local&quot;, requiresDirectInvocation = true, threadSafe = true, inheritByDefault = false)
 public class ReactorStateInstallLocalMojo extends AbstractMojo {
@@ -44,7 +44,7 @@ public class ReactorStateInstallLocalMojo extends AbstractMojo {
 	/**
 	 * Constructs a new instance based on the current maven execution context.
 	 *
-	 * @param mavenSession
+	 * @param mavenSession The current Maven execution context.
 	 */
 	@Inject
 <span class="fc" id="L50">	public ReactorStateInstallLocalMojo(final MavenSession mavenSession) {</span>
@@ -52,12 +52,12 @@ public class ReactorStateInstallLocalMojo extends AbstractMojo {
 <span class="fc" id="L52">	}</span>
 
 	/**
-	 * Installs the reactorstate-maven-extension to the root of the current Maven project by inserting it into &lt;code&gt;.mvn/extensions.xml&lt;/code&gt;.
+	 * Installs the reactorstate-maven-extension to the root of the current Maven project by inserting it into {@code .mvn/extensions.xml}.
 	 *
 	 * The file is automatically created if it does not exist; otherwise already registered extensions are preserved.
 	 *
 	 * @throws MojoExecutionException never.
-	 * @throws MojoFailureException if an error occured while registering the extension.
+	 * @throws MojoFailureException if an error occurred while registering the extension.
 	 */
 	@Override
 	public void execute() throws MojoExecutionException, MojoFailureException {
@@ -124,7 +124,7 @@ public class ReactorStateInstallLocalMojo extends AbstractMojo {
 	}
 
 	/**
-	 * Persists the Maven Core Extensions configuration to &lt;code&gt;.mvn/extensions.xml&lt;/code&gt;.
+	 * Persists the Maven Core Extensions configuration to {@code .mvn/extensions.xml}.
 	 *
 	 * @param coreExtensions The extensions configuration to persist.
 	 * @throws MojoFailureException if an error occurred while persisting the extensions configuration.
