@@ -32,7 +32,7 @@ public interface IReactorStateRepository {
 	 * Deletes the persisted state of a specific Maven module.
 	 *
 	 * @param mavenProject The Maven module to delete the persisted state for.
-	 * @throws IOException if an error occured while deleting the persisted state.
+	 * @throws IOException if an error occurred while deleting the persisted state.
 	 */
 	void delete(MavenProject mavenProject) throws IOException;
 
