@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>ReactorStateInstallLocalMojo.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">ReactorState Maven Plugin</a> &gt; <a href="index.source.html" class="el_package">de.syquel.maven.reactorstate.plugin</a> &gt; <span class="el_source">ReactorStateInstallLocalMojo.java</span></div><h1>ReactorStateInstallLocalMojo.java</h1><pre class="source lang-java linenums">package de.syquel.maven.reactorstate.plugin;
+
+import java.io.IOException;
+import java.io.Reader;
+import java.io.Writer;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.util.Objects;
+
+import javax.inject.Inject;
+
+import org.apache.maven.cli.internal.extension.model.CoreExtension;
+import org.apache.maven.cli.internal.extension.model.CoreExtensions;
+import org.apache.maven.cli.internal.extension.model.io.xpp3.CoreExtensionsXpp3Reader;
+import org.apache.maven.cli.internal.extension.model.io.xpp3.CoreExtensionsXpp3Writer;
+import org.apache.maven.execution.MavenSession;
+import org.apache.maven.plugin.AbstractMojo;
+import org.apache.maven.plugin.MojoExecutionException;
+import org.apache.maven.plugin.MojoFailureException;
+import org.apache.maven.plugins.annotations.Mojo;
+import org.codehaus.plexus.util.xml.pull.XmlPullParserException;
+import org.eclipse.aether.artifact.Artifact;
+import org.eclipse.aether.util.artifact.ArtifactIdUtils;
+
+import de.syquel.maven.reactorstate.plugin.config.ReactorStatePluginProperties;
+
+/**
+ * Installs the reactorstate-maven-extension to the root of the current Maven project by inserting it into {@code .mvn/extensions.xml}.
+ */
+@Mojo(name = &quot;install-local&quot;, requiresDirectInvocation = true, threadSafe = true, inheritByDefault = false)
+public class ReactorStateInstallLocalMojo extends AbstractMojo {
+
+	/**
+	 * The location of the Maven core extension configuration file.
+	 */
+	private static final String EXTENSIONS_FILENAME = &quot;.mvn/extensions.xml&quot;;
+
+	/**
+	 * The current Maven execution context.
+	 */
+	private final MavenSession mavenSession;
+
+	/**
+	 * Constructs a new instance based on the current maven execution context.
+	 *
+	 * @param mavenSession The current Maven execution context.
+	 */
+	@Inject
+<span class="fc" id="L50">	public ReactorStateInstallLocalMojo(final MavenSession mavenSession) {</span>
+<span class="fc" id="L51">		this.mavenSession = mavenSession;</span>
+<span class="fc" id="L52">	}</span>
+
+	/**
+	 * Installs the reactorstate-maven-extension to the root of the current Maven project by inserting it into {@code .mvn/extensions.xml}.
+	 *
+	 * The file is automatically created if it does not exist; otherwise already registered extensions are preserved.
+	 *
+	 * @throws MojoExecutionException never.
+	 * @throws MojoFailureException if an error occurred while registering the extension.
+	 */
+	@Override
+	public void execute() throws MojoExecutionException, MojoFailureException {
+		final Artifact reactorStateExtensionArtifact;
+		try {
+<span class="fc" id="L66">			final ReactorStatePluginProperties properties = ReactorStatePluginProperties.create();</span>
+<span class="fc" id="L67">			reactorStateExtensionArtifact = properties.getExtensionArtifact();</span>
+<span class="nc" id="L68">		} catch (final IOException e) {</span>
+<span class="nc" id="L69">			throw new MojoFailureException(&quot;Cannot determine extension artifact&quot;, e);</span>
+<span class="fc" id="L70">		}</span>
+
+<span class="fc" id="L72">		final CoreExtensions coreExtensions = fetchCoreExtensions();</span>
+<span class="fc" id="L73">		final CoreExtension reactorStateExtension = new CoreExtension();</span>
+<span class="fc" id="L74">		reactorStateExtension.setGroupId(reactorStateExtensionArtifact.getGroupId());</span>
+<span class="fc" id="L75">		reactorStateExtension.setArtifactId(reactorStateExtensionArtifact.getArtifactId());</span>
+<span class="fc" id="L76">		reactorStateExtension.setVersion(reactorStateExtensionArtifact.getVersion());</span>
+
+<span class="fc bfc" id="L78" title="All 2 branches covered.">		for (final CoreExtension coreExtension : coreExtensions.getExtensions()) {</span>
+<span class="fc" id="L79">			final boolean sameGroupId = Objects.equals(reactorStateExtension.getGroupId(), coreExtension.getGroupId());</span>
+<span class="fc" id="L80">			final boolean sameArtifactId = Objects.equals(reactorStateExtension.getGroupId(), coreExtension.getGroupId());</span>
+
+<span class="pc bpc" id="L82" title="2 of 4 branches missed.">			if (sameGroupId &amp;&amp; sameArtifactId) {</span>
+<span class="fc" id="L83">				getLog().info(ArtifactIdUtils.toId(reactorStateExtensionArtifact) + &quot; already registered&quot;);</span>
+<span class="fc" id="L84">				return;</span>
+			}
+<span class="nc" id="L86">		}</span>
+
+<span class="fc" id="L88">		coreExtensions.addExtension(reactorStateExtension);</span>
+
+<span class="fc" id="L90">		persistCoreExtensions(coreExtensions);</span>
+<span class="fc" id="L91">		getLog().info(&quot;Registered &quot; + ArtifactIdUtils.toId(reactorStateExtensionArtifact));</span>
+<span class="fc" id="L92">	}</span>
+
+	/**
+	 * Fetches the current Maven Core Extensions configuration from the root of the Maven project.
+	 *
+	 * @return The current extensions configuration or a new one if none exists.
+	 * @throws MojoFailureException if an error occurred while reading the current extensions configuration.
+	 */
+	private CoreExtensions fetchCoreExtensions() throws MojoFailureException {
+<span class="fc" id="L101">		final Path projectBaseDir = mavenSession.getTopLevelProject().getBasedir().toPath();</span>
+<span class="fc" id="L102">		final Path mavenExtensionsPath = projectBaseDir.resolve(EXTENSIONS_FILENAME);</span>
+
+		final CoreExtensions coreExtensions;
+<span class="fc bfc" id="L105" title="All 2 branches covered.">		if (Files.notExists(mavenExtensionsPath)) {</span>
+			try {
+<span class="fc" id="L107">				Files.createDirectories(mavenExtensionsPath.getParent());</span>
+<span class="fc" id="L108">				Files.createFile(mavenExtensionsPath);</span>
+<span class="nc" id="L109">			} catch (final IOException e) {</span>
+<span class="nc" id="L110">				throw new MojoFailureException(&quot;Cannot create Maven core extensions&quot;, e);</span>
+<span class="fc" id="L111">			}</span>
+
+<span class="fc" id="L113">			coreExtensions = new CoreExtensions();</span>
+<span class="fc" id="L114">			coreExtensions.setModelEncoding(StandardCharsets.UTF_8.name());</span>
+		} else {
+<span class="fc" id="L116">			try (final Reader mavenExtensionsReader = Files.newBufferedReader(mavenExtensionsPath)) {</span>
+<span class="fc" id="L117">				coreExtensions = new CoreExtensionsXpp3Reader().read(mavenExtensionsReader);</span>
+<span class="nc" id="L118">			} catch (final XmlPullParserException | IOException e) {</span>
+<span class="nc" id="L119">				throw new MojoFailureException(&quot;Cannot read Maven core extensions&quot;, e);</span>
+<span class="fc" id="L120">			}</span>
+		}
+
+<span class="fc" id="L123">		return coreExtensions;</span>
+	}
+
+	/**
+	 * Persists the Maven Core Extensions configuration to {@code .mvn/extensions.xml}.
+	 *
+	 * @param coreExtensions The extensions configuration to persist.
+	 * @throws MojoFailureException if an error occurred while persisting the extensions configuration.
+	 */
+	private void persistCoreExtensions(final CoreExtensions coreExtensions) throws MojoFailureException {
+<span class="fc" id="L133">		final Path projectBaseDir = mavenSession.getTopLevelProject().getBasedir().toPath();</span>
+<span class="fc" id="L134">		final Path mavenExtensionsPath = projectBaseDir.resolve(EXTENSIONS_FILENAME);</span>
+
+<span class="fc" id="L136">		try (final Writer mavenExtensionsWriter = Files.newBufferedWriter(mavenExtensionsPath)) {</span>
+<span class="fc" id="L137">			new CoreExtensionsXpp3Writer().write(mavenExtensionsWriter, coreExtensions);</span>
+<span class="nc" id="L138">		} catch (final IOException e) {</span>
+<span class="nc" id="L139">			throw new MojoFailureException(&quot;Cannot write Maven core extensions&quot;, e);</span>
+<span class="fc" id="L140">		}</span>
+<span class="fc" id="L141">	}</span>
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.6.202009150832</span></div></body></html>

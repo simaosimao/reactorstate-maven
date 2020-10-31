@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>AbstractReactorStateManager.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">ReactorState Maven Common</a> &gt; <a href="index.source.html" class="el_package">de.syquel.maven.reactorstate.common</a> &gt; <span class="el_source">AbstractReactorStateManager.java</span></div><h1>AbstractReactorStateManager.java</h1><pre class="source lang-java linenums">package de.syquel.maven.reactorstate.common;
+
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
+
+import org.apache.maven.project.MavenProject;
+
+/**
+ * Base class for implementations which operate on the state of a Maven project and its modules.
+ */
+public abstract class AbstractReactorStateManager {
+
+	/**
+	 * The states of Maven modules within a Maven project.
+	 */
+<span class="fc" id="L18">	private final Map&lt;MavenProject, MavenProjectState&gt; projectStates = new HashMap&lt;&gt;();</span>
+
+<span class="fc" id="L20">	protected AbstractReactorStateManager(final Set&lt;MavenProjectState&gt; projectStates) {</span>
+<span class="fc bfc" id="L21" title="All 2 branches covered.">		for (final MavenProjectState projectState : projectStates) {</span>
+<span class="fc" id="L22">			this.projectStates.put(projectState.getProject(), projectState);</span>
+<span class="fc" id="L23">		}</span>
+<span class="fc" id="L24">	}</span>
+
+	/**
+	 * @return the states of Maven modules within a Maven project.
+	 */
+	public Set&lt;MavenProjectState&gt; getProjectStates() {
+<span class="fc" id="L30">		return new HashSet&lt;&gt;(projectStates.values());</span>
+	}
+
+	/**
+	 * Returns the state of a specific Maven module within a Maven project.
+	 *
+	 * @param project The Maven module to return the state for.
+	 * @return The state of the requested Maven module.
+	 */
+	public MavenProjectState getProjectState(final MavenProject project) {
+<span class="fc" id="L40">		return projectStates.get(project);</span>
+	}
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.6.202009150832</span></div></body></html>

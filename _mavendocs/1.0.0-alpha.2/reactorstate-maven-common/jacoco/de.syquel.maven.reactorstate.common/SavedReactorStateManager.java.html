@@ -1,0 +1,150 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>SavedReactorStateManager.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">ReactorState Maven Common</a> &gt; <a href="index.source.html" class="el_package">de.syquel.maven.reactorstate.common</a> &gt; <span class="el_source">SavedReactorStateManager.java</span></div><h1>SavedReactorStateManager.java</h1><pre class="source lang-java linenums">package de.syquel.maven.reactorstate.common;
+
+import java.io.IOException;
+import java.nio.file.Path;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.Set;
+import java.util.stream.Collectors;
+
+import org.apache.maven.RepositoryUtils;
+import org.apache.maven.execution.MavenSession;
+import org.apache.maven.project.MavenProject;
+import org.apache.maven.project.MavenProjectHelper;
+import org.apache.maven.project.ProjectBuilder;
+import org.apache.maven.project.ProjectBuildingException;
+import org.apache.maven.project.ProjectBuildingRequest;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import de.syquel.maven.reactorstate.common.persistence.IReactorStateRepository;
+import de.syquel.maven.reactorstate.common.persistence.json.JsonReactorStateRepository;
+
+/**
+ * The implementation of a Maven Reactor state manager which operates on the saved state of Maven modules within a Maven project.
+ */
+public class SavedReactorStateManager extends AbstractReactorStateManager {
+
+<span class="fc" id="L28">	private static final Logger LOGGER = LoggerFactory.getLogger(SavedReactorStateManager.class);</span>
+
+	private SavedReactorStateManager(final Set&lt;MavenProjectState&gt; projectStates) {
+<span class="fc" id="L31">		super(projectStates);</span>
+<span class="fc" id="L32">	}</span>
+
+	/**
+	 * Instantiates a Reactor state manager based on the saved state of the Maven project and its Maven modules.
+	 *
+	 * @param session The current Maven execution for the Maven project build.
+	 * @param projectBuilder The builder for Maven projects from POMs.
+	 * @return A Reactor state manager with the saved state of the Maven project and its Maven modules.
+	 * @throws ProjectBuildingException if an invalid POM is encountered.
+	 * @throws IOException if an error occurred while reading the persisted state.
+	 */
+	public static SavedReactorStateManager create(final MavenSession session, final ProjectBuilder projectBuilder)
+		throws ProjectBuildingException, IOException
+	{
+<span class="fc" id="L46">		final Set&lt;MavenProject&gt; projects = new HashSet&lt;&gt;(session.getProjects());</span>
+
+<span class="fc" id="L48">		LOGGER.info(&quot;Resolving Maven project tree&quot;);</span>
+<span class="fc" id="L49">		contributeWorkspaceProjects(session.getCurrentProject(), projects, session.getProjectBuildingRequest(), projectBuilder);</span>
+
+<span class="fc" id="L51">		final IReactorStateRepository reactorStateRepository = new JsonReactorStateRepository();</span>
+
+<span class="fc" id="L53">		final Set&lt;MavenProjectState&gt; projectStates = new HashSet&lt;&gt;();</span>
+<span class="fc bfc" id="L54" title="All 2 branches covered.">		for (final MavenProject project : projects) {</span>
+<span class="fc" id="L55">			final MavenProjectState projectState = reactorStateRepository.read(project);</span>
+<span class="pc bpc" id="L56" title="1 of 2 branches missed.">			if (projectState != null) {</span>
+<span class="fc" id="L57">				projectStates.add(projectState);</span>
+			}
+<span class="fc" id="L59">		}</span>
+
+<span class="fc" id="L61">		return new SavedReactorStateManager(projectStates);</span>
+	}
+
+	/**
+	 * Restores the saved state of the Maven projects and its Maven modules within the current Maven execution.
+	 *
+	 * @param session The current Maven execution.
+	 * @param projectHelper The helper for Maven-related operations on the current state.
+	 */
+	public void restoreProjectStates(final MavenSession session, final MavenProjectHelper projectHelper) {
+<span class="fc" id="L71">		final Set&lt;MavenProject&gt; projects = new HashSet&lt;&gt;(session.getProjects());</span>
+
+<span class="fc bfc" id="L73" title="All 2 branches covered.">		for (final MavenProject project : projects) {</span>
+<span class="fc" id="L74">			final MavenProjectState projectState = getProjectState(project);</span>
+<span class="pc bpc" id="L75" title="1 of 2 branches missed.">			if (projectState == null) {</span>
+<span class="nc" id="L76">				throw new IllegalStateException(&quot;No saved state found for Maven project &quot; + project.getId() + &quot;: Rebuild required.&quot;);</span>
+			}
+
+<span class="fc" id="L79">			project.setPomFile(projectState.getPom().getFile());</span>
+
+<span class="fc" id="L81">			final org.apache.maven.artifact.Artifact mainArtifact = RepositoryUtils.toArtifact(projectState.getMainArtifact());</span>
+<span class="fc" id="L82">			project.getArtifact().setFile(mainArtifact.getFile());</span>
+<span class="fc" id="L83">			LOGGER.info(&quot;Restored main artifact {}&quot;, mainArtifact.getId());</span>
+
+<span class="fc" id="L85">			final Collection&lt;org.apache.maven.artifact.Artifact&gt; attachedArtifacts =</span>
+<span class="fc" id="L86">				projectState.getAttachedArtifacts().stream().map(RepositoryUtils::toArtifact).collect(Collectors.toList());</span>
+<span class="fc" id="L87">			project.getAttachedArtifacts().clear();</span>
+<span class="fc bfc" id="L88" title="All 2 branches covered.">			for (final org.apache.maven.artifact.Artifact attachedArtifact : attachedArtifacts) {</span>
+<span class="fc" id="L89">				projectHelper.attachArtifact(project, attachedArtifact.getType(), attachedArtifact.getClassifier(), attachedArtifact.getFile());</span>
+<span class="fc" id="L90">				LOGGER.info(&quot;Restored attached artifact {}&quot;, attachedArtifact.getId());</span>
+<span class="fc" id="L91">			}</span>
+<span class="fc" id="L92">		}</span>
+<span class="fc" id="L93">	}</span>
+
+	/**
+	 * Discovers Maven modules within the workspace of a Maven project recursively.
+	 *
+	 * The main use-case for this functionality is to be able to restore the state of other Maven modules, which are not being built in the current
+	 * Maven execution, but belong to the same Maven workspace, to enable standalone builds of submodules.
+	 *
+	 * @param project The Maven module to search for parent and child modules.
+	 * @param discoveredProjects The already discovered Maven modules within the Maven workspace.
+	 * @param buildingRequest The Maven building request of the current Maven execution.
+	 * @param projectBuilder The builder for Maven projects from POMs.
+	 * @throws ProjectBuildingException if an invalid POM is encountered.
+	 */
+	private static void contributeWorkspaceProjects(
+		final MavenProject project, final Set&lt;MavenProject&gt; discoveredProjects,
+		final ProjectBuildingRequest buildingRequest, final ProjectBuilder projectBuilder
+	) throws ProjectBuildingException
+	{
+<span class="fc" id="L112">		final Path projectBasePath = project.getBasedir().toPath();</span>
+
+		// Discover downstream Maven projects within workspace
+<span class="fc bfc" id="L115" title="All 2 branches covered.">		for (final String module : project.getModules()) {</span>
+<span class="fc" id="L116">			final Path modulePomPath = projectBasePath.resolve(module).resolve(&quot;pom.xml&quot;);</span>
+
+<span class="fc" id="L118">			final MavenProject moduleProject = projectBuilder.build(modulePomPath.toFile(), buildingRequest).getProject();</span>
+<span class="fc bfc" id="L119" title="All 2 branches covered.">			if (discoveredProjects.contains(moduleProject)) {</span>
+<span class="fc" id="L120">				continue;</span>
+			}
+
+<span class="fc" id="L123">			LOGGER.info(&quot;Discovered upstream Maven project {}&quot;, moduleProject.getId());</span>
+<span class="fc" id="L124">			discoveredProjects.add(moduleProject);</span>
+
+<span class="fc" id="L126">			contributeWorkspaceProjects(moduleProject, discoveredProjects, buildingRequest, projectBuilder);</span>
+<span class="fc" id="L127">		}</span>
+
+		// Discover upstream Maven projects within workspace
+<span class="fc" id="L130">		final MavenProject parentProject = project.getParent();</span>
+<span class="pc bpc" id="L131" title="1 of 6 branches missed.">		if (parentProject != null &amp;&amp; !discoveredProjects.contains(parentProject) &amp;&amp; isWorkspaceProject(parentProject)) {</span>
+<span class="fc" id="L132">			LOGGER.info(&quot;Discovered Maven parent project {}&quot;, parentProject.getId());</span>
+<span class="fc" id="L133">			discoveredProjects.add(parentProject);</span>
+
+<span class="fc" id="L135">			contributeWorkspaceProjects(parentProject, discoveredProjects, buildingRequest, projectBuilder);</span>
+		}
+<span class="fc" id="L137">	}</span>
+
+	/**
+	 * Determines if a Maven module belongs to the current Maven workspace.
+	 *
+	 * @param project The Maven module to check.
+	 * @return Whether the Maven module belongs to the current Maven workspace.
+	 */
+	private static boolean isWorkspaceProject(final MavenProject project) {
+<span class="fc bfc" id="L146" title="All 2 branches covered.">		return project.getBasedir() != null;</span>
+	}
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.6.202009150832</span></div></body></html>
