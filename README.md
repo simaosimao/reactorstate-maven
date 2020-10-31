@@ -1,6 +1,7 @@
 # reactorstate-maven
 [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=Syquel_reactorstate-maven&metric=alert_status)](https://sonarcloud.io/dashboard?id=Syquel_reactorstate-maven) 
 ![CI Workflow](https://github.com/Syquel/reactorstate-maven/workflows/CI%20Workflow/badge.svg)
+[![Maven Central](https://img.shields.io/maven-central/v/de.syquel.maven.reactorstate/reactorstate-maven-project.svg?label=Maven%20Central)](https://search.maven.org/search?q=g:de.syquel.maven.reactorstate)
 
 `reactorstate-maven` is a collection of tools to enable incremental Maven builds in development and CI / CD environments.  
 It introduces and reuses state between Maven builds to improve build and development workflows.

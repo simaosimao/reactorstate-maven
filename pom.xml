@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0"
-		 xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-		 xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project
+	xmlns="http://maven.apache.org/POM/4.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd"
+	child.project.url.inherit.append.path="false">
 	<modelVersion>4.0.0</modelVersion>
 
 	<groupId>de.syquel.maven.reactorstate</groupId>
@@ -11,7 +13,7 @@
 
 	<name>ReactorState Maven Project</name>
 	<description>A collection of tools for incremental Maven builds</description>
-	<url>https://github.com/Syquel/reactorstate-maven</url>
+	<url>${dist.project.url}</url>
 
 	<licenses>
 		<license>
@@ -28,10 +30,10 @@
 		</developer>
 	</developers>
 
-	<scm>
-		<connection>scm:git:git://github.com/Syquel/reactorstate-maven.git</connection>
-		<developerConnection>scm:git:ssh://github.com:Syquel/reactorstate-maven.git</developerConnection>
-		<url>https://github.com/Syquel/reactorstate-maven</url>
+	<scm child.scm.connection.inherit.append.path="false" child.scm.developerConnection.inherit.append.path="false" child.scm.url.inherit.append.path="false">
+		<connection>${dist.scm.connection}</connection>
+		<developerConnection>${dist.scm.developerConnection}</developerConnection>
+		<url>${dist.scm.url}</url>
 	</scm>
 
 	<distributionManagement>
@@ -61,6 +63,12 @@
 		<threadCount>1</threadCount>
 		<perCoreThreadCount>true</perCoreThreadCount>
 		<skipTests/>
+
+		<!-- Distribution dummy properties -->
+		<dist.project.url/>
+		<dist.scm.connection/>
+		<dist.scm.developerConnection/>
+		<dist.scm.url/>
 	</properties>
 
 	<dependencyManagement>
@@ -173,6 +181,7 @@
 					<version>3.2.0</version>
 					<configuration>
 						<archive>
+							<addMavenDescriptor>false</addMavenDescriptor>
 							<manifest>
 								<addDefaultSpecificationEntries>true</addDefaultSpecificationEntries>
 							</manifest>
