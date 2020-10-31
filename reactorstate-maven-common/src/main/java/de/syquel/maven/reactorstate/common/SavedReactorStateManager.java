@@ -76,6 +76,8 @@ public class SavedReactorStateManager extends AbstractReactorStateManager {
 				throw new IllegalStateException("No saved state found for Maven project " + project.getId() + ": Rebuild required.");
 			}
 
+			project.setPomFile(projectState.getPom().getFile());
+
 			final org.apache.maven.artifact.Artifact mainArtifact = RepositoryUtils.toArtifact(projectState.getMainArtifact());
 			project.getArtifact().setFile(mainArtifact.getFile());
 			LOGGER.info("Restored main artifact {}", mainArtifact.getId());
