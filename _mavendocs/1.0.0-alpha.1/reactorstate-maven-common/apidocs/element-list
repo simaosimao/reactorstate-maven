@@ -1,0 +1,5 @@
+de.syquel.maven.reactorstate.common
+de.syquel.maven.reactorstate.common.persistence
+de.syquel.maven.reactorstate.common.persistence.json
+de.syquel.maven.reactorstate.common.persistence.json.dto
+de.syquel.maven.reactorstate.common.util
