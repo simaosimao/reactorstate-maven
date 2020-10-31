@@ -45,7 +45,7 @@
 	</distributionManagement>
 
 	<properties>
-		<revision>1.0.0-alpha.1</revision>
+		<revision>1.0.0-alpha.2</revision>
 
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<project.build.outputTimestamp>1970-01-01T00:00:00-00:00</project.build.outputTimestamp>
