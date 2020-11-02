@@ -16,7 +16,8 @@ import org.eclipse.aether.util.artifact.ArtifactIdUtils;
 
 import com.fasterxml.jackson.jr.ob.JSON;
 
-import de.syquel.maven.reactorstate.common.MavenProjectState;
+import de.syquel.maven.reactorstate.common.data.MavenArtifactState;
+import de.syquel.maven.reactorstate.common.data.MavenProjectState;
 import de.syquel.maven.reactorstate.common.persistence.IReactorStateRepository;
 import de.syquel.maven.reactorstate.common.persistence.json.dto.ArtifactDto;
 import de.syquel.maven.reactorstate.common.persistence.json.dto.MavenProjectStateDto;
@@ -25,7 +26,7 @@ import de.syquel.maven.reactorstate.common.util.MavenProjectUtils;
 /**
  * Implementation of a persistence repository for Maven state information via JSON.
  */
-<span class="fc" id="L28">public class JsonReactorStateRepository implements IReactorStateRepository {</span>
+<span class="fc" id="L29">public class JsonReactorStateRepository implements IReactorStateRepository {</span>
 
 	/**
 	 * The location to persist Maven state information to.
@@ -34,102 +35,173 @@ import de.syquel.maven.reactorstate.common.util.MavenProjectUtils;
 
 	@Override
 	public MavenProjectState read(final MavenProject mavenProject) throws IOException {
-<span class="fc" id="L37">		final Path reactorStatePath = getReactorStatePath(mavenProject);</span>
-<span class="pc bpc" id="L38" title="1 of 2 branches missed.">		if (!Files.isReadable(reactorStatePath)) {</span>
-<span class="nc" id="L39">			return null;</span>
+<span class="fc" id="L38">		final Path reactorStatePath = getReactorStatePath(mavenProject);</span>
+<span class="pc bpc" id="L39" title="1 of 2 branches missed.">		if (!Files.isReadable(reactorStatePath)) {</span>
+<span class="nc" id="L40">			return null;</span>
 		}
 
-<span class="fc" id="L42">		final JSON objectMapper = buildObjectMapper();</span>
+<span class="fc" id="L43">		final JSON objectMapper = buildObjectMapper();</span>
 
 		final MavenProjectStateDto dto;
-<span class="fc" id="L45">		try (final Reader reactorStateReader = Files.newBufferedReader(reactorStatePath)) {</span>
-<span class="fc" id="L46">			dto = objectMapper.beanFrom(MavenProjectStateDto.class, reactorStateReader);</span>
+<span class="fc" id="L46">		try (final Reader reactorStateReader = Files.newBufferedReader(reactorStatePath)) {</span>
+<span class="fc" id="L47">			dto = objectMapper.beanFrom(MavenProjectStateDto.class, reactorStateReader);</span>
 		}
-<span class="fc" id="L48">		final MavenProjectState projectState = convert(mavenProject, dto);</span>
+<span class="fc" id="L49">		final MavenProjectState projectState = convert(mavenProject, dto);</span>
 
-<span class="fc" id="L50">		return projectState;</span>
+<span class="fc" id="L51">		return projectState;</span>
 	}
 
 	@Override
 	public void save(final MavenProjectState mavenProjectState) throws IOException {
-<span class="fc" id="L55">		final Path reactorStatePath = getReactorStatePath(mavenProjectState.getProject());</span>
-<span class="fc bfc" id="L56" title="All 2 branches covered.">		if (!Files.isDirectory(reactorStatePath.getParent())) {</span>
-<span class="fc" id="L57">			Files.createDirectories(reactorStatePath.getParent());</span>
+<span class="fc" id="L56">		final Path reactorStatePath = getReactorStatePath(mavenProjectState.getProject());</span>
+<span class="fc bfc" id="L57" title="All 2 branches covered.">		if (!Files.isDirectory(reactorStatePath.getParent())) {</span>
+<span class="fc" id="L58">			Files.createDirectories(reactorStatePath.getParent());</span>
 		}
 
-<span class="fc" id="L60">		final MavenProjectStateDto dto = convert(mavenProjectState);</span>
+<span class="fc" id="L61">		final MavenProjectStateDto dto = convert(mavenProjectState);</span>
 
-<span class="fc" id="L62">		final JSON objectMapper = buildObjectMapper();</span>
-<span class="fc" id="L63">		try (final Writer reactorStateWriter = Files.newBufferedWriter(reactorStatePath)) {</span>
-<span class="fc" id="L64">			objectMapper.write(dto, reactorStateWriter);</span>
+<span class="fc" id="L63">		final JSON objectMapper = buildObjectMapper();</span>
+<span class="fc" id="L64">		try (final Writer reactorStateWriter = Files.newBufferedWriter(reactorStatePath)) {</span>
+<span class="fc" id="L65">			objectMapper.write(dto, reactorStateWriter);</span>
 		}
-<span class="fc" id="L66">	}</span>
+<span class="fc" id="L67">	}</span>
 
 	@Override
 	public void delete(final MavenProject mavenProject) throws IOException {
-<span class="fc" id="L70">		final Path reactorStatePath = getReactorStatePath(mavenProject);</span>
-<span class="fc" id="L71">		Files.deleteIfExists(reactorStatePath);</span>
-<span class="fc" id="L72">	}</span>
+<span class="fc" id="L71">		final Path reactorStatePath = getReactorStatePath(mavenProject);</span>
+<span class="fc" id="L72">		Files.deleteIfExists(reactorStatePath);</span>
+<span class="fc" id="L73">	}</span>
 
+	/**
+	 * Deserializes a persisted Maven module state.
+	 *
+	 * @param mavenProject The Maven module to deserialize the state for.
+	 * @param mavenProjectStateDto The serialized representation of the Maven module state.
+	 * @return The deserialized representation of the Maven module state.
+	 */
 	private static MavenProjectState convert(final MavenProject mavenProject, final MavenProjectStateDto mavenProjectStateDto) {
-<span class="fc" id="L75">		final Path projectBasePath = mavenProject.getBasedir().toPath();</span>
+<span class="fc" id="L83">		final Path projectBasePath = mavenProject.getBasedir().toPath();</span>
 
-<span class="fc" id="L77">		final Artifact pom = convert(mavenProjectStateDto.getPom(), projectBasePath);</span>
-<span class="fc" id="L78">		final Artifact mainArtifact = convert(mavenProjectStateDto.getMainArtifact(), projectBasePath);</span>
-<span class="fc" id="L79">		final Set&lt;Artifact&gt; attachedArtifacts =</span>
-<span class="fc" id="L80">			mavenProjectStateDto.getAttachedArtifacts().stream().map(artifactDto -&gt; convert(artifactDto, projectBasePath)).collect(Collectors.toSet());</span>
+<span class="fc" id="L85">		final Artifact pom = buildArtifactDto(mavenProjectStateDto.getPom(), projectBasePath);</span>
+<span class="fc" id="L86">		final MavenArtifactState mainArtifactState = convert(mavenProjectStateDto.getMainArtifact(), projectBasePath);</span>
+<span class="fc" id="L87">		final Set&lt;MavenArtifactState&gt; attachedArtifactStates =</span>
+<span class="fc" id="L88">			mavenProjectStateDto.getAttachedArtifacts().stream().map(artifactDto -&gt; convert(artifactDto, projectBasePath)).collect(Collectors.toSet());</span>
 
-<span class="fc" id="L82">		final MavenProjectState mavenProjectState = new MavenProjectState(mavenProject, pom, mainArtifact, attachedArtifacts);</span>
-<span class="fc" id="L83">		return mavenProjectState;</span>
+<span class="fc" id="L90">		final MavenProjectState mavenProjectState = new MavenProjectState(mavenProject, pom, mainArtifactState, attachedArtifactStates);</span>
+<span class="fc" id="L91">		return mavenProjectState;</span>
 	}
 
-	private static Artifact convert(final ArtifactDto artifactDto, final Path projectBasePath) {
-<span class="pc bpc" id="L87" title="1 of 2 branches missed.">		final File artifactFile = (artifactDto.getPath() != null) ? projectBasePath.resolve(artifactDto.getPath()).toFile() : null;</span>
+	/**
+	 * Deserializes a persisted Maven artifact state.
+	 *
+	 * @param artifactDto The serialized representation of the Maven artifact state.
+	 * @param projectBasePath The base path of the Maven module to deserialize the state for.
+	 * @return The deserialized representation of the Maven artifact state.
+	 */
+	private static MavenArtifactState convert(final ArtifactDto artifactDto, final Path projectBasePath) {
+<span class="fc" id="L102">		final Artifact artifact = buildArtifactDto(artifactDto, projectBasePath);</span>
 
-<span class="fc" id="L89">		final Artifact artifact =</span>
-<span class="fc" id="L90">			new DefaultArtifact(artifactDto.getCoordinates(), artifactDto.getProperties())</span>
-<span class="fc" id="L91">				.setFile(artifactFile);</span>
+<span class="fc" id="L104">		final MavenArtifactState artifactState = new MavenArtifactState(artifact);</span>
+<span class="fc" id="L105">		artifactState.setArtifactRepositoryMetadata(artifactDto.getArtifactRepositoryMetadata());</span>
+<span class="fc" id="L106">		artifactState.setGroupRepositoryMetadata(artifactDto.getGroupRepositoryMetadata());</span>
+<span class="fc" id="L107">		artifactState.setSnapshotRepositoryMetadata(artifactDto.getSnapshotRepositoryMetadata());</span>
 
-<span class="fc" id="L93">		return artifact;</span>
+<span class="fc" id="L109">		return artifactState;</span>
 	}
 
+	/**
+	 * Serializes a Maven module state.
+	 *
+	 * @param projectState The deserialized representation of the Maven module state.
+	 * @return The serialized representation of the Maven module state.
+	 */
 	private static MavenProjectStateDto convert(final MavenProjectState projectState) {
-<span class="fc" id="L97">		final String projectId = projectState.getProject().getId();</span>
-<span class="fc" id="L98">		final Path projectBasePath = projectState.getProject().getBasedir().toPath();</span>
+<span class="fc" id="L119">		final String projectId = projectState.getProject().getId();</span>
+<span class="fc" id="L120">		final Path projectBasePath = projectState.getProject().getBasedir().toPath();</span>
 
-<span class="fc" id="L100">		final ArtifactDto pomDto = convert(projectState.getPom(), projectBasePath);</span>
-<span class="fc" id="L101">		final ArtifactDto mainArtifactDto = convert(projectState.getMainArtifact(), projectBasePath);</span>
-<span class="fc" id="L102">		final Set&lt;ArtifactDto&gt; attachedArtifactDtos =</span>
-<span class="fc" id="L103">			projectState.getAttachedArtifacts().stream().map(artifact -&gt; convert(artifact, projectBasePath)).collect(Collectors.toSet());</span>
+<span class="fc" id="L122">		final ArtifactDto pomDto = buildArtifactDto(projectState.getPom(), projectBasePath);</span>
+<span class="fc" id="L123">		final ArtifactDto mainArtifactDto = convert(projectState.getMainArtifactState(), projectBasePath);</span>
+<span class="fc" id="L124">		final Set&lt;ArtifactDto&gt; attachedArtifactDtos =</span>
+<span class="fc" id="L125">			projectState.getAttachedArtifactStates().stream().map(artifact -&gt; convert(artifact, projectBasePath)).collect(Collectors.toSet());</span>
 
-<span class="fc" id="L105">		final MavenProjectStateDto projectStateDto = new MavenProjectStateDto(projectId, pomDto, mainArtifactDto, attachedArtifactDtos);</span>
-<span class="fc" id="L106">		return projectStateDto;</span>
+<span class="fc" id="L127">		final MavenProjectStateDto projectStateDto = new MavenProjectStateDto(projectId, pomDto, mainArtifactDto, attachedArtifactDtos);</span>
+<span class="fc" id="L128">		return projectStateDto;</span>
 	}
 
-	private static ArtifactDto convert(final Artifact artifact, final Path projectBasePath) {
-<span class="fc" id="L110">		final String artifactCoordinates = ArtifactIdUtils.toId(artifact);</span>
+	/**
+	 * Serializes a Maven artifact state.
+	 *
+	 * @param artifactState The deserialized representation of the Maven artifact state.
+	 * @param projectBasePath The base path of the Maven module to serialize the state for.
+	 * @return The serialized representation of the Maven artifact state.
+	 */
+	private static ArtifactDto convert(final MavenArtifactState artifactState, final Path projectBasePath) {
+<span class="fc" id="L139">		final Artifact artifact = artifactState.getArtifact();</span>
 
-<span class="fc" id="L112">		final File artifactFile = artifact.getFile();</span>
-<span class="pc bpc" id="L113" title="1 of 2 branches missed.">		final String artifactPath = (artifactFile != null) ? projectBasePath.relativize(artifactFile.toPath()).toString() : null;</span>
+<span class="fc" id="L141">		final ArtifactDto artifactDto = buildArtifactDto(artifact, projectBasePath);</span>
+<span class="fc" id="L142">		artifactDto.setArtifactRepositoryMetadata(artifactState.getArtifactRepositoryMetadata());</span>
+<span class="fc" id="L143">		artifactDto.setGroupRepositoryMetadata(artifactState.getGroupRepositoryMetadata());</span>
+<span class="fc" id="L144">		artifactDto.setSnapshotRepositoryMetadata(artifactState.getSnapshotRepositoryMetadata());</span>
 
-<span class="fc" id="L115">		final ArtifactDto artifactDto = new ArtifactDto(artifactCoordinates, artifactPath, artifact.getProperties());</span>
-
-<span class="fc" id="L117">		return artifactDto;</span>
+<span class="fc" id="L146">		return artifactDto;</span>
 	}
 
+	/**
+	 * Builds a Maven artifact from its persistent representation.
+	 *
+	 * @param artifactDto The serialized representation of the Maven artifact state.
+	 * @param projectBasePath The base path of the Maven module to deserialize the state for.
+	 * @return The deserialized representation of the Maven artifact.
+	 */
+	private static Artifact buildArtifactDto(final ArtifactDto artifactDto, final Path projectBasePath) {
+<span class="pc bpc" id="L157" title="1 of 2 branches missed.">		final File artifactFile = (artifactDto.getPath() != null) ? projectBasePath.resolve(artifactDto.getPath()).toFile() : null;</span>
+
+<span class="fc" id="L159">		final Artifact artifact =</span>
+<span class="fc" id="L160">			new DefaultArtifact(artifactDto.getCoordinates(), artifactDto.getProperties())</span>
+<span class="fc" id="L161">				.setFile(artifactFile);</span>
+
+<span class="fc" id="L163">		return artifact;</span>
+	}
+
+	/**
+	 * Builds a persistent representation for a Maven artifact.
+	 *
+	 * @param artifact The deserialized representation of the Maven artifact.
+	 * @param projectBasePath The base path of the Maven module to deserialize the state for.
+	 * @return The serialized representation of the Maven artifact.
+	 */
+	private static ArtifactDto buildArtifactDto(final Artifact artifact, final Path projectBasePath) {
+<span class="fc" id="L174">		final String artifactCoordinates = ArtifactIdUtils.toId(artifact);</span>
+
+<span class="fc" id="L176">		final File artifactFile = artifact.getFile();</span>
+<span class="pc bpc" id="L177" title="1 of 2 branches missed.">		final String artifactPath = (artifactFile != null) ? projectBasePath.relativize(artifactFile.toPath()).toString() : null;</span>
+
+<span class="fc" id="L179">		final ArtifactDto artifactDto = new ArtifactDto(artifactCoordinates, artifactPath, artifact.getProperties());</span>
+<span class="fc" id="L180">		return artifactDto;</span>
+	}
+
+	/**
+	 * Determines the filesystem path to persisted state information for a Maven module.
+	 *
+	 * @param mavenProject The Maven module to determine the path for.
+	 * @return The filesystem path to persisted state information.
+	 */
 	private static Path getReactorStatePath(final MavenProject mavenProject) {
-<span class="fc" id="L121">		final Path projectBuildPath = MavenProjectUtils.resolveProjectBuildPath(mavenProject);</span>
-<span class="fc" id="L122">		final Path reactorStatePath = projectBuildPath.resolve(STATE_PROPERTIES_FILENAME);</span>
+<span class="fc" id="L190">		final Path projectBuildPath = MavenProjectUtils.resolveProjectBuildPath(mavenProject);</span>
+<span class="fc" id="L191">		final Path reactorStatePath = projectBuildPath.resolve(STATE_PROPERTIES_FILENAME);</span>
 
-<span class="fc" id="L124">		return reactorStatePath;</span>
+<span class="fc" id="L193">		return reactorStatePath;</span>
 	}
 
+	/**
+	 * @return a pre-configured Json object mapper.
+	 */
 	private static JSON buildObjectMapper() {
-<span class="fc" id="L128">		return</span>
-<span class="fc" id="L129">			JSON.builder()</span>
-<span class="fc" id="L130">				.enable(JSON.Feature.PRETTY_PRINT_OUTPUT, JSON.Feature.WRITE_NULL_PROPERTIES, JSON.Feature.READ_ONLY)</span>
-<span class="fc" id="L131">				.disable(JSON.Feature.USE_DEFERRED_MAPS)</span>
-<span class="fc" id="L132">				.build();</span>
+<span class="fc" id="L200">		return</span>
+<span class="fc" id="L201">			JSON.builder()</span>
+<span class="fc" id="L202">				.enable(JSON.Feature.PRETTY_PRINT_OUTPUT, JSON.Feature.WRITE_NULL_PROPERTIES, JSON.Feature.READ_ONLY)</span>
+<span class="fc" id="L203">				.disable(JSON.Feature.USE_DEFERRED_MAPS)</span>
+<span class="fc" id="L204">				.build();</span>
 	}
 
 }

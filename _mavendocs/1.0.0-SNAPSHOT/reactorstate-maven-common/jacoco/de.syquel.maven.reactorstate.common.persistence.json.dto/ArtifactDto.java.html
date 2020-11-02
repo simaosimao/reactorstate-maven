@@ -2,6 +2,8 @@
 
 import java.util.Map;
 
+import org.apache.maven.artifact.repository.metadata.Metadata;
+
 /**
  * The JSON-specific representation of a Maven artifact.
  */
@@ -22,39 +24,78 @@ public class ArtifactDto {
 	 */
 	private Map&lt;String, String&gt; properties;
 
-<span class="fc" id="L25">	public ArtifactDto(final String coordinates, final String path, final Map&lt;String, String&gt; properties) {</span>
-<span class="fc" id="L26">		this.coordinates = coordinates;</span>
-<span class="fc" id="L27">		this.path = path;</span>
-<span class="fc" id="L28">		this.properties = properties;</span>
-<span class="fc" id="L29">	}</span>
+	/**
+	 * The associated module-group-level repository metadata
+	 */
+	private Metadata groupRepositoryMetadata;
 
-<span class="fc" id="L31">	protected ArtifactDto() {</span>
+	/**
+	 * The associated Maven artifact-level repository metadata.
+	 */
+	private Metadata artifactRepositoryMetadata;
+
+	/**
+	 * The associated snapshot-specific repository metadata.
+	 */
+	private Metadata snapshotRepositoryMetadata;
+
+<span class="fc" id="L42">	public ArtifactDto(final String coordinates, final String path, final Map&lt;String, String&gt; properties) {</span>
+<span class="fc" id="L43">		this.coordinates = coordinates;</span>
+<span class="fc" id="L44">		this.path = path;</span>
+<span class="fc" id="L45">		this.properties = properties;</span>
+<span class="fc" id="L46">	}</span>
+
+<span class="fc" id="L48">	protected ArtifactDto() {</span>
 		// Jackson constructor
-<span class="fc" id="L33">	}</span>
+<span class="fc" id="L50">	}</span>
 
 	public String getCoordinates() {
-<span class="fc" id="L36">		return coordinates;</span>
+<span class="fc" id="L53">		return coordinates;</span>
 	}
 
 	protected void setCoordinates(final String coordinates) {
-<span class="fc" id="L40">		this.coordinates = coordinates;</span>
-<span class="fc" id="L41">	}</span>
+<span class="fc" id="L57">		this.coordinates = coordinates;</span>
+<span class="fc" id="L58">	}</span>
 
 	public String getPath() {
-<span class="fc" id="L44">		return path;</span>
+<span class="fc" id="L61">		return path;</span>
 	}
 
 	protected void setPath(final String path) {
-<span class="fc" id="L48">		this.path = path;</span>
-<span class="fc" id="L49">	}</span>
+<span class="fc" id="L65">		this.path = path;</span>
+<span class="fc" id="L66">	}</span>
 
 	public Map&lt;String, String&gt; getProperties() {
-<span class="fc" id="L52">		return properties;</span>
+<span class="fc" id="L69">		return properties;</span>
 	}
 
 	protected void setProperties(final Map&lt;String, String&gt; properties) {
-<span class="fc" id="L56">		this.properties = properties;</span>
-<span class="fc" id="L57">	}</span>
+<span class="fc" id="L73">		this.properties = properties;</span>
+<span class="fc" id="L74">	}</span>
+
+	public Metadata getGroupRepositoryMetadata() {
+<span class="fc" id="L77">		return groupRepositoryMetadata;</span>
+	}
+
+	public void setGroupRepositoryMetadata(final Metadata groupRepositoryMetadata) {
+<span class="fc" id="L81">		this.groupRepositoryMetadata = groupRepositoryMetadata;</span>
+<span class="fc" id="L82">	}</span>
+
+	public Metadata getArtifactRepositoryMetadata() {
+<span class="fc" id="L85">		return artifactRepositoryMetadata;</span>
+	}
+
+	public void setArtifactRepositoryMetadata(final Metadata artifactRepositoryMetadata) {
+<span class="fc" id="L89">		this.artifactRepositoryMetadata = artifactRepositoryMetadata;</span>
+<span class="fc" id="L90">	}</span>
+
+	public Metadata getSnapshotRepositoryMetadata() {
+<span class="fc" id="L93">		return snapshotRepositoryMetadata;</span>
+	}
+
+	public void setSnapshotRepositoryMetadata(final Metadata snapshotRepositoryMetadata) {
+<span class="fc" id="L97">		this.snapshotRepositoryMetadata = snapshotRepositoryMetadata;</span>
+<span class="fc" id="L98">	}</span>
 
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.6.202009150832</span></div></body></html>

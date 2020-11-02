@@ -24,8 +24,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import de.syquel.maven.reactorstate.common.AbstractReactorStateManager;
-import de.syquel.maven.reactorstate.common.MavenProjectState;
 import de.syquel.maven.reactorstate.common.SavedReactorStateManager;
+import de.syquel.maven.reactorstate.common.data.MavenArtifactState;
+import de.syquel.maven.reactorstate.common.data.MavenProjectState;
 
 /**
  * A Maven {@link WorkspaceReader}, which contributes Maven artifacts from the current Maven workspace
@@ -43,7 +44,7 @@ public class ReactorStateWorkspaceReader extends AbstractMavenLifecycleParticipa
 	 */
 	public static final String WORKSPACE_READER_IDE_QUALIFIER = &quot;ide&quot;;
 
-<span class="fc" id="L46">	private static final Logger LOGGER = LoggerFactory.getLogger(ReactorStateWorkspaceReader.class);</span>
+<span class="fc" id="L47">	private static final Logger LOGGER = LoggerFactory.getLogger(ReactorStateWorkspaceReader.class);</span>
 
 	/**
 	 * The builder for Maven projects from POMs.
@@ -53,12 +54,12 @@ public class ReactorStateWorkspaceReader extends AbstractMavenLifecycleParticipa
 	/**
 	 * The underlying workspace repository information.
 	 */
-<span class="fc" id="L56">	private final WorkspaceRepository repository = new WorkspaceRepository();</span>
+<span class="fc" id="L57">	private final WorkspaceRepository repository = new WorkspaceRepository();</span>
 
 	/**
 	 * The saved states of Maven artifacts within the current Maven workspace.
 	 */
-<span class="fc" id="L61">	private final Map&lt;String, Artifact&gt; artifactLookupMap = new HashMap&lt;&gt;();</span>
+<span class="fc" id="L62">	private final Map&lt;String, Artifact&gt; artifactLookupMap = new HashMap&lt;&gt;();</span>
 
 	/**
 	 * Constructs a new state-based workspace reader.
@@ -66,9 +67,9 @@ public class ReactorStateWorkspaceReader extends AbstractMavenLifecycleParticipa
 	 * @param projectBuilder The builder for Maven projects from POMs.
 	 */
 	@Inject
-<span class="fc" id="L69">	public ReactorStateWorkspaceReader(final ProjectBuilder projectBuilder) {</span>
-<span class="fc" id="L70">		this.projectBuilder = projectBuilder;</span>
-<span class="fc" id="L71">	}</span>
+<span class="fc" id="L70">	public ReactorStateWorkspaceReader(final ProjectBuilder projectBuilder) {</span>
+<span class="fc" id="L71">		this.projectBuilder = projectBuilder;</span>
+<span class="fc" id="L72">	}</span>
 
 	/**
 	 * Initializes the workspace reader with the saved state of the Maven modules within the current Maven workspace.
@@ -83,20 +84,20 @@ public class ReactorStateWorkspaceReader extends AbstractMavenLifecycleParticipa
 	public void afterProjectsRead(final MavenSession session) throws MavenExecutionException {
 		final AbstractReactorStateManager projectStateManager;
 		try {
-<span class="fc" id="L86">			projectStateManager = SavedReactorStateManager.create(session, projectBuilder);</span>
-<span class="nc" id="L87">		} catch (final ProjectBuildingException | IOException e) {</span>
-<span class="nc" id="L88">			throw new MavenExecutionException(&quot;Cannot acquire saved reactor state&quot;, e);</span>
-<span class="fc" id="L89">		}</span>
+<span class="fc" id="L87">			projectStateManager = SavedReactorStateManager.create(session, projectBuilder);</span>
+<span class="nc" id="L88">		} catch (final ProjectBuildingException | IOException e) {</span>
+<span class="nc" id="L89">			throw new MavenExecutionException(&quot;Cannot acquire saved reactor state&quot;, e);</span>
+<span class="fc" id="L90">		}</span>
 
-<span class="fc bfc" id="L91" title="All 2 branches covered.">		for (final MavenProjectState projectState : projectStateManager.getProjectStates()) {</span>
-<span class="fc" id="L92">			add(projectState.getPom());</span>
-<span class="fc" id="L93">			add(projectState.getMainArtifact());</span>
+<span class="fc bfc" id="L92" title="All 2 branches covered.">		for (final MavenProjectState projectState : projectStateManager.getProjectStates()) {</span>
+<span class="fc" id="L93">			add(projectState.getPom());</span>
+<span class="fc" id="L94">			add(projectState.getMainArtifactState().getArtifact());</span>
 
-<span class="fc bfc" id="L95" title="All 2 branches covered.">			for (final Artifact attachedArtifact : projectState.getAttachedArtifacts()) {</span>
-<span class="fc" id="L96">				add(attachedArtifact);</span>
-<span class="fc" id="L97">			}</span>
-<span class="fc" id="L98">		}</span>
-<span class="fc" id="L99">	}</span>
+<span class="fc bfc" id="L96" title="All 2 branches covered.">			for (final MavenArtifactState attachedArtifactState : projectState.getAttachedArtifactStates()) {</span>
+<span class="fc" id="L97">				add(attachedArtifactState.getArtifact());</span>
+<span class="fc" id="L98">			}</span>
+<span class="fc" id="L99">		}</span>
+<span class="fc" id="L100">	}</span>
 
 	/**
 	 * Returns the underlying workspace repository information.
@@ -105,7 +106,7 @@ public class ReactorStateWorkspaceReader extends AbstractMavenLifecycleParticipa
 	 */
 	@Override
 	public WorkspaceRepository getRepository() {
-<span class="fc" id="L108">		return repository;</span>
+<span class="fc" id="L109">		return repository;</span>
 	}
 
 	/**
@@ -116,12 +117,12 @@ public class ReactorStateWorkspaceReader extends AbstractMavenLifecycleParticipa
 	 */
 	@Override
 	public File findArtifact(final Artifact artifact) {
-<span class="fc" id="L119">		final Artifact lookedupArtifact = artifactLookupMap.get(ArtifactIdUtils.toVersionlessId(artifact));</span>
-<span class="fc bfc" id="L120" title="All 2 branches covered.">		if (ArtifactIdUtils.equalsBaseId(artifact, lookedupArtifact)) {</span>
-<span class="fc" id="L121">			return lookedupArtifact.getFile();</span>
+<span class="fc" id="L120">		final Artifact lookedupArtifact = artifactLookupMap.get(ArtifactIdUtils.toVersionlessId(artifact));</span>
+<span class="fc bfc" id="L121" title="All 2 branches covered.">		if (ArtifactIdUtils.equalsBaseId(artifact, lookedupArtifact)) {</span>
+<span class="fc" id="L122">			return lookedupArtifact.getFile();</span>
 		}
 
-<span class="fc" id="L124">		return null;</span>
+<span class="fc" id="L125">		return null;</span>
 	}
 
 	/**
@@ -132,12 +133,12 @@ public class ReactorStateWorkspaceReader extends AbstractMavenLifecycleParticipa
 	 */
 	@Override
 	public List&lt;String&gt; findVersions(final Artifact artifact) {
-<span class="fc" id="L135">		final Artifact lookedupArtifact = artifactLookupMap.get(ArtifactIdUtils.toVersionlessId(artifact));</span>
-<span class="fc bfc" id="L136" title="All 2 branches covered.">		if (ArtifactIdUtils.equalsBaseId(artifact, lookedupArtifact)) {</span>
-<span class="fc" id="L137">			return Collections.singletonList(lookedupArtifact.getVersion());</span>
+<span class="fc" id="L136">		final Artifact lookedupArtifact = artifactLookupMap.get(ArtifactIdUtils.toVersionlessId(artifact));</span>
+<span class="fc bfc" id="L137" title="All 2 branches covered.">		if (ArtifactIdUtils.equalsBaseId(artifact, lookedupArtifact)) {</span>
+<span class="fc" id="L138">			return Collections.singletonList(lookedupArtifact.getVersion());</span>
 		}
 
-<span class="fc" id="L140">		return Collections.emptyList();</span>
+<span class="fc" id="L141">		return Collections.emptyList();</span>
 	}
 
 	/**
@@ -146,8 +147,8 @@ public class ReactorStateWorkspaceReader extends AbstractMavenLifecycleParticipa
 	 * @param artifact The Maven artifact to add.
 	 */
 	private void add(final Artifact artifact) {
-<span class="fc" id="L149">		artifactLookupMap.put(ArtifactIdUtils.toVersionlessId(artifact), artifact);</span>
-<span class="fc" id="L150">	}</span>
+<span class="fc" id="L150">		artifactLookupMap.put(ArtifactIdUtils.toVersionlessId(artifact), artifact);</span>
+<span class="fc" id="L151">	}</span>
 
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.6.202009150832</span></div></body></html>

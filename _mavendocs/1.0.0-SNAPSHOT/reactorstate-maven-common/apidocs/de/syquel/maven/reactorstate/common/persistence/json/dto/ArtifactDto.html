@@ -26,7 +26,7 @@
     catch(err) {
     }
 //-->
-var data = {"i0":10,"i1":10,"i2":10,"i3":10,"i4":10,"i5":10};
+var data = {"i0":10,"i1":10,"i2":10,"i3":10,"i4":10,"i5":10,"i6":10,"i7":10,"i8":10,"i9":10,"i10":10,"i11":10};
 var tabs = {65535:["t0","All Methods"],2:["t2","Instance Methods"],8:["t4","Concrete Methods"]};
 var altColor = "altColor";
 var rowColor = "rowColor";
@@ -185,33 +185,63 @@ extends <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Object.html
 <th class="colLast" scope="col">Description</th>
 </tr>
 <tr id="i0" class="altColor">
-<td class="colFirst"><code><a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a></code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getCoordinates()">getCoordinates</a></span>()</code></th>
+<td class="colFirst"><code>org.apache.maven.artifact.repository.metadata.Metadata</code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getArtifactRepositoryMetadata()">getArtifactRepositoryMetadata</a></span>()</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
 <tr id="i1" class="rowColor">
 <td class="colFirst"><code><a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a></code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getPath()">getPath</a></span>()</code></th>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getCoordinates()">getCoordinates</a></span>()</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
 <tr id="i2" class="altColor">
+<td class="colFirst"><code>org.apache.maven.artifact.repository.metadata.Metadata</code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getGroupRepositoryMetadata()">getGroupRepositoryMetadata</a></span>()</code></th>
+<td class="colLast">&nbsp;</td>
+</tr>
+<tr id="i3" class="rowColor">
+<td class="colFirst"><code><a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a></code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getPath()">getPath</a></span>()</code></th>
+<td class="colLast">&nbsp;</td>
+</tr>
+<tr id="i4" class="altColor">
 <td class="colFirst"><code><a href="https://docs.oracle.com/javase/8/docs/api/java/util/Map.html?is-external=true" title="class or interface in java.util" class="externalLink">Map</a>&lt;<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>,&#8203;<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&gt;</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getProperties()">getProperties</a></span>()</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
-<tr id="i3" class="rowColor">
+<tr id="i5" class="rowColor">
+<td class="colFirst"><code>org.apache.maven.artifact.repository.metadata.Metadata</code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getSnapshotRepositoryMetadata()">getSnapshotRepositoryMetadata</a></span>()</code></th>
+<td class="colLast">&nbsp;</td>
+</tr>
+<tr id="i6" class="altColor">
+<td class="colFirst"><code>void</code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#setArtifactRepositoryMetadata(org.apache.maven.artifact.repository.metadata.Metadata)">setArtifactRepositoryMetadata</a></span>&#8203;(org.apache.maven.artifact.repository.metadata.Metadata&nbsp;artifactRepositoryMetadata)</code></th>
+<td class="colLast">&nbsp;</td>
+</tr>
+<tr id="i7" class="rowColor">
 <td class="colFirst"><code>protected void</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#setCoordinates(java.lang.String)">setCoordinates</a></span>&#8203;(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;coordinates)</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
-<tr id="i4" class="altColor">
+<tr id="i8" class="altColor">
+<td class="colFirst"><code>void</code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#setGroupRepositoryMetadata(org.apache.maven.artifact.repository.metadata.Metadata)">setGroupRepositoryMetadata</a></span>&#8203;(org.apache.maven.artifact.repository.metadata.Metadata&nbsp;groupRepositoryMetadata)</code></th>
+<td class="colLast">&nbsp;</td>
+</tr>
+<tr id="i9" class="rowColor">
 <td class="colFirst"><code>protected void</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#setPath(java.lang.String)">setPath</a></span>&#8203;(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;path)</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
-<tr id="i5" class="rowColor">
+<tr id="i10" class="altColor">
 <td class="colFirst"><code>protected void</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#setProperties(java.util.Map)">setProperties</a></span>&#8203;(<a href="https://docs.oracle.com/javase/8/docs/api/java/util/Map.html?is-external=true" title="class or interface in java.util" class="externalLink">Map</a>&lt;<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>,&#8203;<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&gt;&nbsp;properties)</code></th>
+<td class="colLast">&nbsp;</td>
+</tr>
+<tr id="i11" class="rowColor">
+<td class="colFirst"><code>void</code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#setSnapshotRepositoryMetadata(org.apache.maven.artifact.repository.metadata.Metadata)">setSnapshotRepositoryMetadata</a></span>&#8203;(org.apache.maven.artifact.repository.metadata.Metadata&nbsp;snapshotRepositoryMetadata)</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
 </table>
@@ -316,10 +346,64 @@ extends <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Object.html
 <a id="setProperties(java.util.Map)">
 <!--   -->
 </a>
-<ul class="blockListLast">
+<ul class="blockList">
 <li class="blockList">
 <h4>setProperties</h4>
 <pre class="methodSignature">protected&nbsp;void&nbsp;setProperties&#8203;(<a href="https://docs.oracle.com/javase/8/docs/api/java/util/Map.html?is-external=true" title="class or interface in java.util" class="externalLink">Map</a>&lt;<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>,&#8203;<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&gt;&nbsp;properties)</pre>
+</li>
+</ul>
+<a id="getGroupRepositoryMetadata()">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>getGroupRepositoryMetadata</h4>
+<pre class="methodSignature">public&nbsp;org.apache.maven.artifact.repository.metadata.Metadata&nbsp;getGroupRepositoryMetadata()</pre>
+</li>
+</ul>
+<a id="setGroupRepositoryMetadata(org.apache.maven.artifact.repository.metadata.Metadata)">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>setGroupRepositoryMetadata</h4>
+<pre class="methodSignature">public&nbsp;void&nbsp;setGroupRepositoryMetadata&#8203;(org.apache.maven.artifact.repository.metadata.Metadata&nbsp;groupRepositoryMetadata)</pre>
+</li>
+</ul>
+<a id="getArtifactRepositoryMetadata()">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>getArtifactRepositoryMetadata</h4>
+<pre class="methodSignature">public&nbsp;org.apache.maven.artifact.repository.metadata.Metadata&nbsp;getArtifactRepositoryMetadata()</pre>
+</li>
+</ul>
+<a id="setArtifactRepositoryMetadata(org.apache.maven.artifact.repository.metadata.Metadata)">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>setArtifactRepositoryMetadata</h4>
+<pre class="methodSignature">public&nbsp;void&nbsp;setArtifactRepositoryMetadata&#8203;(org.apache.maven.artifact.repository.metadata.Metadata&nbsp;artifactRepositoryMetadata)</pre>
+</li>
+</ul>
+<a id="getSnapshotRepositoryMetadata()">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>getSnapshotRepositoryMetadata</h4>
+<pre class="methodSignature">public&nbsp;org.apache.maven.artifact.repository.metadata.Metadata&nbsp;getSnapshotRepositoryMetadata()</pre>
+</li>
+</ul>
+<a id="setSnapshotRepositoryMetadata(org.apache.maven.artifact.repository.metadata.Metadata)">
+<!--   -->
+</a>
+<ul class="blockListLast">
+<li class="blockList">
+<h4>setSnapshotRepositoryMetadata</h4>
+<pre class="methodSignature">public&nbsp;void&nbsp;setSnapshotRepositoryMetadata&#8203;(org.apache.maven.artifact.repository.metadata.Metadata&nbsp;snapshotRepositoryMetadata)</pre>
 </li>
 </ul>
 </li>

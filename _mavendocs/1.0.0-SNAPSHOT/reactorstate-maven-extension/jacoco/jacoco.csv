@@ -1,4 +1,4 @@
 GROUP,PACKAGE,CLASS,INSTRUCTION_MISSED,INSTRUCTION_COVERED,BRANCH_MISSED,BRANCH_COVERED,LINE_MISSED,LINE_COVERED,COMPLEXITY_MISSED,COMPLEXITY_COVERED,METHOD_MISSED,METHOD_COVERED
 ReactorState Maven Extension,de.syquel.maven.reactorstate.extension,ReactorStateSaveExtension,14,40,0,2,4,16,0,5,0,4
-ReactorState Maven Extension,de.syquel.maven.reactorstate.extension.workspacereader,ReactorStateWorkspaceReader,7,106,0,8,2,27,0,11,0,7
+ReactorState Maven Extension,de.syquel.maven.reactorstate.extension.workspacereader,ReactorStateWorkspaceReader,7,108,0,8,2,27,0,11,0,7
 ReactorState Maven Extension,de.syquel.maven.reactorstate.extension.workspacereader,DelegatingIdeWorkspaceReader,7,91,0,6,2,23,0,9,0,6
