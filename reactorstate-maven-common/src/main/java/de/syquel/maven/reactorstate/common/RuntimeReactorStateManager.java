@@ -3,13 +3,24 @@ package de.syquel.maven.reactorstate.common;
 import java.io.IOException;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.apache.maven.RepositoryUtils;
+import org.apache.maven.artifact.metadata.ArtifactMetadata;
+import org.apache.maven.artifact.repository.metadata.ArtifactRepositoryMetadata;
+import org.apache.maven.artifact.repository.metadata.GroupRepositoryMetadata;
+import org.apache.maven.artifact.repository.metadata.RepositoryMetadata;
+import org.apache.maven.artifact.repository.metadata.SnapshotArtifactRepositoryMetadata;
 import org.apache.maven.execution.MavenSession;
 import org.apache.maven.project.MavenProject;
 import org.apache.maven.repository.internal.ArtifactDescriptorUtils;
 import org.eclipse.aether.artifact.Artifact;
+import org.eclipse.aether.util.artifact.ArtifactIdUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
+import de.syquel.maven.reactorstate.common.data.MavenArtifactState;
+import de.syquel.maven.reactorstate.common.data.MavenProjectState;
 import de.syquel.maven.reactorstate.common.persistence.IReactorStateRepository;
 import de.syquel.maven.reactorstate.common.persistence.json.JsonReactorStateRepository;
 
@@ -17,6 +28,8 @@ import de.syquel.maven.reactorstate.common.persistence.json.JsonReactorStateRepo
  * The implementation of a Maven Reactor state manager which operates on the current state of Maven modules within a Maven project.
  */
 public class RuntimeReactorStateManager extends AbstractReactorStateManager {
+
+	private static final Logger LOGGER = LoggerFactory.getLogger(RuntimeReactorStateManager.class);
 
 	/**
 	 * The persistence repository for Maven module states.
@@ -62,23 +75,56 @@ public class RuntimeReactorStateManager extends AbstractReactorStateManager {
 	 * @return The current state of the Maven module.
 	 */
 	private static MavenProjectState buildProjectState(final MavenProject project) {
-		final Artifact mainArtifact = RepositoryUtils.toArtifact(project.getArtifact());
+		final MavenArtifactState mainArtifactState = buildArtifactState(project.getArtifact());
 
 		final Artifact pom =
 			ArtifactDescriptorUtils
-				.toPomArtifact(mainArtifact)
+				.toPomArtifact(mainArtifactState.getArtifact())
 				.setFile(project.getFile());
 
-		final Set<Artifact> attachedArtifacts = new HashSet<>(RepositoryUtils.toArtifacts(project.getAttachedArtifacts()));
+		final Set<MavenArtifactState> attachedArtifactStates =
+			project.getAttachedArtifacts().stream()
+				.map(RuntimeReactorStateManager::buildArtifactState)
+				.collect(Collectors.toSet());
 
 		final MavenProjectState projectState;
-		if ("pom".equals(mainArtifact.getExtension())) {
-			projectState = new MavenProjectState(project, pom, pom, attachedArtifacts);
+		if (ArtifactIdUtils.toId(mainArtifactState.getArtifact()).equals(ArtifactIdUtils.toId(pom))) {
+			projectState = new MavenProjectState(project, pom, new MavenArtifactState(pom), attachedArtifactStates);
 		} else {
-			projectState = new MavenProjectState(project, pom, mainArtifact, attachedArtifacts);
+			projectState = new MavenProjectState(project, pom, mainArtifactState, attachedArtifactStates);
 		}
 
 		return projectState;
+	}
+
+	/**
+	 * Builds the state of a Maven artifact based on its current state.
+	 *
+	 * @param repositoryArtifact The Maven artifact to save the state for.
+	 * @return The current state of the Maven artifact.
+	 */
+	private static MavenArtifactState buildArtifactState(final org.apache.maven.artifact.Artifact repositoryArtifact) {
+		final MavenArtifactState artifactState = new MavenArtifactState(RepositoryUtils.toArtifact(repositoryArtifact));
+
+		for (@SuppressWarnings("deprecation") final ArtifactMetadata artifactMetadata : repositoryArtifact.getMetadataList()) {
+			final Class<?> artifactMetadataClass = artifactMetadata.getClass();
+
+			if (artifactMetadata instanceof ArtifactRepositoryMetadata) {
+				final ArtifactRepositoryMetadata artifactRepositoryMetadata = (ArtifactRepositoryMetadata) artifactMetadata;
+				artifactState.setArtifactRepositoryMetadata(artifactRepositoryMetadata.getMetadata());
+			} else if (artifactMetadata instanceof GroupRepositoryMetadata) {
+				final GroupRepositoryMetadata groupRepositoryMetadata = (GroupRepositoryMetadata) artifactMetadata;
+				artifactState.setGroupRepositoryMetadata(groupRepositoryMetadata.getMetadata());
+			} else if (artifactMetadata instanceof SnapshotArtifactRepositoryMetadata) {
+				final SnapshotArtifactRepositoryMetadata snapshotRepositoryMetadata = (SnapshotArtifactRepositoryMetadata) artifactMetadata;
+				artifactState.setSnapshotRepositoryMetadata(snapshotRepositoryMetadata.getMetadata());
+			} else if (artifactMetadata instanceof RepositoryMetadata) {
+				// Only report unknown RepositoryMetadata; legacy ArtifactMetadata are ignored.
+				LOGGER.warn("Unknown metadata {} on artifact {}. Ignoring.", artifactMetadataClass.getName(), repositoryArtifact.getId());
+			}
+		}
+
+		return artifactState;
 	}
 
 }

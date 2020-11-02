@@ -8,6 +8,9 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.apache.maven.RepositoryUtils;
+import org.apache.maven.artifact.repository.metadata.ArtifactRepositoryMetadata;
+import org.apache.maven.artifact.repository.metadata.GroupRepositoryMetadata;
+import org.apache.maven.artifact.repository.metadata.SnapshotArtifactRepositoryMetadata;
 import org.apache.maven.execution.MavenSession;
 import org.apache.maven.project.MavenProject;
 import org.apache.maven.project.MavenProjectHelper;
@@ -17,6 +20,8 @@ import org.apache.maven.project.ProjectBuildingRequest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import de.syquel.maven.reactorstate.common.data.MavenArtifactState;
+import de.syquel.maven.reactorstate.common.data.MavenProjectState;
 import de.syquel.maven.reactorstate.common.persistence.IReactorStateRepository;
 import de.syquel.maven.reactorstate.common.persistence.json.JsonReactorStateRepository;
 
@@ -78,12 +83,14 @@ public class SavedReactorStateManager extends AbstractReactorStateManager {
 
 			project.setPomFile(projectState.getPom().getFile());
 
-			final org.apache.maven.artifact.Artifact mainArtifact = RepositoryUtils.toArtifact(projectState.getMainArtifact());
+			final MavenArtifactState mainArtifactState = projectState.getMainArtifactState();
+
+			final org.apache.maven.artifact.Artifact mainArtifact = buildArtifact(mainArtifactState);
 			project.getArtifact().setFile(mainArtifact.getFile());
 			LOGGER.info("Restored main artifact {}", mainArtifact.getId());
 
 			final Collection<org.apache.maven.artifact.Artifact> attachedArtifacts =
-				projectState.getAttachedArtifacts().stream().map(RepositoryUtils::toArtifact).collect(Collectors.toList());
+				projectState.getAttachedArtifactStates().stream().map(SavedReactorStateManager::buildArtifact).collect(Collectors.toList());
 			project.getAttachedArtifacts().clear();
 			for (final org.apache.maven.artifact.Artifact attachedArtifact : attachedArtifacts) {
 				projectHelper.attachArtifact(project, attachedArtifact.getType(), attachedArtifact.getClassifier(), attachedArtifact.getFile());
@@ -144,6 +151,39 @@ public class SavedReactorStateManager extends AbstractReactorStateManager {
 	 */
 	private static boolean isWorkspaceProject(final MavenProject project) {
 		return project.getBasedir() != null;
+	}
+
+	/**
+	 * Builds a Maven artifact based on its saved state.
+	 *
+	 * @param artifactState The Maven artifact state to build the Maven Artifact for.
+	 * @return The Maven artifact based on its saved state.
+	 */
+	private static org.apache.maven.artifact.Artifact buildArtifact(final MavenArtifactState artifactState) {
+		final org.apache.maven.artifact.Artifact repositoryArtifact = RepositoryUtils.toArtifact(artifactState.getArtifact());
+
+		if (artifactState.getArtifactRepositoryMetadata() != null) {
+			final ArtifactRepositoryMetadata artifactRepositoryMetadata = new ArtifactRepositoryMetadata(repositoryArtifact);
+			artifactRepositoryMetadata.setMetadata(artifactState.getArtifactRepositoryMetadata());
+
+			repositoryArtifact.addMetadata(artifactRepositoryMetadata);
+		}
+
+		if (artifactState.getGroupRepositoryMetadata() != null) {
+			final GroupRepositoryMetadata groupRepositoryMetadata = new GroupRepositoryMetadata(artifactState.getGroupRepositoryMetadata().getGroupId());
+			groupRepositoryMetadata.setMetadata(artifactState.getGroupRepositoryMetadata());
+
+			repositoryArtifact.addMetadata(groupRepositoryMetadata);
+		}
+
+		if (artifactState.getSnapshotRepositoryMetadata() != null) {
+			final SnapshotArtifactRepositoryMetadata snapshotRepositoryMetadata = new SnapshotArtifactRepositoryMetadata(repositoryArtifact);
+			snapshotRepositoryMetadata.setMetadata(artifactState.getSnapshotRepositoryMetadata());
+
+			repositoryArtifact.addMetadata(snapshotRepositoryMetadata);
+		}
+
+		return repositoryArtifact;
 	}
 
 }

@@ -6,7 +6,36 @@
     "properties" : { }
   },
   "mainArtifact" : {
+    "artifactRepositoryMetadata" : {
+      "artifactId" : "reactorstate-maven-extension-stub-module2",
+      "groupId" : "de.syquel.maven.reactorstate",
+      "modelEncoding" : "UTF-8",
+      "modelVersion" : null,
+      "plugins" : [ ],
+      "version" : "1.0-SNAPSHOT",
+      "versioning" : {
+        "lastUpdated" : "20201012142734",
+        "latest" : "1.0-SNAPSHOT",
+        "release" : null,
+        "snapshot" : null,
+        "snapshotVersions" : [ ],
+        "versions" : [ ]
+      }
+    },
     "coordinates" : "de.syquel.maven.reactorstate:reactorstate-maven-extension-stub-module2:jar:1.0-SNAPSHOT",
+    "groupRepositoryMetadata" : {
+      "artifactId" : null,
+      "groupId" : null,
+      "modelEncoding" : "UTF-8",
+      "modelVersion" : null,
+      "plugins" : [ {
+        "artifactId" : "reactorstate-maven-extension-stub-module2",
+        "name" : "ReactorState Stub Maven Plugin",
+        "prefix" : "reactorstate"
+      } ],
+      "version" : null,
+      "versioning" : null
+    },
     "path" : "target/reactorstate-maven-extension-stub-module2-1.0-SNAPSHOT.jar",
     "properties" : {
       "language" : "java",

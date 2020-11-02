@@ -17,6 +17,7 @@ import org.hamcrest.MatcherAssert;
 import org.junit.Rule;
 import org.junit.Test;
 
+import de.syquel.maven.reactorstate.common.data.MavenProjectState;
 import io.takari.maven.testing.TestMavenRuntime;
 import io.takari.maven.testing.TestResources;
 
@@ -54,9 +55,13 @@ public class SavedReactorStateManagerTest {
 
 		final MavenProjectState topLevelProjectState = reactorStateManager.getProjectState(topLevelProject);
 		MatcherAssert.assertThat("Project POM is for top-level project", topLevelProjectState.getPom().getFile(), is(topLevelProject.getFile()));
-		MatcherAssert.assertThat("Main artifact is the project POM", topLevelProjectState.getMainArtifact(), is(topLevelProjectState.getPom()));
+		MatcherAssert.assertThat(
+			"Main artifact is the project POM",
+			topLevelProjectState.getMainArtifactState().getArtifact(),
+			is(topLevelProjectState.getPom())
+		);
 		MatcherAssert.assertThat("Top-level artifact is not resolved", topLevelProject.getArtifact().getFile(), nullValue(File.class));
-		MatcherAssert.assertThat("Top-level has no artifacts attached", topLevelProjectState.getAttachedArtifacts().size(), is(0));
+		MatcherAssert.assertThat("Top-level has no artifacts attached", topLevelProjectState.getAttachedArtifactStates().size(), is(0));
 
 		MatcherAssert.assertThat("Sub-module1 artifact is not resolved", module1Project.getArtifact().getFile(), nullValue(File.class));
 		MatcherAssert.assertThat("Sub-module2 artifact is not resolved", module2Project.getArtifact().getFile(), nullValue(File.class));

@@ -7,6 +7,8 @@ import java.util.Set;
 
 import org.apache.maven.project.MavenProject;
 
+import de.syquel.maven.reactorstate.common.data.MavenProjectState;
+
 /**
  * Base class for implementations which operate on the state of a Maven project and its modules.
  */

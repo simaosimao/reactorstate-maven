@@ -2,6 +2,7 @@ package de.syquel.maven.reactorstate.common;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.notNullValue;
+import static org.hamcrest.CoreMatchers.nullValue;
 
 import java.io.File;
 import java.io.IOException;
@@ -11,6 +12,9 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.apache.maven.artifact.repository.metadata.ArtifactRepositoryMetadata;
+import org.apache.maven.artifact.repository.metadata.GroupRepositoryMetadata;
+import org.apache.maven.artifact.repository.metadata.Metadata;
 import org.apache.maven.execution.MavenSession;
 import org.apache.maven.project.MavenProject;
 import org.apache.maven.project.MavenProjectHelper;
@@ -21,6 +25,8 @@ import org.junit.Assume;
 import org.junit.Rule;
 import org.junit.Test;
 
+import de.syquel.maven.reactorstate.common.data.MavenArtifactState;
+import de.syquel.maven.reactorstate.common.data.MavenProjectState;
 import de.syquel.maven.reactorstate.common.persistence.IReactorStateRepository;
 import de.syquel.maven.reactorstate.common.persistence.json.JsonReactorStateRepository;
 import io.takari.maven.testing.TestMavenRuntime;
@@ -66,6 +72,16 @@ public class RuntimeReactorStateManagerTest {
 
 			final Path javadocPath = projectBasePath.resolve("target/reactorstate-maven-extension-stub-module2-1.0-SNAPSHOT-javadoc.jar");
 			projectHelper.attachArtifact(module2Project, javadocPath.toFile(), "javadoc");
+
+			final Metadata artifactMetadata = module2State.getMainArtifactState().getArtifactRepositoryMetadata();
+			final ArtifactRepositoryMetadata artifactRepositoryMetadata = new ArtifactRepositoryMetadata(module2Project.getArtifact());
+			artifactRepositoryMetadata.setMetadata(artifactMetadata);
+			module2Project.getArtifact().addMetadata(artifactRepositoryMetadata);
+
+			final Metadata groupMetadata = module2State.getMainArtifactState().getGroupRepositoryMetadata();
+			final GroupRepositoryMetadata groupRepositoryMetadata = new GroupRepositoryMetadata(module2Project.getGroupId());
+			groupRepositoryMetadata.setMetadata(groupMetadata);
+			module2Project.getArtifact().addMetadata(groupRepositoryMetadata);
 		}
 
 		final MavenSession session = testMavenRuntime.newMavenSession(topLevelProject);
@@ -97,18 +113,20 @@ public class RuntimeReactorStateManagerTest {
 
 	private static void assertMavenProjectState(final MavenProjectState expected, final MavenProjectState actual) {
 		assertArtifact(expected.getPom(), actual.getPom());
-		assertArtifact(expected.getMainArtifact(), actual.getMainArtifact());
+		assertArtifactState(expected.getMainArtifactState(), actual.getMainArtifactState());
 
-		final Map<String, Artifact> actualAttachedArtifacts = new HashMap<>();
-		for (final Artifact actualAttachedArtifact : actual.getAttachedArtifacts()) {
-			actualAttachedArtifacts.put(ArtifactIdUtils.toId(actualAttachedArtifact), actualAttachedArtifact);
+		final Map<String, MavenArtifactState> actualAttachedArtifactStates = new HashMap<>();
+		for (final MavenArtifactState actualAttachedArtifactState : actual.getAttachedArtifactStates()) {
+			final String artifactCoordinates = ArtifactIdUtils.toId(actualAttachedArtifactState.getArtifact());
+			actualAttachedArtifactStates.put(artifactCoordinates, actualAttachedArtifactState);
 		}
 
-		for (final Artifact expectedAttachedArtifact : expected.getAttachedArtifacts()) {
-			final Artifact actualAttachedArtifact = actualAttachedArtifacts.get(ArtifactIdUtils.toId(expectedAttachedArtifact));
+		for (final MavenArtifactState expectedAttachedArtifactState : expected.getAttachedArtifactStates()) {
+			final String artifactCoordinates = ArtifactIdUtils.toId(expectedAttachedArtifactState.getArtifact());
+			final MavenArtifactState actualAttachedArtifactState = actualAttachedArtifactStates.get(artifactCoordinates);
 
-			MatcherAssert.assertThat("Artifact state exists", actualAttachedArtifact, notNullValue(Artifact.class));
-			assertArtifact(expectedAttachedArtifact, actualAttachedArtifact);
+			MatcherAssert.assertThat("Artifact state exists", actualAttachedArtifactState, notNullValue(MavenArtifactState.class));
+			assertArtifactState(expectedAttachedArtifactState, actualAttachedArtifactState);
 		}
 	}
 
@@ -123,6 +141,23 @@ public class RuntimeReactorStateManagerTest {
 			actual.getFile(),
 			is(expected.getFile())
 		);
+	}
+
+	private static void assertMetadata(final Metadata expected, final Metadata actual) {
+		if (expected == null) {
+			MatcherAssert.assertThat("Metadata does not exist", actual, nullValue(Metadata.class));
+		} else {
+			MatcherAssert.assertThat("Metadata has correct group ID", expected.getGroupId(), is(actual.getGroupId()));
+			MatcherAssert.assertThat("Metadata has correct artifact ID", expected.getArtifactId(), is(actual.getArtifactId()));
+		}
+	}
+
+	private static void assertArtifactState(final MavenArtifactState expected, final MavenArtifactState actual) {
+		assertArtifact(expected.getArtifact(), actual.getArtifact());
+
+		assertMetadata(expected.getArtifactRepositoryMetadata(), actual.getArtifactRepositoryMetadata());
+		assertMetadata(expected.getGroupRepositoryMetadata(), actual.getGroupRepositoryMetadata());
+		assertMetadata(expected.getSnapshotRepositoryMetadata(), actual.getSnapshotRepositoryMetadata());
 	}
 
 	private static MavenProjectState fetchReactorState(final MavenProject project) throws IOException {
