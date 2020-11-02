@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>RuntimeReactorStateManager.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">ReactorState Maven Common</a> &gt; <a href="index.source.html" class="el_package">de.syquel.maven.reactorstate.common</a> &gt; <span class="el_source">RuntimeReactorStateManager.java</span></div><h1>RuntimeReactorStateManager.java</h1><pre class="source lang-java linenums">package de.syquel.maven.reactorstate.common;
+
+import java.io.IOException;
+import java.util.HashSet;
+import java.util.Set;
+import java.util.stream.Collectors;
+
+import org.apache.maven.RepositoryUtils;
+import org.apache.maven.artifact.metadata.ArtifactMetadata;
+import org.apache.maven.artifact.repository.metadata.ArtifactRepositoryMetadata;
+import org.apache.maven.artifact.repository.metadata.GroupRepositoryMetadata;
+import org.apache.maven.artifact.repository.metadata.RepositoryMetadata;
+import org.apache.maven.artifact.repository.metadata.SnapshotArtifactRepositoryMetadata;
+import org.apache.maven.execution.MavenSession;
+import org.apache.maven.project.MavenProject;
+import org.apache.maven.repository.internal.ArtifactDescriptorUtils;
+import org.eclipse.aether.artifact.Artifact;
+import org.eclipse.aether.util.artifact.ArtifactIdUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import de.syquel.maven.reactorstate.common.data.MavenArtifactState;
+import de.syquel.maven.reactorstate.common.data.MavenProjectState;
+import de.syquel.maven.reactorstate.common.persistence.IReactorStateRepository;
+import de.syquel.maven.reactorstate.common.persistence.json.JsonReactorStateRepository;
+
+/**
+ * The implementation of a Maven Reactor state manager which operates on the current state of Maven modules within a Maven project.
+ */
+public class RuntimeReactorStateManager extends AbstractReactorStateManager {
+
+<span class="fc" id="L32">	private static final Logger LOGGER = LoggerFactory.getLogger(RuntimeReactorStateManager.class);</span>
+
+	/**
+	 * The persistence repository for Maven module states.
+	 */
+	private final IReactorStateRepository reactorStateRepository;
+
+	private RuntimeReactorStateManager(final Set&lt;MavenProjectState&gt; projectStates, final IReactorStateRepository reactorStateRepository) {
+<span class="fc" id="L40">		super(projectStates);</span>
+<span class="fc" id="L41">		this.reactorStateRepository = reactorStateRepository;</span>
+<span class="fc" id="L42">	}</span>
+
+	/**
+	 * Instantiates a Reactor state manager based on the current state of the Maven execution.
+	 *
+	 * @param mavenSession The state of a Maven execution.
+	 * @return A Reactor state manager with the current state of the Maven execution.
+	 */
+	public static RuntimeReactorStateManager create(final MavenSession mavenSession) {
+<span class="fc" id="L51">		final Set&lt;MavenProjectState&gt; projectStates = new HashSet&lt;&gt;();</span>
+<span class="fc bfc" id="L52" title="All 2 branches covered.">		for (final MavenProject project : mavenSession.getProjects()) {</span>
+<span class="fc" id="L53">			final MavenProjectState projectState = buildProjectState(project);</span>
+<span class="fc" id="L54">			projectStates.add(projectState);</span>
+<span class="fc" id="L55">		}</span>
+
+<span class="fc" id="L57">		return new RuntimeReactorStateManager(projectStates, new JsonReactorStateRepository());</span>
+	}
+
+	/**
+	 * Saves the current state of all Maven modules within the Maven execution.
+	 *
+	 * @throws IOException if an error occurred while saving the state.
+	 */
+	public void saveProjectStates() throws IOException {
+<span class="fc bfc" id="L66" title="All 2 branches covered.">		for (final MavenProjectState projectState : getProjectStates()) {</span>
+<span class="fc" id="L67">			reactorStateRepository.save(projectState);</span>
+<span class="fc" id="L68">		}</span>
+<span class="fc" id="L69">	}</span>
+
+	/**
+	 * Builds the state of a Maven module based on its current state.
+	 *
+	 * @param project The Maven module to save the state for.
+	 * @return The current state of the Maven module.
+	 */
+	private static MavenProjectState buildProjectState(final MavenProject project) {
+<span class="fc" id="L78">		final MavenArtifactState mainArtifactState = buildArtifactState(project.getArtifact());</span>
+
+<span class="fc" id="L80">		final Artifact pom =</span>
+			ArtifactDescriptorUtils
+<span class="fc" id="L82">				.toPomArtifact(mainArtifactState.getArtifact())</span>
+<span class="fc" id="L83">				.setFile(project.getFile());</span>
+
+<span class="fc" id="L85">		final Set&lt;MavenArtifactState&gt; attachedArtifactStates =</span>
+<span class="fc" id="L86">			project.getAttachedArtifacts().stream()</span>
+<span class="fc" id="L87">				.map(RuntimeReactorStateManager::buildArtifactState)</span>
+<span class="fc" id="L88">				.collect(Collectors.toSet());</span>
+
+		final MavenProjectState projectState;
+<span class="fc bfc" id="L91" title="All 2 branches covered.">		if (ArtifactIdUtils.toId(mainArtifactState.getArtifact()).equals(ArtifactIdUtils.toId(pom))) {</span>
+<span class="fc" id="L92">			projectState = new MavenProjectState(project, pom, new MavenArtifactState(pom), attachedArtifactStates);</span>
+		} else {
+<span class="fc" id="L94">			projectState = new MavenProjectState(project, pom, mainArtifactState, attachedArtifactStates);</span>
+		}
+
+<span class="fc" id="L97">		return projectState;</span>
+	}
+
+	/**
+	 * Builds the state of a Maven artifact based on its current state.
+	 *
+	 * @param repositoryArtifact The Maven artifact to save the state for.
+	 * @return The current state of the Maven artifact.
+	 */
+	private static MavenArtifactState buildArtifactState(final org.apache.maven.artifact.Artifact repositoryArtifact) {
+<span class="fc" id="L107">		final MavenArtifactState artifactState = new MavenArtifactState(RepositoryUtils.toArtifact(repositoryArtifact));</span>
+
+<span class="fc bfc" id="L109" title="All 2 branches covered.">		for (@SuppressWarnings(&quot;deprecation&quot;) final ArtifactMetadata artifactMetadata : repositoryArtifact.getMetadataList()) {</span>
+<span class="fc" id="L110">			final Class&lt;?&gt; artifactMetadataClass = artifactMetadata.getClass();</span>
+
+<span class="fc bfc" id="L112" title="All 2 branches covered.">			if (artifactMetadata instanceof ArtifactRepositoryMetadata) {</span>
+<span class="fc" id="L113">				final ArtifactRepositoryMetadata artifactRepositoryMetadata = (ArtifactRepositoryMetadata) artifactMetadata;</span>
+<span class="fc" id="L114">				artifactState.setArtifactRepositoryMetadata(artifactRepositoryMetadata.getMetadata());</span>
+<span class="pc bpc" id="L115" title="1 of 2 branches missed.">			} else if (artifactMetadata instanceof GroupRepositoryMetadata) {</span>
+<span class="fc" id="L116">				final GroupRepositoryMetadata groupRepositoryMetadata = (GroupRepositoryMetadata) artifactMetadata;</span>
+<span class="fc" id="L117">				artifactState.setGroupRepositoryMetadata(groupRepositoryMetadata.getMetadata());</span>
+<span class="pc bnc" id="L118" title="All 2 branches missed.">			} else if (artifactMetadata instanceof SnapshotArtifactRepositoryMetadata) {</span>
+<span class="nc" id="L119">				final SnapshotArtifactRepositoryMetadata snapshotRepositoryMetadata = (SnapshotArtifactRepositoryMetadata) artifactMetadata;</span>
+<span class="nc" id="L120">				artifactState.setSnapshotRepositoryMetadata(snapshotRepositoryMetadata.getMetadata());</span>
+<span class="nc bnc" id="L121" title="All 2 branches missed.">			} else if (artifactMetadata instanceof RepositoryMetadata) {</span>
+				// Only report unknown RepositoryMetadata; legacy ArtifactMetadata are ignored.
+<span class="nc" id="L123">				LOGGER.warn(&quot;Unknown metadata {} on artifact {}. Ignoring.&quot;, artifactMetadataClass.getName(), repositoryArtifact.getId());</span>
+			}
+<span class="fc" id="L125">		}</span>
+
+<span class="fc" id="L127">		return artifactState;</span>
+	}
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.6.202009150832</span></div></body></html>

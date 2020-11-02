@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>MavenArtifactState.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">ReactorState Maven Common</a> &gt; <a href="index.source.html" class="el_package">de.syquel.maven.reactorstate.common.data</a> &gt; <span class="el_source">MavenArtifactState.java</span></div><h1>MavenArtifactState.java</h1><pre class="source lang-java linenums">package de.syquel.maven.reactorstate.common.data;
+
+import java.util.Objects;
+
+import org.apache.maven.artifact.repository.metadata.Metadata;
+import org.eclipse.aether.artifact.Artifact;
+
+/**
+ * Representation of the state of a Maven artifact.
+ */
+public class MavenArtifactState {
+
+	/**
+	 * The represented Maven artifact.
+	 */
+	private final Artifact artifact;
+
+	/**
+	 * The associated Maven artifact-level repository metadata.
+	 */
+<span class="fc" id="L21">	private Metadata artifactRepositoryMetadata = null;</span>
+
+	/**
+	 * The associated module-group-level repository metadata
+	 */
+<span class="fc" id="L26">	private Metadata groupRepositoryMetadata = null;</span>
+
+	/**
+	 * The associated snapshot-specific repository metadata.
+	 */
+<span class="fc" id="L31">	private Metadata snapshotRepositoryMetadata = null;</span>
+
+<span class="fc" id="L33">	public MavenArtifactState(final Artifact artifact) {</span>
+<span class="fc" id="L34">		this.artifact = artifact;</span>
+<span class="fc" id="L35">	}</span>
+
+	public Artifact getArtifact() {
+<span class="fc" id="L38">		return artifact;</span>
+	}
+
+	public Metadata getArtifactRepositoryMetadata() {
+<span class="fc" id="L42">		return artifactRepositoryMetadata;</span>
+	}
+
+	public void setArtifactRepositoryMetadata(final Metadata artifactRepositoryMetadata) {
+<span class="fc" id="L46">		this.artifactRepositoryMetadata = artifactRepositoryMetadata;</span>
+<span class="fc" id="L47">	}</span>
+
+	public Metadata getGroupRepositoryMetadata() {
+<span class="fc" id="L50">		return groupRepositoryMetadata;</span>
+	}
+
+	public void setGroupRepositoryMetadata(final Metadata groupRepositoryMetadata) {
+<span class="fc" id="L54">		this.groupRepositoryMetadata = groupRepositoryMetadata;</span>
+<span class="fc" id="L55">	}</span>
+
+	public Metadata getSnapshotRepositoryMetadata() {
+<span class="fc" id="L58">		return snapshotRepositoryMetadata;</span>
+	}
+
+	public void setSnapshotRepositoryMetadata(final Metadata snapshotRepositoryMetadata) {
+<span class="fc" id="L62">		this.snapshotRepositoryMetadata = snapshotRepositoryMetadata;</span>
+<span class="fc" id="L63">	}</span>
+
+	@Override
+	public boolean equals(final Object o) {
+<span class="nc bnc" id="L67" title="All 2 branches missed.">		if (this == o)</span>
+<span class="nc" id="L68">			return true;</span>
+<span class="nc bnc" id="L69" title="All 4 branches missed.">		if (o == null || getClass() != o.getClass())</span>
+<span class="nc" id="L70">			return false;</span>
+<span class="nc" id="L71">		final MavenArtifactState that = (MavenArtifactState) o;</span>
+<span class="nc" id="L72">		return artifact.equals(that.artifact);</span>
+	}
+
+	@Override
+	public int hashCode() {
+<span class="fc" id="L77">		return Objects.hash(artifact);</span>
+	}
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.6.202009150832</span></div></body></html>

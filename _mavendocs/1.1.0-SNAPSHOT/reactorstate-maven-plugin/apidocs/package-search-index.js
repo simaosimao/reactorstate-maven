@@ -1,0 +1,1 @@
+packageSearchIndex = [{"l":"All Packages","url":"allpackages-index.html"},{"l":"de.syquel.maven.reactorstate.plugin"},{"l":"de.syquel.maven.reactorstate.plugin.config"}]
