@@ -4,7 +4,7 @@ import java.io.IOException;
 
 import org.apache.maven.project.MavenProject;
 
-import de.syquel.maven.reactorstate.common.MavenProjectState;
+import de.syquel.maven.reactorstate.common.data.MavenProjectState;
 
 /**
  * The persistence repository for Maven state information.
