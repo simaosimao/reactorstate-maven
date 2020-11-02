@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>ReactorStateSaveExtension.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">ReactorState Maven Extension</a> &gt; <a href="index.source.html" class="el_package">de.syquel.maven.reactorstate.extension</a> &gt; <span class="el_source">ReactorStateSaveExtension.java</span></div><h1>ReactorStateSaveExtension.java</h1><pre class="source lang-java linenums">package de.syquel.maven.reactorstate.extension;
+
+import java.io.IOException;
+
+import javax.inject.Inject;
+import javax.inject.Named;
+import javax.inject.Singleton;
+
+import org.apache.maven.AbstractMavenLifecycleParticipant;
+import org.apache.maven.MavenExecutionException;
+import org.apache.maven.execution.MavenSession;
+import org.apache.maven.project.MavenProjectHelper;
+import org.apache.maven.project.ProjectBuilder;
+import org.apache.maven.project.ProjectBuildingException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import de.syquel.maven.reactorstate.common.RuntimeReactorStateManager;
+import de.syquel.maven.reactorstate.common.SavedReactorStateManager;
+
+/**
+ * A Maven Core Extension which saves the state of Maven executions afterwards and restores it beforehand.
+ */
+@Named(ReactorStateSaveExtension.EXTENSION_ID)
+@Singleton
+public class ReactorStateSaveExtension extends AbstractMavenLifecycleParticipant {
+
+	/**
+	 * The unique ID of this Maven Core Extension.
+	 */
+	public static final String EXTENSION_ID = &quot;reactorstate-save&quot;;
+
+<span class="fc" id="L33">	private static final Logger LOGGER = LoggerFactory.getLogger(ReactorStateSaveExtension.class);</span>
+
+	/**
+	 * The helper for Maven-related operations on the current state.
+	 */
+	private final MavenProjectHelper projectHelper;
+
+	/**
+	 * The builder for Maven projects from POMs.
+	 */
+	private final ProjectBuilder projectBuilder;
+
+	/**
+	 * Constructs a new instance.
+	 *
+	 * @param projectHelper The helper for Maven-related operations on the current state.
+	 * @param projectBuilder The builder for Maven projects from POMs.
+	 */
+	@Inject
+<span class="fc" id="L52">	public ReactorStateSaveExtension(final MavenProjectHelper projectHelper, final ProjectBuilder projectBuilder) {</span>
+<span class="fc" id="L53">		this.projectHelper = projectHelper;</span>
+<span class="fc" id="L54">		this.projectBuilder = projectBuilder;</span>
+<span class="fc" id="L55">	}</span>
+
+	/**
+	 * Restores the saved state of the Maven projects and its Maven modules within the current Maven execution.
+	 *
+	 * @param session The current Maven execution.
+	 * @throws MavenExecutionException if an error occurred while restoring the saved state.
+	 */
+	@Override
+	public void afterProjectsRead(final MavenSession session) throws MavenExecutionException {
+		try {
+<span class="fc" id="L66">			final SavedReactorStateManager projectStateManager = SavedReactorStateManager.create(session, projectBuilder);</span>
+<span class="fc bfc" id="L67" title="All 2 branches covered.">			if (projectStateManager.getProjectStates().isEmpty()) {</span>
+				// Skip restoring of reactor state if there is no state yet
+<span class="fc" id="L69">				return;</span>
+			}
+
+<span class="fc" id="L72">			projectStateManager.restoreProjectStates(session, projectHelper);</span>
+<span class="nc" id="L73">		} catch (final ProjectBuildingException | IOException e) {</span>
+<span class="nc" id="L74">			throw new MavenExecutionException(&quot;Cannot restore saved Maven project state&quot;, e);</span>
+<span class="fc" id="L75">		}</span>
+<span class="fc" id="L76">	}</span>
+
+	/**
+	 * Saves the current state of all Maven modules within the Maven execution.
+	 *
+	 * This is a Maven lifecycle hook, which is executed directly after the Maven session has read the project definitions of the Maven modules,
+	 * but before it has started building the project.
+	 *
+	 * @param session The current Maven execution.
+	 * @throws MavenExecutionException if an error occurred while saving the current state.
+	 */
+	@Override
+	public void afterSessionEnd(final MavenSession session) throws MavenExecutionException {
+<span class="fc" id="L89">		LOGGER.info(&quot;Saving state of Maven session&quot;);</span>
+<span class="fc" id="L90">		final RuntimeReactorStateManager projectStateManager = RuntimeReactorStateManager.create(session);</span>
+
+		try {
+<span class="fc" id="L93">			projectStateManager.saveProjectStates();</span>
+<span class="nc" id="L94">		} catch (final IOException e) {</span>
+<span class="nc" id="L95">			throw new MavenExecutionException(&quot;Cannot save reactor state&quot;, e);</span>
+<span class="fc" id="L96">		}</span>
+<span class="fc" id="L97">	}</span>
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.6.202009150832</span></div></body></html>
