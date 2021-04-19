@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>MavenProjectState.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">ReactorState Maven Common</a> &gt; <a href="index.source.html" class="el_package">de.syquel.maven.reactorstate.common.data</a> &gt; <span class="el_source">MavenProjectState.java</span></div><h1>MavenProjectState.java</h1><pre class="source lang-java linenums">package de.syquel.maven.reactorstate.common.data;
+
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.Set;
+
+import org.apache.maven.project.MavenProject;
+import org.eclipse.aether.artifact.Artifact;
+
+/**
+ * Representation of the state of a Maven module.
+ */
+public class MavenProjectState {
+
+	/**
+	 * The represented Maven module.
+	 */
+	private final MavenProject project;
+
+	/**
+	 * The POM of the Maven module as Maven artifact.
+	 */
+	private final Artifact pom;
+
+	/**
+	 * The main artifact state of the Maven module.
+	 *
+	 * This is the primarily generated artifact, e.g. the JAR.
+	 */
+	private final MavenArtifactState mainArtifactState;
+
+	/**
+	 * Additional states of attached artifacts on the Maven module.
+	 *
+	 * These are generated supporting artifacts, e.g. JavaDoc and sources JARs.
+	 */
+	private final Set&lt;MavenArtifactState&gt; attachedArtifactStates;
+
+	public MavenProjectState(
+		final MavenProject project, final Artifact pom, final MavenArtifactState mainArtifactState, final Set&lt;MavenArtifactState&gt; attachedArtifactStates
+<span class="fc" id="L42">	) {</span>
+<span class="fc" id="L43">		this.project = project;</span>
+<span class="fc" id="L44">		this.pom = pom;</span>
+<span class="fc" id="L45">		this.mainArtifactState = mainArtifactState;</span>
+<span class="fc" id="L46">		this.attachedArtifactStates = Collections.unmodifiableSet(new HashSet&lt;&gt;(attachedArtifactStates));</span>
+<span class="fc" id="L47">	}</span>
+
+	public MavenProject getProject() {
+<span class="fc" id="L50">		return project;</span>
+	}
+
+	public Artifact getPom() {
+<span class="fc" id="L54">		return pom;</span>
+	}
+
+	public MavenArtifactState getMainArtifactState() {
+<span class="fc" id="L58">		return mainArtifactState;</span>
+	}
+
+	public Collection&lt;MavenArtifactState&gt; getAttachedArtifactStates() {
+<span class="fc" id="L62">		return attachedArtifactStates;</span>
+	}
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.6.202009150832</span></div></body></html>
